@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { content, type Language } from "./content";
 
-const sectionIds = ["intro", "capabilities", "case-study", "engineering", "enterprise", "journey", "connect"] as const;
+type GalleryView = 0 | 1 | 2;
 
 function initialLanguage(): Language {
   const stored = window.localStorage.getItem("portfolio-language");
@@ -9,183 +9,203 @@ function initialLanguage(): Language {
   return navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en";
 }
 
-function Arrow({ direction = "right" }: { direction?: "right" | "down" }) {
-  return <span aria-hidden="true" className={`arrow arrow--${direction}`}>→</span>;
+const anchors = ["about", "journey", "projects", "contact"];
+const projectIds = ["fushi", "nextgen", "velocity", "platform"];
+const galleryImages = ["/assets/fushi-mini-devtools.jpg", "/assets/fushi-support.jpg", "/assets/fushi-safety.jpg"];
+
+function projectFromUrl() {
+  const id = new URLSearchParams(window.location.search).get("project");
+  const index = id ? projectIds.indexOf(id) : -1;
+  return index >= 0 ? index : null;
 }
 
-function ExternalLink({ href, children, className = "" }: { href: string; children: React.ReactNode; className?: string }) {
-  return <a className={className} href={href} target="_blank" rel="noreferrer">{children}</a>;
+function Arrow() {
+  return <span aria-hidden="true">↗</span>;
 }
 
 function App() {
   const [language, setLanguage] = useState<Language>(initialLanguage);
-  const [activeSection, setActiveSection] = useState(0);
+  const [galleryView, setGalleryView] = useState<GalleryView>(0);
+  const [perspective, setPerspective] = useState(0);
+  const [activeProject, setActiveProject] = useState<number | null>(projectFromUrl);
   const t = content[language];
-
-  const sections = useMemo(() => sectionIds.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[], []);
+  const selectedProject = activeProject === null ? null : t.projects[activeProject];
 
   useEffect(() => {
     document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
-    document.title = language === "zh" ? "史学佳 — Senior Full-Stack Engineer" : "Xuejia Shi — Senior Full-Stack Engineer";
+    document.title = selectedProject ? `${selectedProject.title} — ${t.name}` : `${t.name} — Senior Full-Stack Engineer`;
     window.localStorage.setItem("portfolio-language", language);
-  }, [language]);
+  }, [activeProject, language, selectedProject, t.name]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible) setActiveSection(sectionIds.indexOf(visible.target.id as typeof sectionIds[number]));
-    }, { threshold: [0.3, 0.55, 0.8] });
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [sections]);
+    const syncRoute = () => setActiveProject(projectFromUrl());
+    window.addEventListener("popstate", syncRoute);
+    return () => window.removeEventListener("popstate", syncRoute);
+  }, []);
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-      if (!["ArrowDown", "ArrowRight", "PageDown", "ArrowUp", "ArrowLeft", "PageUp", "Home", "End"].includes(event.key)) return;
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
-      event.preventDefault();
-      let next = activeSection;
-      if (["ArrowDown", "ArrowRight", "PageDown"].includes(event.key)) next += 1;
-      if (["ArrowUp", "ArrowLeft", "PageUp"].includes(event.key)) next -= 1;
-      if (event.key === "Home") next = 0;
-      if (event.key === "End") next = sectionIds.length - 1;
-      next = Math.max(0, Math.min(sectionIds.length - 1, next));
-      document.getElementById(sectionIds[next])?.scrollIntoView({ behavior: "smooth" });
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeSection]);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [activeProject]);
 
-  const selectLanguage = (next: Language) => setLanguage(next);
+  function showProject(index: number, replace = false) {
+    const url = `${window.location.pathname}?project=${projectIds[index]}`;
+    if (replace) window.history.replaceState({ portfolioProject: true }, "", url);
+    else window.history.pushState({ portfolioProject: true }, "", url);
+    setGalleryView(0);
+    setPerspective(0);
+    setActiveProject(index);
+  }
+
+  function returnHome() {
+    if (window.history.state?.portfolioProject) {
+      window.history.back();
+    } else {
+      window.history.replaceState(null, "", window.location.pathname);
+      setActiveProject(null);
+    }
+  }
+
+  function LanguageSwitch() {
+    return (
+      <div className="language-switch" aria-label={language === "zh" ? "语言选择" : "Language selection"}>
+        <button className={language === "en" ? "active" : ""} onClick={() => setLanguage("en")} aria-pressed={language === "en"}>EN</button>
+        <span>/</span>
+        <button className={language === "zh" ? "active" : ""} onClick={() => setLanguage("zh")} aria-pressed={language === "zh"}>中</button>
+      </div>
+    );
+  }
+
+  if (selectedProject && activeProject !== null) {
+    const previousIndex = (activeProject - 1 + t.projects.length) % t.projects.length;
+    const nextIndex = (activeProject + 1) % t.projects.length;
+
+    return (
+      <div className={`project-detail-shell ${selectedProject.id === "fushi" ? "project-detail-shell--media" : "project-detail-shell--compact"}`} key={selectedProject.id}>
+        <aside className="project-detail-panel">
+          <div>
+            <button className="back-link" onClick={returnHome}><span aria-hidden="true">←</span>{t.backToPortfolio}</button>
+            <p className="detail-panel-label">{t.projectPageLabel} · {String(activeProject + 1).padStart(2, "0")}/{String(t.projects.length).padStart(2, "0")}</p>
+            <h1>{selectedProject.title}</h1>
+            <p className="detail-panel-role">{selectedProject.role}</p>
+            <p className="detail-panel-context">{selectedProject.detail.challenge}</p>
+          </div>
+          <div className="detail-panel-footer"><LanguageSwitch /><a href="mailto:lsxj615@foxmail.com">Mail</a><a href="https://github.com/Lsxj" target="_blank" rel="noreferrer">GitHub</a></div>
+        </aside>
+
+        <main className="project-detail-main">
+          <nav className="detail-slide-controls" aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
+            <span>{String(activeProject + 1).padStart(2, "0")} / {String(t.projects.length).padStart(2, "0")}</span>
+            <div className="slide-dots" aria-hidden="true">{t.projects.map((project, index) => <i className={index === activeProject ? "active" : ""} key={project.id} />)}</div>
+            <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${t.projects[previousIndex].title}`} title={t.previousProject}>←</button>
+            <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${t.projects[nextIndex].title}`} title={t.nextProject}>→</button>
+          </nav>
+          <div className="project-narrative">
+            <p className="narrative-ownership">{selectedProject.detail.ownership}</p>
+          </div>
+
+          {selectedProject.id === "fushi" && (
+            <div className={`project-gallery gallery-view-${galleryView}`}>
+              <div className="gallery-frame"><img src={galleryImages[galleryView]} alt={t.galleryAlt[galleryView]} /></div>
+              <div className="gallery-controls" role="tablist" aria-label={language === "zh" ? "项目画面" : "Project screens"}>
+                {t.galleryTabs.map((tab, index) => (
+                  <button key={tab} role="tab" aria-selected={galleryView === index} className={galleryView === index ? "active" : ""} onClick={() => setGalleryView(index as GalleryView)}>
+                    <span>0{index + 1}</span>{tab}
+                  </button>
+                ))}
+              </div>
+              <p className="gallery-caption">{t.galleryCaptions[galleryView]}</p>
+            </div>
+          )}
+
+          <div className={`project-actions project-actions--${selectedProject.detail.approach.length}`}>
+            {selectedProject.detail.approach.map((item) => <p key={item}>{item}</p>)}
+          </div>
+          <blockquote className="project-outcome">{selectedProject.result}</blockquote>
+
+          {selectedProject.id === "fushi" && (
+            <div className="perspective-lab">
+              <p>{t.perspectiveTitle}</p>
+              <div className="perspective-tabs" role="tablist">
+                {t.perspectives.map(([title], index) => <button role="tab" aria-selected={perspective === index} className={perspective === index ? "active" : ""} key={title} onClick={() => setPerspective(index)}>{title}</button>)}
+              </div>
+              <div className="perspective-content"><span>0{perspective + 1}</span><p>{t.perspectives[perspective][1]}</p></div>
+              <div className="evidence-strip">{t.evidence.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
+            </div>
+          )}
+
+          <div className="project-detail-footer">
+            <ul className="tag-list">{selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+            {selectedProject.id === "fushi" && <a className="project-link" href="https://github.com/Lsxj/fushi-dazi" target="_blank" rel="noreferrer">{selectedProject.link}<Arrow /></a>}
+          </div>
+        </main>
+
+      </div>
+    );
+  }
 
   return (
-    <>
-      <header className="site-header">
-        <a className="brand" href="#intro" aria-label={language === "zh" ? "返回首页" : "Back to intro"}>
-          <span className="brand-mark" aria-hidden="true">XS</span>
-          <span className="brand-name">{language === "zh" ? "史学佳" : "Xuejia Shi"}</span>
-        </a>
-        <nav className="top-nav" aria-label={language === "zh" ? "主导航" : "Primary navigation"}>
-          {sectionIds.slice(1, 6).map((id, index) => <a key={id} href={`#${id}`}>{t.nav[index + 1]}</a>)}
-        </nav>
-        <div className="language-switch" aria-label={language === "zh" ? "语言选择" : "Language selection"}>
-          <button className={language === "en" ? "active" : ""} onClick={() => selectLanguage("en")} aria-pressed={language === "en"}>EN</button>
-          <span>/</span>
-          <button className={language === "zh" ? "active" : ""} onClick={() => selectLanguage("zh")} aria-pressed={language === "zh"}>中</button>
+    <div className="portfolio-shell">
+      <aside className="profile-panel">
+        <div>
+          <a className="name" href="#about">{t.name}</a>
+          <h1>{t.role}</h1>
+          <p className="intro">{t.intro}</p>
+          <p className="location">{t.location}</p>
+          <nav aria-label={language === "zh" ? "主导航" : "Primary navigation"}>
+            {t.nav.map((label, index) => <a href={`#${anchors[index]}`} key={label}><i /><span>{label}</span></a>)}
+          </nav>
         </div>
-      </header>
 
-      <aside className="section-rail" aria-label={language === "zh" ? "章节导航" : "Section navigation"}>
-        {sectionIds.map((id, index) => (
-          <a className={activeSection === index ? "active" : ""} href={`#${id}`} key={id} aria-label={t.nav[index]} aria-current={activeSection === index ? "true" : undefined}>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-          </a>
-        ))}
+        <div className="profile-footer">
+          <LanguageSwitch />
+          <div className="social-links">
+            <a href="mailto:lsxj615@foxmail.com" aria-label="Email">Mail</a>
+            <a href="https://github.com/Lsxj" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </div>
       </aside>
 
-      <main id="main-content">
-        <section className="slide hero" id="intro">
-          <div className="hero-grid" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div>
-          <div className="slide-inner hero-inner">
-            <p className="kicker hero-kicker">{t.eyebrow}</p>
-            <h1>{t.heroTitle}</h1>
-            <p className="hero-body">{t.heroBody}</p>
-            <div className="tag-row">{t.heroTags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-            <div className="actions">
-              <a className="button button--primary" href="#case-study">{t.openCase}<Arrow direction="down" /></a>
-              <ExternalLink className="button button--text" href="https://github.com/Lsxj">{t.github}<Arrow /></ExternalLink>
-            </div>
-            <div className="hero-signature" aria-hidden="true">
-              <span>09</span><small>{language === "zh" ? "年研发经验" : "YEARS BUILDING"}</small>
-            </div>
+      <main>
+        <section id="about" className="about-section">
+          <h2 className="mobile-section-title">{t.aboutTitle}</h2>
+          {t.about.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          <div className="focus-line"><span>TypeScript</span><span>React</span><span>Node.js</span><span>Java</span><span>Cloud-native</span></div>
+        </section>
+
+        <section id="journey" className="journey-section">
+          <h2 className="section-title">{t.journeyTitle}</h2>
+          <p className="section-intro">{t.journeyIntro}</p>
+          <div className="timeline">
+            {t.journey.map(([period, title, body], index) => <article key={period}><div className="timeline-marker"><i /><span>{String(index + 1).padStart(2, "0")}</span></div><div><time>{period}</time><h3>{title}</h3><p>{body}</p></div></article>)}
           </div>
         </section>
 
-        <section className="slide slide--soft" id="capabilities">
-          <div className="slide-inner">
-            <p className="kicker">{t.capabilitiesKicker}</p>
-            <div className="section-intro"><h2>{t.capabilitiesTitle}</h2><p>{t.capabilitiesBody}</p></div>
-            <div className="capability-grid">
-              {t.capabilities.map((item) => <article className="capability-card" key={item.n}><span className="card-number">{item.n}</span><h3>{item.title}</h3><p>{item.body}</p><strong>{item.proof}</strong></article>)}
-            </div>
+        <section id="projects" className="projects-section">
+          <div className="section-heading-row"><h2 className="section-title">{t.projectsTitle}</h2><p>{t.projectsHint}</p></div>
+          <div className="project-list">
+            {t.projects.map((project, projectIndex) => (
+              <article className={`project project--${project.id}`} key={project.id}>
+                <button className="project-card" onClick={() => showProject(projectIndex)} aria-label={`${t.openProject}: ${project.title}`}>
+                  <div className="project-index">0{projectIndex + 1}</div>
+                  <div className="project-card-body"><p className="project-role">{project.role}</p><h3>{project.title}<Arrow /></h3><p className="project-summary">{project.body}</p><ul className="tag-list">{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul></div>
+                  {project.id === "fushi" && <div className="project-thumb"><img src={galleryImages[0]} alt="" /></div>}
+                </button>
+              </article>
+            ))}
           </div>
         </section>
 
-        <section className="slide case-slide" id="case-study">
-          <div className="slide-inner">
-            <p className="kicker kicker--light">{t.caseKicker}</p>
-            <div className="case-heading"><div><h2>{t.caseTitle}</h2><p>{t.caseLead}</p></div><ExternalLink className="round-link" href="https://github.com/Lsxj/fushi-dazi"><span>{t.repo}</span><Arrow /></ExternalLink></div>
-            <div className="case-content">
-              <div className="case-copy">
-                <article><h3>{t.caseProblemTitle}</h3><p>{t.caseProblem}</p></article>
-                <article><h3>{t.caseRoleTitle}</h3><p>{t.caseRole}</p></article>
-              </div>
-              <div className="system-map" aria-label={language === "zh" ? "辅食搭子系统架构" : "Baby Food Buddy system architecture"}>
-                <div className="map-node node-family"><small>{t.family}</small><strong>{t.mini}</strong></div>
-                <div className="map-arrow" aria-hidden="true">→</div>
-                <div className="map-node node-rules"><small>{t.rules}</small><strong>TypeScript</strong></div>
-                <div className="map-arrow" aria-hidden="true">→</div>
-                <div className="map-node node-api"><small>{t.api}</small><strong>Zod · oRPC</strong></div>
-                <div className="map-branches" aria-hidden="true"><i /><i /></div>
-                <div className="map-node node-console"><small>{t.console}</small><strong>React 19</strong></div>
-                <div className="map-node node-tools"><small>{t.tooling}</small><strong>Reusable workflows</strong></div>
-              </div>
-            </div>
-          </div>
+        <section id="contact" className="contact-section">
+          <p className="contact-kicker">{language === "zh" ? "保持联系" : "Get in touch"}</p>
+          <h2>{t.contactTitle}</h2>
+          <p>{t.contactBody}</p>
+          <div className="contact-links"><a href="mailto:lsxj615@foxmail.com">{t.email}<Arrow /></a><a href="https://github.com/Lsxj" target="_blank" rel="noreferrer">{t.source}<Arrow /></a></div>
         </section>
 
-        <section className="slide slide--soft" id="engineering">
-          <div className="slide-inner">
-            <p className="kicker">{t.engKicker}</p>
-            <h2 className="wide-title">{t.engTitle}</h2>
-            <div className="architecture-grid">{t.architecture.map((item) => <article key={item.step}><span>{item.step}</span><h3>{item.title}</h3><p>{item.body}</p></article>)}</div>
-            <div className="metric-grid">{t.metrics.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
-            <aside className="boundary-note"><strong>{t.honestTitle}</strong><p>{t.honest}</p></aside>
-          </div>
-        </section>
-
-        <section className="slide enterprise-slide" id="enterprise">
-          <div className="slide-inner">
-            <p className="kicker">{t.enterpriseKicker}</p>
-            <div className="enterprise-header"><div><h2>{t.enterpriseTitle}</h2><p>{t.enterpriseBody}</p></div><span className="citi-wordmark">CITI</span></div>
-            <div className="enterprise-stats">{t.enterpriseStats.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
-            <div className="enterprise-cases">
-              <article><span className="case-index">A</span><h3>{t.citiDirect}</h3><p>{t.citiDirectBody}</p><div className="small-tags">{t.citiDirectTags.map((tag) => <span key={tag}>{tag}</span>)}</div></article>
-              <article><span className="case-index">B</span><h3>{t.velocity}</h3><p>{t.velocityBody}</p><strong className="result-line">{t.velocityResult}</strong></article>
-            </div>
-            <p className="recognition">✦ {t.recognition}</p>
-          </div>
-        </section>
-
-        <section className="slide slide--soft" id="journey">
-          <div className="slide-inner">
-            <p className="kicker">{t.journeyKicker}</p>
-            <h2 className="wide-title">{t.journeyTitle}</h2>
-            <div className="journey-layout">
-              <div className="timeline">{t.journey.map((item) => <article key={item.date}><span>{item.date}</span><div><h3>{item.title}</h3><p>{item.body}</p></div></article>)}</div>
-              <div className="toolkit"><h3>{t.stackTitle}</h3><div className="skill-cloud">{t.stack.map((skill) => <span key={skill}>{skill}</span>)}</div><p className="education">{t.education}</p></div>
-            </div>
-          </div>
-        </section>
-
-        <section className="slide connect-slide" id="connect">
-          <div className="slide-inner connect-inner">
-            <div>
-              <p className="kicker kicker--light">{t.connectKicker}</p>
-              <h2>{t.connectTitle}</h2>
-              <p className="connect-body">{t.connectBody}</p>
-              <div className="actions">
-                <a className="button button--white" href="mailto:lsxj615@foxmail.com">{t.emailMe}<Arrow /></a>
-                <ExternalLink className="button button--ghost" href="https://github.com/Lsxj">GitHub / Lsxj<Arrow /></ExternalLink>
-              </div>
-            </div>
-            <div className="contact-card"><small>EMAIL</small><a href="mailto:lsxj615@foxmail.com">lsxj615@foxmail.com</a><small>LOCATION</small><span>{t.location}</span><small>OPEN SOURCE</small><ExternalLink href="https://github.com/Lsxj/Lsxj.github.io">{t.source}</ExternalLink></div>
-            <footer><a href="/archive/">{t.archive}</a><span>{t.copyright}</span></footer>
-          </div>
-        </section>
+        <footer className="site-footer"><a href="/archive/">{t.archive}</a><span>{t.footer}</span></footer>
       </main>
-    </>
+    </div>
   );
 }
 
