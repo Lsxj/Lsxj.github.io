@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>linux-commands | 你看见过我的小熊吗</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux,Unix," />
+  
+
+  <meta name="description" content="ConceptsUnix is multi-user, multi-process, mutli-access operating system. Each command is executed as a new process, and is the child of the process which invoked it. Kernel Responsibilities Process M">
+<meta name="keywords" content="Linux,Unix">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux-commands">
+<meta property="og:url" content="http://yoursite.com/2017/07/18/linux-commands/index.html">
+<meta property="og:site_name" content="你看见过我的小熊吗">
+<meta property="og:description" content="ConceptsUnix is multi-user, multi-process, mutli-access operating system. Each command is executed as a new process, and is the child of the process which invoked it. Kernel Responsibilities Process M">
+<meta property="og:updated_time" content="2018-01-13T14:35:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux-commands">
+<meta name="twitter:description" content="ConceptsUnix is multi-user, multi-process, mutli-access operating system. Each command is executed as a new process, and is the child of the process which invoked it. Kernel Responsibilities Process M">
+
+  
+
+  
+    <link rel="icon" href="/archive/favicon.ico">
+  
+
+  <link href="/archive/css/styles.css?v=028c63b1" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/archive/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/archive/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/archives/"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/category/"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/tag/"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/link/"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/about/"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/atom.xml"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/search/"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Concepts"><span class="toc-text"><a href="#Concepts" class="headerlink" title="Concepts"></a>Concepts</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Kernel-Responsibilities"><span class="toc-text"><a href="#Kernel-Responsibilities" class="headerlink" title="Kernel Responsibilities"></a>Kernel Responsibilities</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Basic-Commands"><span class="toc-text"><a href="#Basic-Commands" class="headerlink" title="Basic Commands"></a>Basic Commands</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#who-vs-whoami"><span class="toc-text"><a href="#who-vs-whoami" class="headerlink" title="who vs whoami"></a><code>who</code> vs <code>whoami</code></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Keyboard-Control"><span class="toc-text"><a href="#Keyboard-Control" class="headerlink" title="Keyboard Control"></a>Keyboard Control</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#File-System"><span class="toc-text"><a href="#File-System" class="headerlink" title="File System"></a>File System</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#commands"><span class="toc-text"><a href="#commands" class="headerlink" title="commands"></a>commands</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hierarchical-Structure"><span class="toc-text"><a href="#Hierarchical-Structure" class="headerlink" title="Hierarchical Structure"></a>Hierarchical Structure</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linking-Files"><span class="toc-text"><a href="#Linking-Files" class="headerlink" title="Linking Files"></a>Linking Files</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Searching-Files"><span class="toc-text"><a href="#Searching-Files" class="headerlink" title="Searching Files"></a>Searching Files</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quoting"><span class="toc-text"><a href="#Quoting" class="headerlink" title="Quoting"></a>Quoting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sorting-Files"><span class="toc-text"><a href="#Sorting-Files" class="headerlink" title="Sorting Files"></a>Sorting Files</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Comparing-Files"><span class="toc-text"><a href="#Comparing-Files" class="headerlink" title="Comparing Files"></a>Comparing Files</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cutting-Fields"><span class="toc-text"><a href="#Cutting-Fields" class="headerlink" title="Cutting Fields"></a>Cutting Fields</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Duplicate-Lines"><span class="toc-text"><a href="#Duplicate-Lines" class="headerlink" title="Duplicate Lines"></a>Duplicate Lines</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Transliterating-Files"><span class="toc-text"><a href="#Transliterating-Files" class="headerlink" title="Transliterating Files"></a>Transliterating Files</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Printing-Files"><span class="toc-text"><a href="#Printing-Files" class="headerlink" title="Printing Files"></a>Printing Files</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Searching-for-Files"><span class="toc-text"><a href="#Searching-for-Files" class="headerlink" title="Searching for Files"></a>Searching for Files</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#File-Access-Control"><span class="toc-text"><a href="#File-Access-Control" class="headerlink" title="File Access Control"></a>File Access Control</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Permissions"><span class="toc-text"><a href="#Permissions" class="headerlink" title="Permissions"></a>Permissions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Access-rights-for-files"><span class="toc-text"><a href="#Access-rights-for-files" class="headerlink" title="Access rights for files"></a>Access rights for files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Access-rights-for-directories"><span class="toc-text"><a href="#Access-rights-for-directories" class="headerlink" title="Access rights for directories"></a>Access rights for directories</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Setting-Permissions"><span class="toc-text"><a href="#Setting-Permissions" class="headerlink" title="Setting Permissions"></a>Setting Permissions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Symbolic-Notation"><span class="toc-text"><a href="#Symbolic-Notation" class="headerlink" title="Symbolic Notation"></a>Symbolic Notation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Numeric-Notation"><span class="toc-text"><a href="#Numeric-Notation" class="headerlink" title="Numeric Notation"></a>Numeric Notation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Default-Permissions"><span class="toc-text"><a href="#Default-Permissions" class="headerlink" title="Default Permissions"></a>Default Permissions</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Editing-Files"><span class="toc-text"><a href="#Editing-Files" class="headerlink" title="Editing Files"></a>Editing Files</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ed"><span class="toc-text"><a href="#ed" class="headerlink" title="ed"></a>ed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vi"><span class="toc-text"><a href="#vi" class="headerlink" title="vi"></a>vi</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#command-mode"><span class="toc-text"><a href="#command-mode" class="headerlink" title="command mode"></a>command mode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ex-Mode"><span class="toc-text"><a href="#ex-Mode" class="headerlink" title="ex Mode"></a>ex Mode</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Process-Commands"><span class="toc-text"><a href="#Process-Commands" class="headerlink" title="Process Commands"></a>Process Commands</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The-Shell"><span class="toc-text"><a href="#The-Shell" class="headerlink" title="The Shell"></a>The Shell</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-I-O-Redirection"><span class="toc-text"><a href="#Shell-I-O-Redirection" class="headerlink" title="Shell I/O Redirection"></a>Shell I/O Redirection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Background-Jobs"><span class="toc-text"><a href="#Background-Jobs" class="headerlink" title="Background Jobs"></a>Background Jobs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#new-processes"><span class="toc-text"><a href="#new-processes" class="headerlink" title="new processes"></a>new processes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-Variables"><span class="toc-text"><a href="#Shell-Variables" class="headerlink" title="Shell Variables"></a>Shell Variables</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-Program"><span class="toc-text"><a href="#Shell-Program" class="headerlink" title="Shell Program"></a>Shell Program</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sed"><span class="toc-text"><a href="#sed" class="headerlink" title="sed"></a>sed</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-linux-commands" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">linux-commands</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.07.18</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Lsxj</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/archive/categories/后台开发/">后台开发</a> / <a class="article-category-link" href="/archive/categories/后台开发/Linux/">Linux</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://lsxj615.info/2017/07/18/linux-commands/#disqus_thread"></a>
+        </span>
+      
+
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="Concepts"><a href="#Concepts" class="headerlink" title="Concepts"></a>Concepts</h1><p>Unix is multi-user, multi-process, mutli-access operating system.</p>
+<p>Each command is executed as a new process, and is the child of the process which invoked it.</p>
+<h2 id="Kernel-Responsibilities"><a href="#Kernel-Responsibilities" class="headerlink" title="Kernel Responsibilities"></a>Kernel Responsibilities</h2><ul>
+<li>Process Management</li>
+<li>Memory Management</li>
+<li>File System Management</li>
+<li>Device Management</li>
+</ul>
+<h1 id="Basic-Commands"><a href="#Basic-Commands" class="headerlink" title="Basic Commands"></a>Basic Commands</h1><h2 id="who-vs-whoami"><a href="#who-vs-whoami" class="headerlink" title="who vs whoami"></a><code>who</code> vs <code>whoami</code></h2><p><code>who</code> it gives the list of all users currently logged in to the machine<br><code>whoami</code> let you know the current user who is in the shell.</p>
+<h2 id="Keyboard-Control"><a href="#Keyboard-Control" class="headerlink" title="Keyboard Control"></a>Keyboard Control</h2><table>
+<thead>
+<tr>
+<th>options</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^C</td>
+<td style="text-align:right">interrupt command</td>
+</tr>
+<tr>
+<td>^Z</td>
+<td style="text-align:right">suspend command</td>
+</tr>
+<tr>
+<td>^D</td>
+<td style="text-align:right">end of file</td>
+</tr>
+<tr>
+<td>^S</td>
+<td style="text-align:right">suspend output</td>
+</tr>
+<tr>
+<td>^Q</td>
+<td style="text-align:right">continue output</td>
+</tr>
+<tr>
+<td>^H (^?)</td>
+<td style="text-align:right">delete last character</td>
+</tr>
+<tr>
+<td>^W</td>
+<td style="text-align:right">delete last word</td>
+</tr>
+<tr>
+<td>^U</td>
+<td style="text-align:right">delete line</td>
+</tr>
+</tbody>
+</table>
+<h1 id="File-System"><a href="#File-System" class="headerlink" title="File System"></a>File System</h1><h2 id="commands"><a href="#commands" class="headerlink" title="commands"></a>commands</h2><p><code>ls</code> - list directory contents<br><code>ls -F</code> - append indicator (one of */=&gt;@|) to entries (‘/‘ means directory)<br><code>ls -l</code> - use a long listing format<br><code>ls -i</code> - print the index number of each file<br><code>wc</code> - print newline, word, and byte counts for each file<br><code>cat</code> - concatenate files and print on the standard output<br><code>mkdir</code> - creates directories<br><code>rmdir</code> - removes directories<br><code>cp</code> - copies files and directories around the file system<br>(P.S. wildcards cannot be used for names which don’t exist)<br><code>mv</code> - move files and sub-directories<br><code>rm</code> - deletes files and direcotry structures<br><code>rm -i</code> requests confirmation before deleting files<br><code>head</code> - displays the first lines of a file<br><code>tail</code> - displays the last lines of a file<br>(e.g. head -4 userlist - display the first 4 lines of userlist)<br>(e.g. tail -3 userlist - display the last 3 lines of userlist)<br><code>grep</code> - searches files for strings</p>
+<h2 id="Hierarchical-Structure"><a href="#Hierarchical-Structure" class="headerlink" title="Hierarchical Structure"></a>Hierarchical Structure</h2><p>Directories can be viewed as branches and files as leaves.</p>
+<h2 id="Linking-Files"><a href="#Linking-Files" class="headerlink" title="Linking Files"></a>Linking Files</h2><p><code>ln</code> - create links<br><code>ln -s</code> -  make symbolic links instead of hard links<br>(P.S.Symbolic links source can be files or directories.Hard links source only files.类似指针)</p>
+<h2 id="Searching-Files"><a href="#Searching-Files" class="headerlink" title="Searching Files"></a>Searching Files</h2><p><code>grep</code> options</p>
+<table>
+<thead>
+<tr>
+<th>option</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-c</td>
+<td style="text-align:right">display count of matching lines</td>
+</tr>
+<tr>
+<td>-i</td>
+<td style="text-align:right">case insensitive</td>
+</tr>
+<tr>
+<td>-l</td>
+<td style="text-align:right">list names of files containing matching lines</td>
+</tr>
+<tr>
+<td>-n</td>
+<td style="text-align:right">precede each line by its line number</td>
+</tr>
+<tr>
+<td>-v</td>
+<td style="text-align:right">only display lines that do <em>not match</em></td>
+</tr>
+<tr>
+<td>-w</td>
+<td style="text-align:right">search for the expression as a word</td>
+</tr>
+</tbody>
+</table>
+<p>can use Regex expressions for strings.</p>
+<h2 id="Quoting"><a href="#Quoting" class="headerlink" title="Quoting"></a>Quoting</h2><p>Quoting allows characters to be hidden from the shell.</p>
+<pre><code>e.g. $ echo hello      world
+hello world
+$ echo &quot;hello   world&quot;
+hello   world
+</code></pre><h2 id="Sorting-Files"><a href="#Sorting-Files" class="headerlink" title="Sorting Files"></a>Sorting Files</h2><p><code>sort</code> - organises files into alpha-numeric order<br><code>sort -n</code> - sort on numeric value<br><code>sort -r</code> - reverse the sort<br><code>sort +#</code> - skip # fields to start of sort key<br>(e.g. <code>sort +3n</code> means from 3rd fields to start sort on numeric value)</p>
+<h2 id="Comparing-Files"><a href="#Comparing-Files" class="headerlink" title="Comparing Files"></a>Comparing Files</h2><p><code>diff</code> - displays the differences between two files<br><code>diff -e</code> - displays the differences in second files</p>
+<h2 id="Cutting-Fields"><a href="#Cutting-Fields" class="headerlink" title="Cutting Fields"></a>Cutting Fields</h2><p><code>cut</code> - removes selected fields from each line of the file<br><code>cut -d</code> -  use DELIM instead of TAB for field delimiter.自定义分隔符，通常是制表符。<br><code>cut -f</code>-  f means fields. select only these fields;  also print anyline that contains  no delimiter character, unless the -s option is specified<br><code>cut -b</code> - select bypes</p>
+<h2 id="Duplicate-Lines"><a href="#Duplicate-Lines" class="headerlink" title="Duplicate Lines"></a>Duplicate Lines</h2><p><code>uniq</code> - removes duplicate adjacent lines from files<br><code>uniq -c</code> - count number of duplicate line before files lines<br><code>uniq -d</code> - only print repeated lines<br><code>uniq -u</code> - only print non-repeated lines</p>
+<h2 id="Transliterating-Files"><a href="#Transliterating-Files" class="headerlink" title="Transliterating Files"></a>Transliterating Files</h2><p><code>tr</code> - translate characters from input to output.<br>(Default input is STDIN. Default output is STDOUT. )<br><code>tr SET1 [SET2]</code> - translate SET1 in input to SET2.</p>
+<h2 id="Printing-Files"><a href="#Printing-Files" class="headerlink" title="Printing Files"></a>Printing Files</h2><p><code>lpr</code> - send files to a printer<br><code>lpq</code> - queries the state of the print queue<br><code>lprm</code> - dequeues jobs from the print queue.remove the jobs.</p>
+<h2 id="Searching-for-Files"><a href="#Searching-for-Files" class="headerlink" title="Searching for Files"></a>Searching for Files</h2><p><code>find</code> - searches any part of the file system.</p>
+<ul>
+<li>it can apply any Unix command to the files found</li>
+<li>it can print the file name found</li>
+<li>it can search for files based on several file attributes</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>options</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-name</td>
+<td style="text-align:right">filename pattern</td>
+</tr>
+<tr>
+<td>-user</td>
+<td style="text-align:right">user name</td>
+</tr>
+<tr>
+<td>-group</td>
+<td style="text-align:right">group name</td>
+</tr>
+<tr>
+<td>-size</td>
+<td style="text-align:right">[+/-] size in blocks</td>
+</tr>
+<tr>
+<td>-perm</td>
+<td style="text-align:right">[-] octal number</td>
+</tr>
+<tr>
+<td>-atime</td>
+<td style="text-align:right">[+/-] days</td>
+</tr>
+<tr>
+<td>-mtime</td>
+<td style="text-align:right">[+/-] days</td>
+</tr>
+<tr>
+<td>-ctime</td>
+<td style="text-align:right">[+/-] days</td>
+</tr>
+<tr>
+<td>-type</td>
+<td style="text-align:right">[d/f/l]</td>
+</tr>
+<tr>
+<td>-inum</td>
+<td style="text-align:right">i-node number</td>
+</tr>
+</tbody>
+</table>
+<h1 id="File-Access-Control"><a href="#File-Access-Control" class="headerlink" title="File Access Control"></a>File Access Control</h1><h2 id="Permissions"><a href="#Permissions" class="headerlink" title="Permissions"></a>Permissions</h2><h3 id="Access-rights-for-files"><a href="#Access-rights-for-files" class="headerlink" title="Access rights for files"></a>Access rights for files</h3><table>
+<thead>
+<tr>
+<th>rights</th>
+<th style="text-align:center">meaning</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td style="text-align:center">read</td>
+<td style="text-align:right">read contens</td>
+</tr>
+<tr>
+<td>w</td>
+<td style="text-align:center">write</td>
+<td style="text-align:right">update and implies delete</td>
+</tr>
+<tr>
+<td>x</td>
+<td style="text-align:center">execute</td>
+<td style="text-align:right">attempt to run program</td>
+</tr>
+<tr>
+<td>s</td>
+<td style="text-align:center">set ID</td>
+<td style="text-align:right">change the UID or GID of process</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Access-rights-for-directories"><a href="#Access-rights-for-directories" class="headerlink" title="Access rights for directories"></a>Access rights for directories</h3><table>
+<thead>
+<tr>
+<th>rights</th>
+<th style="text-align:center">meaning</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td style="text-align:center">list</td>
+<td style="text-align:right">list contens</td>
+</tr>
+<tr>
+<td>w</td>
+<td style="text-align:center">write</td>
+<td style="text-align:right">create and delete any files</td>
+</tr>
+<tr>
+<td>x</td>
+<td style="text-align:center">search</td>
+<td style="text-align:right">search directory(cd)</td>
+</tr>
+<tr>
+<td>t</td>
+<td style="text-align:center">sticky</td>
+<td style="text-align:right">control write access to directories</td>
+</tr>
+</tbody>
+</table>
+<p>use <code>ls -l</code> to display access rights. The order is type, user, group, others.<br>e.g. drwxrw-r–</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th style="text-align:center">user</th>
+<th style="text-align:center">group</th>
+<th style="text-align:right">others</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d</td>
+<td style="text-align:center">rwx</td>
+<td style="text-align:center">rw-</td>
+<td style="text-align:right">r–</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Setting-Permissions"><a href="#Setting-Permissions" class="headerlink" title="Setting Permissions"></a>Setting Permissions</h2><p><code>chmod</code> - change permissions<br><code>chomd -R</code> -  enables recursion through a directory(递归遍历)</p>
+<p>The permission mode is set using a symbolic notation and a numeric notation.</p>
+<h3 id="Symbolic-Notation"><a href="#Symbolic-Notation" class="headerlink" title="Symbolic Notation"></a>Symbolic Notation</h3><p>e.g. <code>chmod go+r aFile</code> means group and others add r access rights.</p>
+<h3 id="Numeric-Notation"><a href="#Numeric-Notation" class="headerlink" title="Numeric Notation"></a>Numeric Notation</h3><p>treats the permissions as a bit pattern.<br>e.g. </p>
+<table>
+<thead>
+<tr>
+<th>r</th>
+<th style="text-align:center">w</th>
+<th style="text-align:right">x</th>
+<th>total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td style="text-align:center">2</td>
+<td style="text-align:right">1</td>
+<td>7 means rwx</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align:center">0</td>
+<td style="text-align:right">1</td>
+<td>5 means rx</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Default-Permissions"><a href="#Default-Permissions" class="headerlink" title="Default Permissions"></a>Default Permissions</h2><p><code>umask</code> - defines the default permission bits. in numeric notation to show permission.</p>
+<h1 id="Editing-Files"><a href="#Editing-Files" class="headerlink" title="Editing Files"></a>Editing Files</h1><p>| ————- | —–:|<br>| <code>ed</code> | interactive, buffered, line oriented |<br>| <code>vi</code> | interactive, buffered, screen oriented |<br>| <code>sed</code> | non-interactive, non-buffered, stream oriented |</p>
+<h2 id="ed"><a href="#ed" class="headerlink" title="ed"></a>ed</h2><p><code>ed [-p prompt] [filename]</code></p>
+<p><code>[addr,[addr]]&lt;character command&gt; [parameters]</code></p>
+<table>
+<thead>
+<tr>
+<th>command</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i</td>
+<td style="text-align:right">insert</td>
+</tr>
+<tr>
+<td>a</td>
+<td style="text-align:right">append</td>
+</tr>
+<tr>
+<td>c</td>
+<td style="text-align:right">change</td>
+</tr>
+<tr>
+<td>d</td>
+<td style="text-align:right">delete</td>
+</tr>
+<tr>
+<td>p</td>
+<td style="text-align:right">print</td>
+</tr>
+<tr>
+<td>w</td>
+<td style="text-align:right">write to file</td>
+</tr>
+<tr>
+<td>r</td>
+<td style="text-align:right">read from file</td>
+</tr>
+<tr>
+<td>s/RE/RS/g</td>
+<td style="text-align:right">substitute RE for RS</td>
+</tr>
+<tr>
+<td>t addr</td>
+<td style="text-align:right">transfer to addr</td>
+</tr>
+<tr>
+<td>q</td>
+<td style="text-align:right">quit</td>
+</tr>
+<tr>
+<td>Q</td>
+<td style="text-align:right">really quit</td>
+</tr>
+</tbody>
+</table>
+<h2 id="vi"><a href="#vi" class="headerlink" title="vi"></a>vi</h2><p><code>vi [-r] [filename]</code></p>
+<h3 id="command-mode"><a href="#command-mode" class="headerlink" title="command mode"></a>command mode</h3><table>
+<thead>
+<tr>
+<th>command</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>h</td>
+<td style="text-align:right">cursor left</td>
+</tr>
+<tr>
+<td>j</td>
+<td style="text-align:right">cursor down</td>
+</tr>
+<tr>
+<td>k</td>
+<td style="text-align:right">cursor up</td>
+</tr>
+<tr>
+<td>l</td>
+<td style="text-align:right">cursor right</td>
+</tr>
+<tr>
+<td>w</td>
+<td style="text-align:right">word forward</td>
+</tr>
+<tr>
+<td>b</td>
+<td style="text-align:right">word backward</td>
+</tr>
+<tr>
+<td>^u</td>
+<td style="text-align:right">page up</td>
+</tr>
+<tr>
+<td>^d</td>
+<td style="text-align:right">page down</td>
+</tr>
+<tr>
+<td>^</td>
+<td style="text-align:right">start of line</td>
+</tr>
+<tr>
+<td>$</td>
+<td style="text-align:right">end of line</td>
+</tr>
+<tr>
+<td>G</td>
+<td style="text-align:right">go to line</td>
+</tr>
+<tr>
+<td>i</td>
+<td style="text-align:right">insert before cursor</td>
+</tr>
+<tr>
+<td>I</td>
+<td style="text-align:right">insert at start of line</td>
+</tr>
+<tr>
+<td>a</td>
+<td style="text-align:right">insert after cursor</td>
+</tr>
+<tr>
+<td>A</td>
+<td style="text-align:right">insert at the end of line</td>
+</tr>
+<tr>
+<td>r</td>
+<td style="text-align:right">replace character</td>
+</tr>
+<tr>
+<td>R</td>
+<td style="text-align:right">overwrite rest of line</td>
+</tr>
+<tr>
+<td>o</td>
+<td style="text-align:right">open line below</td>
+</tr>
+<tr>
+<td>O</td>
+<td style="text-align:right">open line above</td>
+</tr>
+<tr>
+<td>x</td>
+<td style="text-align:right">delete current character</td>
+</tr>
+<tr>
+<td>X</td>
+<td style="text-align:right">delete character before cursor</td>
+</tr>
+<tr>
+<td>d</td>
+<td style="text-align:right">delete text</td>
+</tr>
+<tr>
+<td>D</td>
+<td style="text-align:right">delete the rest of the line</td>
+</tr>
+<tr>
+<td>y</td>
+<td style="text-align:right">yank text into buffer</td>
+</tr>
+<tr>
+<td>p</td>
+<td style="text-align:right">paste buffer before</td>
+</tr>
+<tr>
+<td>P</td>
+<td style="text-align:right">paste buffer after</td>
+</tr>
+<tr>
+<td>/</td>
+<td style="text-align:right">search forward for RE</td>
+</tr>
+<tr>
+<td>?</td>
+<td style="text-align:right">search back for RE</td>
+</tr>
+<tr>
+<td>n</td>
+<td style="text-align:right">repeat search</td>
+</tr>
+<tr>
+<td>.</td>
+<td style="text-align:right">repeat last change</td>
+</tr>
+<tr>
+<td>u</td>
+<td style="text-align:right">undo last change</td>
+</tr>
+<tr>
+<td>N</td>
+<td style="text-align:right">reverse search</td>
+</tr>
+<tr>
+<td>ZZ</td>
+<td style="text-align:right">write file then quit</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ex-Mode"><a href="#ex-Mode" class="headerlink" title="ex Mode"></a>ex Mode</h3><p>allows you to enter ex(ed) commands</p>
+<table>
+<thead>
+<tr>
+<th>command</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>:wq</td>
+<td style="text-align:right">write file then quit</td>
+</tr>
+<tr>
+<td>:x</td>
+<td style="text-align:right">write file then quit</td>
+</tr>
+<tr>
+<td>:q!</td>
+<td style="text-align:right">force quit without save</td>
+</tr>
+<tr>
+<td>:q</td>
+<td style="text-align:right">quit</td>
+</tr>
+</tbody>
+</table>
+<h1 id="Process-Commands"><a href="#Process-Commands" class="headerlink" title="Process Commands"></a>Process Commands</h1><p><code>more</code> - used to paginate files.<br><code>more</code> is invoked as a new process by the shell.<br><code>cd</code> and <code>pwd</code> are commands to the shell itself and don’t give rise to new processes.</p>
+<h1 id="The-Shell"><a href="#The-Shell" class="headerlink" title="The Shell"></a>The Shell</h1><p>Login shell is invoked as the user logs in, dies when the user logs out.<br>Wildcards be used to generate filenames.</p>
+<table>
+<thead>
+<tr>
+<th>wildcards</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td style="text-align:right">any number of characters</td>
+</tr>
+<tr>
+<td>?</td>
+<td style="text-align:right">any single character</td>
+</tr>
+<tr>
+<td>[ab]</td>
+<td style="text-align:right">a or b or specified range</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Shell-I-O-Redirection"><a href="#Shell-I-O-Redirection" class="headerlink" title="Shell I/O Redirection"></a>Shell I/O Redirection</h2><p>Standard I/O is STDIN, STDOUT, STDERR(producing error messages)</p>
+<table>
+<thead>
+<tr>
+<th>symbol</th>
+<th style="text-align:right">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&gt;</code></td>
+<td style="text-align:right">redirect output</td>
+</tr>
+<tr>
+<td><code>&gt;&gt;</code></td>
+<td style="text-align:right">append to existing file</td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td style="text-align:right">redirect input</td>
+</tr>
+<tr>
+<td><code>&lt;&lt;</code></td>
+<td style="text-align:right">redirect STDIN from command itself</td>
+</tr>
+<tr>
+<td>`</td>
+<td style="text-align:right">`</td>
+<td>pipeline commands</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Background-Jobs"><a href="#Background-Jobs" class="headerlink" title="Background Jobs"></a>Background Jobs</h2><p>use <code>&amp;</code> to put jobs into the background.<br><code>jobs</code> - list all jobs in the shell</p>
+<p><code>bg %n</code> - move a job to the background<br><code>fg %n</code> - move a job into the foreground<br><code>stop %n</code> - stop a background job - a stopped job can be restarted<br><code>^Z</code> - stop a foreground job</p>
+<p>%n – n is the number in the square brackets from the <code>jobs</code> command.</p>
+<h2 id="new-processes"><a href="#new-processes" class="headerlink" title="new processes"></a>new processes</h2><p>The parent process waits until the child process ends.<br>The child process inherits the parent attributes.<br>When the child process dies, its exit code is sent to its parent, waking the parent process up.</p>
+<h2 id="Shell-Variables"><a href="#Shell-Variables" class="headerlink" title="Shell Variables"></a>Shell Variables</h2><p><code>set</code> - displays local variables<br><code>env</code> - displays environment variables<br><code>aliases</code> - create alternative commands</p>
+<h2 id="Shell-Program"><a href="#Shell-Program" class="headerlink" title="Shell Program"></a>Shell Program</h2><p>$0 - Command nae<br>$# - Number of arguments<br>$<em>, $@ - All of the arguments<br>“$</em>“ - one argument of all parameters from $1, like “$1 $2 … $n”<br>“$@” - All aruments from $1, like “$1” “$2” … “$n”<br><code>shift</code> - moves arguments down to access others (弹出一个参数)<br><code>read</code> - reads from standard input</p>
+<pre><code>read name address
+echo goodbye $name of $address
+</code></pre><p><code>test</code> - evaluates general conditions. succeed return 0, otherwise non zero.<br><code>expr</code> - evaluate expressions, cuz shell does not understand numbers, each argument must be separated by spaces.</p>
+<h2 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h2><ul>
+<li>A non-interactive, stream-oriented editor.</li>
+<li>works on lines of text</li>
+<li>input flows through the program and is directed to standard output</li>
+</ul>
+<p>| option | meaning |<br>| -f | allows a sed script file to be specified |<br>| -e | Precedes each edit when multiple edits are defined |<br>| -n | Suppress the default output |</p>
+
+    
+  </div>
+</article>
+
+</div>
+
+
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持小王子</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/archive/images/qr-wechat.jpg" alt="">
+          </li>
+        
+          <li class="item">
+            <img src="/archive/images/qr-alipay.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/archives/"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/category/"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/tag/"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/link/"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/about/"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/atom.xml"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/search/"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2017/07/18/linux-commands/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

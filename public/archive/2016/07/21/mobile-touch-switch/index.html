@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>移动端上下滑动切换屏幕的实现 | 你看见过我的小熊吗</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="javascript,html5,css," />
+  
+
+  <meta name="description" content="前言看过了不少移动端上下滑动切换屏幕的效果，于是自己拿简历试着实现了一下。效果可看:滑动切换屏幕效果或者扫描二维码 实现过程 大体思路  页面的切换主要是采用css3动画效果transform:translateY()来实现。事件监听主要以touchstart,touchmove,touchend。  HTML结构&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt;">
+<meta name="keywords" content="javascript,html5,css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="移动端上下滑动切换屏幕的实现">
+<meta property="og:url" content="http://yoursite.com/2016/07/21/mobile-touch-switch/index.html">
+<meta property="og:site_name" content="你看见过我的小熊吗">
+<meta property="og:description" content="前言看过了不少移动端上下滑动切换屏幕的效果，于是自己拿简历试着实现了一下。效果可看:滑动切换屏幕效果或者扫描二维码 实现过程 大体思路  页面的切换主要是采用css3动画效果transform:translateY()来实现。事件监听主要以touchstart,touchmove,touchend。  HTML结构&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt;">
+<meta property="og:image" content="http://oao50r2ex.bkt.clouddn.com/imagcv.png">
+<meta property="og:image" content="http://oao50r2ex.bkt.clouddn.com/image/blog0721_1.png">
+<meta property="og:image" content="http://oao50r2ex.bkt.clouddn.com/image/blog0721_2.png">
+<meta property="og:updated_time" content="2018-01-13T14:35:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="移动端上下滑动切换屏幕的实现">
+<meta name="twitter:description" content="前言看过了不少移动端上下滑动切换屏幕的效果，于是自己拿简历试着实现了一下。效果可看:滑动切换屏幕效果或者扫描二维码 实现过程 大体思路  页面的切换主要是采用css3动画效果transform:translateY()来实现。事件监听主要以touchstart,touchmove,touchend。  HTML结构&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt;">
+<meta name="twitter:image" content="http://oao50r2ex.bkt.clouddn.com/imagcv.png">
+
+  
+
+  
+    <link rel="icon" href="/archive/favicon.ico">
+  
+
+  <link href="/archive/css/styles.css?v=028c63b1" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/archive/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/archive/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/archives/"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/category/"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/tag/"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/link/"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/about/"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/atom.xml"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/search/"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-text"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现过程"><span class="toc-text"><a href="#&#x5B9E;&#x73B0;&#x8FC7;&#x7A0B;" class="headerlink" title="&#x5B9E;&#x73B0;&#x8FC7;&#x7A0B;"></a>&#x5B9E;&#x73B0;&#x8FC7;&#x7A0B;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#大体思路"><span class="toc-text"><a href="#&#x5927;&#x4F53;&#x601D;&#x8DEF;" class="headerlink" title="&#x5927;&#x4F53;&#x601D;&#x8DEF;"></a>&#x5927;&#x4F53;&#x601D;&#x8DEF;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTML结构"><span class="toc-text"><a href="#HTML&#x7ED3;&#x6784;" class="headerlink" title="HTML&#x7ED3;&#x6784;"></a>HTML&#x7ED3;&#x6784;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSS样式如下："><span class="toc-text"><a href="#CSS&#x6837;&#x5F0F;&#x5982;&#x4E0B;&#xFF1A;" class="headerlink" title="CSS&#x6837;&#x5F0F;&#x5982;&#x4E0B;&#xFF1A;"></a>CSS&#x6837;&#x5F0F;&#x5982;&#x4E0B;&#xFF1A;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#js实现"><span class="toc-text"><a href="#js&#x5B9E;&#x73B0;" class="headerlink" title="js&#x5B9E;&#x73B0;"></a>js&#x5B9E;&#x73B0;</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-mobile-touch-switch" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">移动端上下滑动切换屏幕的实现</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.07.21</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Lsxj</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/archive/categories/前端开发/">前端开发</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://lsxj615.info/2016/07/21/mobile-touch-switch/#disqus_thread"></a>
+        </span>
+      
+
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看过了不少移动端上下滑动切换屏幕的效果，于是自己拿简历试着实现了一下。效果可看:<a href="http://lsxj615.com/cv" target="_blank" rel="noopener">滑动切换屏幕效果</a>或者扫描二维码<br><img src="http://oao50r2ex.bkt.clouddn.com/imagcv.png" alt="lsxj615.com/cv"></p>
+<h2 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h2><ul>
+<li><h3 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h3></li>
+</ul>
+<p>页面的切换主要是采用<code>css3</code>动画效果<code>transform:translateY()</code>来实现。事件监听主要以<code>touchstart</code>,<code>touchmove</code>,<code>touchend</code>。</p>
+<ul>
+<li><h3 id="HTML结构"><a href="#HTML结构" class="headerlink" title="HTML结构"></a>HTML结构</h3><pre><code>&lt;div class=&quot;container&quot;&gt; 
+    &lt;section id = &quot;intro&quot;&gt;...&lt;/section&gt;   
+    &lt;section id = &quot;project&quot;&gt;...&lt;/section&gt; 
+    &lt;section id = &quot;profession&quot;&gt;...&lt;/section&gt;
+    &lt;section id = &quot;education&quot;&gt;...&lt;/section&gt;
+    &lt;section id = &quot;contact&quot;&gt;...&lt;/section&gt;  
+&lt;/div&gt;
+</code></pre></li>
+<li><h3 id="CSS样式如下："><a href="#CSS样式如下：" class="headerlink" title="CSS样式如下："></a>CSS样式如下：</h3><pre><code>//css样式
+html,body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; 
+}
+
+.container {
+    position: absolute; 
+    width: 100%;
+    height: 100%;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease; 
+}
+
+.container &gt; section {
+    position: relative;
+    width: 100%;
+    height: 100%; 
+}
+</code></pre><p> 其中<code>-webkit-backface-visibility:hidden</code>是为了隐藏被旋转的元素的背面。关于动画效果，由于我采用的<code>SCSS</code>，在更改时只需要更改$n即container内section的个数，较为便捷。</p>
+<pre><code>//以下为SCSS部分：
+$n:5;
+@function getContentTopOffset($i) {
+    @return -100%*$i+100%;
+}
+@for $i from 1 through $n {
+    .slide_to_#{$i} {
+        transform: translateY(getContentTopOffset($i));
+    }
+}
+//CSS的效果如下：
+.slide_to_1 {
+    transform: translateY(0%); }
+
+.slide_to_2 {
+    transform: translateY(-100%); }
+
+.slide_to_3 {
+    transform: translateY(-200%); }
+
+.slide_to_4 {
+    transform: translateY(-300%); }
+
+.slide_to_5 {
+    transform: translateY(-400%); }
+</code></pre></li>
+</ul>
+<p>   切换的效果示意图如下：container相当于红色边框矩形，内容部分就相当于白色部分。下图为最初效果，红色矩形内为可见的。如图1.当container执行translateY(-100%)时，就相当于内容部分向上移动了100%，即显示了下一部分的页面。如图2所示。<br>图1：最初效果 <img src="http://oao50r2ex.bkt.clouddn.com/image/blog0721_1.png" alt=""><br>图2：移动后的效果<img src="http://oao50r2ex.bkt.clouddn.com/image/blog0721_2.png" alt=""></p>
+<ul>
+<li><h3 id="js实现"><a href="#js实现" class="headerlink" title="js实现"></a>js实现</h3><p>知道如何切换页面之后就好办了。</p>
+<pre><code>var cur_page = 1, //当前页数
+    slide_range = 30, 
+    page_count = 5,//共有5页
+    obj_container = &apos;.container&apos;;//需要切换页面的元素
+
+$(document).on(&quot;touchstart&quot;,obj_container, function(e){
+    touchFirst_obj = {
+        startY: e.touches[0].clientY
+    };
+});//记录起始触屏位置
+
+$(document).on(&quot;touchmove&quot;,obj_container, function(e){
+    e.preventDefault();//阻止浏览器默认事件
+    touchLast_obj = e.touches[0];
+    moveY = touchLast_obj.clientY - touchFirst_obj.startY;
+});
+
+$(document).on(&quot;touchstart&quot;,obj_container, function(e){
+    if(moveY &gt; 0) { //向上滑
+        moveUp();
+    } else if(moveY &lt; 0) { //向下滑
+        moveDown();
+    }
+    if(moveY != 0) {//如果有滑动，则需要切换页面
+        switching();
+    }
+});
+
+function moveDown() { //向下滑
+    if(cur_page == +page_count) {
+        return;
+    }
+    cur_page++;
+}
+
+function moveUp() { //向上滑
+    if(cur_page == 1) return;
+    cur_page--;
+}
+
+function switching() {//切换页面
+    $(obj_selector).attr(&apos;class&apos;, obj_container + &apos; slide_to_&apos; + cur_page);
+}
+</code></pre></li>
+</ul>
+<p>   技术不精，若有Bug欢迎指正！原创作品，若有转载请告知。谢谢！</p>
+
+    
+  </div>
+</article>
+
+</div>
+
+
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持小王子</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/archive/images/qr-wechat.jpg" alt="">
+          </li>
+        
+          <li class="item">
+            <img src="/archive/images/qr-alipay.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/archives/"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/category/"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/tag/"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/link/"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/about/"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/atom.xml"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/search/"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2016/07/21/mobile-touch-switch/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

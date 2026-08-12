@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>js谜之正则表达式 | 你看见过我的小熊吗</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="javascript,正则表达式," />
+  
+
+  <meta name="description" content="前言好久之前就说要写一篇正则表达式的文章，正则表达式总是记了又忘，忘了再记，记了再忘，卒。言归正传，今天终于要研究一下这个谜一样的正则表达式了。其实正则表达式并不难（真的吗？orz） 为什么要用正则表达式在学习之前，我们需要弄明白，到底什么时候需要用到正则表达式，正则表达式的用途究竟是什么？比如说，你正在搜索一个文件，这个文件里面包含单词car(不区分大小写)，但是呢你又不想把包含字符串car的其">
+<meta name="keywords" content="javascript,正则表达式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js谜之正则表达式">
+<meta property="og:url" content="http://yoursite.com/2016/08/15/RegExp-notes/index.html">
+<meta property="og:site_name" content="你看见过我的小熊吗">
+<meta property="og:description" content="前言好久之前就说要写一篇正则表达式的文章，正则表达式总是记了又忘，忘了再记，记了再忘，卒。言归正传，今天终于要研究一下这个谜一样的正则表达式了。其实正则表达式并不难（真的吗？orz） 为什么要用正则表达式在学习之前，我们需要弄明白，到底什么时候需要用到正则表达式，正则表达式的用途究竟是什么？比如说，你正在搜索一个文件，这个文件里面包含单词car(不区分大小写)，但是呢你又不想把包含字符串car的其">
+<meta property="og:updated_time" content="2018-01-13T14:35:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="js谜之正则表达式">
+<meta name="twitter:description" content="前言好久之前就说要写一篇正则表达式的文章，正则表达式总是记了又忘，忘了再记，记了再忘，卒。言归正传，今天终于要研究一下这个谜一样的正则表达式了。其实正则表达式并不难（真的吗？orz） 为什么要用正则表达式在学习之前，我们需要弄明白，到底什么时候需要用到正则表达式，正则表达式的用途究竟是什么？比如说，你正在搜索一个文件，这个文件里面包含单词car(不区分大小写)，但是呢你又不想把包含字符串car的其">
+
+  
+
+  
+    <link rel="icon" href="/archive/favicon.ico">
+  
+
+  <link href="/archive/css/styles.css?v=028c63b1" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/archive/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/archive/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/archives/"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/category/"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/tag/"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/link/"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/about/"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/atom.xml"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/search/"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要用正则表达式"><span class="toc-text"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;"></a>&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正则表达式是什么"><span class="toc-text"><a href="#&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x662F;&#x4EC0;&#x4E48;" class="headerlink" title="&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x662F;&#x4EC0;&#x4E48;"></a>&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x662F;&#x4EC0;&#x4E48;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正则表达式的语法"><span class="toc-text"><a href="#&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x8BED;&#x6CD5;" class="headerlink" title="&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x8BED;&#x6CD5;"></a>&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x8BED;&#x6CD5;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#匹配字符"><span class="toc-text"><a href="#&#x5339;&#x914D;&#x5B57;&#x7B26;" class="headerlink" title="&#x5339;&#x914D;&#x5B57;&#x7B26;"></a>&#x5339;&#x914D;&#x5B57;&#x7B26;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用元字符"><span class="toc-text"><a href="#&#x4F7F;&#x7528;&#x5143;&#x5B57;&#x7B26;" class="headerlink" title="&#x4F7F;&#x7528;&#x5143;&#x5B57;&#x7B26;"></a>&#x4F7F;&#x7528;&#x5143;&#x5B57;&#x7B26;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重复匹配"><span class="toc-text"><a href="#&#x91CD;&#x590D;&#x5339;&#x914D;" class="headerlink" title="&#x91CD;&#x590D;&#x5339;&#x914D;"></a>&#x91CD;&#x590D;&#x5339;&#x914D;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#懒惰型匹配"><span class="toc-text"><a href="#&#x61D2;&#x60F0;&#x578B;&#x5339;&#x914D;" class="headerlink" title="&#x61D2;&#x60F0;&#x578B;&#x5339;&#x914D;"></a>&#x61D2;&#x60F0;&#x578B;&#x5339;&#x914D;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#位置匹配"><span class="toc-text"><a href="#&#x4F4D;&#x7F6E;&#x5339;&#x914D;" class="headerlink" title="&#x4F4D;&#x7F6E;&#x5339;&#x914D;"></a>&#x4F4D;&#x7F6E;&#x5339;&#x914D;</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Javascript中的正则表达式"><span class="toc-text"><a href="#Javascript&#x4E2D;&#x7684;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;" class="headerlink" title="Javascript&#x4E2D;&#x7684;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;"></a>Javascript&#x4E2D;&#x7684;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建正则表达式的方式"><span class="toc-text"><a href="#&#x521B;&#x5EFA;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x65B9;&#x5F0F;" class="headerlink" title="&#x521B;&#x5EFA;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x65B9;&#x5F0F;"></a>&#x521B;&#x5EFA;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x65B9;&#x5F0F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RegExp实例"><span class="toc-text"><a href="#RegExp&#x5B9E;&#x4F8B;" class="headerlink" title="RegExp&#x5B9E;&#x4F8B;"></a><code>RegExp</code>&#x5B9E;&#x4F8B;</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#实例属性"><span class="toc-text"><a href="#&#x5B9E;&#x4F8B;&#x5C5E;&#x6027;" class="headerlink" title="&#x5B9E;&#x4F8B;&#x5C5E;&#x6027;"></a>&#x5B9E;&#x4F8B;&#x5C5E;&#x6027;</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实例方法"><span class="toc-text"><a href="#&#x5B9E;&#x4F8B;&#x65B9;&#x6CD5;" class="headerlink" title="&#x5B9E;&#x4F8B;&#x65B9;&#x6CD5;"></a>&#x5B9E;&#x4F8B;&#x65B9;&#x6CD5;</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#exec"><span class="toc-text"><a href="#exec" class="headerlink" title="exec()"></a><code>exec()</code></span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#test"><span class="toc-text"><a href="#test" class="headerlink" title="test()"></a><code>test()</code></span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String中的正则表达式"><span class="toc-text"><a href="#String&#x4E2D;&#x7684;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;" class="headerlink" title="String&#x4E2D;&#x7684;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;"></a>String&#x4E2D;&#x7684;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#match"><span class="toc-text"><a href="#match" class="headerlink" title="match()"></a><code>match()</code></span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#search"><span class="toc-text"><a href="#search" class="headerlink" title="search()"></a><code>search()</code></span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#replace"><span class="toc-text"><a href="#replace" class="headerlink" title="replace()"></a><code>replace()</code></span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-RegExp-notes" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">js谜之正则表达式</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.08.15</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Lsxj</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/archive/categories/前端开发/">前端开发</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://lsxj615.info/2016/08/15/RegExp-notes/#disqus_thread"></a>
+        </span>
+      
+
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久之前就说要写一篇正则表达式的文章，正则表达式总是记了又忘，忘了再记，记了再忘，卒。<br>言归正传，今天终于要研究一下这个谜一样的正则表达式了。其实正则表达式并不难（真的吗？orz）</p>
+<h2 id="为什么要用正则表达式"><a href="#为什么要用正则表达式" class="headerlink" title="为什么要用正则表达式"></a>为什么要用正则表达式</h2><p>在学习之前，我们需要弄明白，到底什么时候需要用到正则表达式，正则表达式的用途究竟是什么？<br>比如说，你正在搜索一个文件，这个文件里面包含单词car(不区分大小写)，但是呢你又不想把包含字符串car的其他单词（例如carry）也一起找出来，那么这个时候你就可以使用正则表达式来帮你解决问题。当然，这只是众多场景中的一种。正则表达式功能强大，可以帮你解决各种匹配文本问题。又或者表单验证的方式，也可以使用正则表达式来解决。</p>
+<h2 id="正则表达式是什么"><a href="#正则表达式是什么" class="headerlink" title="正则表达式是什么"></a>正则表达式是什么</h2><p>简单来说，正则表达式就是字符串，是用来匹配和处理文本的字符串。用正则表达式语言创建的。</p>
+<h2 id="正则表达式的语法"><a href="#正则表达式的语法" class="headerlink" title="正则表达式的语法"></a>正则表达式的语法</h2><h3 id="匹配字符"><a href="#匹配字符" class="headerlink" title="匹配字符"></a>匹配字符</h3><ul>
+<li><code>.</code>（英文句号）：匹配任何一个单个字符</li>
+<li><code>[]</code>：匹配集合内多个字符中的某个字符<br>e.g. <code>[ns]a</code> –&gt; 匹配 na 或sa</li>
+<li><code>[-]</code>：匹配该区间内的字符<br>e.g. [a-z] , [0-9]</li>
+<li><code>^</code> 取非匹配：除了该字符集内的字符，都可以匹配。只有当<code>^</code>出现在<code>[</code>和<code>]</code>之间，且紧跟在<code>[</code>后面，才能发挥取非的作用。<br>e.g. <code>[^0-9]</code> 匹配非数字的字符</li>
+</ul>
+<h3 id="使用元字符"><a href="#使用元字符" class="headerlink" title="使用元字符"></a>使用元字符</h3><p>元字符：在正则表达式中有特殊含义的字符。若需要表示该字符本身，需使用<code>\</code>转义。</p>
+<ul>
+<li><code>\d</code> 任何一个数字字符，相当于[0-9]</li>
+<li><code>\D</code> 任何一个非数字字符，相当于[^0-9]</li>
+<li><code>\w</code> 任何一个字母数字字符或下划线字符，相当于[a-zA-Z0-9_]</li>
+<li><code>\W</code> 任何一个非字母数字字符或非下划线字符，相当于[^a-zA-Z0-9_]</li>
+<li><code>\s</code> 任何一个空白字符，等价于[\f\n\r\t\v]</li>
+<li><code>\S</code> 任何一个非空白字符，等价于[^\f\n\r\t\v]</li>
+</ul>
+<p>总而言之，小写字母与大写字母都是相反的，所以记住小写字母的含义，大写字母则是对应的取非含义。</p>
+<h3 id="重复匹配"><a href="#重复匹配" class="headerlink" title="重复匹配"></a>重复匹配</h3><ul>
+<li><code>?</code> 0个或1个字符<br>e.g. [0-9]? 出现0次或一次，且最多只能出现1次数字。</li>
+<li><code>+</code> 一个或多个字符<br>e.g. [0-9]+ 表示一个或多个连续的数字</li>
+<li><code>*</code> 0个或多个字符<br>e.g. [0-9]* 连续出现0次货多次的数字</li>
+<li><code>{n}</code> 设置一个精确的重复的值<br>e.g. [0-9]{3} 三个数字</li>
+<li><code>{min,max}</code> 设置重复次数的最小值和最大值<br>e.g. [0-9]{2,4} 最少2个数字，最多4个数字</li>
+<li><code>{min, }</code> 设置重复次数的最小值<br>e.g. [0-9]{2,} 最少2个数字</li>
+</ul>
+<h3 id="懒惰型匹配"><a href="#懒惰型匹配" class="headerlink" title="懒惰型匹配"></a>懒惰型匹配</h3><p>为了防止出现重复匹配造成的过度匹配，因为<code>*</code>和<code>+</code>都是“贪婪型”元字符，它们在进行匹配时会尽可能从一段文本的开头一直匹配到这段文本的末尾，而不是碰到第一个匹配就结束。</p>
+<p>那么这个时候就需要使用”懒惰型”。仅需在贪婪型元字符后加上<code>?</code>即可。如：<code>*?</code>,<code>+?</code>,<code>{n,}?</code> </p>
+<h3 id="位置匹配"><a href="#位置匹配" class="headerlink" title="位置匹配"></a>位置匹配</h3><ul>
+<li><code>\b</code> 单词边界</li>
+<li><code>\B</code> 非单词边界。查找前后都有多余空格的连字符。</li>
+<li><code>^</code> 字符串开头。出现在字符集合的外面且位于一个模式的开头，<code>^</code>匹配字符串的开头</li>
+<li><code>$</code> 字符串结尾</li>
+</ul>
+<hr>
+<h2 id="Javascript中的正则表达式"><a href="#Javascript中的正则表达式" class="headerlink" title="Javascript中的正则表达式"></a>Javascript中的正则表达式</h2><p>ECMAScript通过<code>RegExp</code>类型来支持正则表达式。</p>
+<pre><code>var expression = / pattern / flags；
+</code></pre><p>其中<code>pattern</code>可以是任何简单或复杂的正则表达式。<br><code>flags</code>用来标明正则表达式的行为。如下所示：</p>
+<ul>
+<li><code>g</code> : 全局模式。模式应用于所有的字符串，不是在发现第一个匹配项后就立即停止的。</li>
+<li><code>i</code> : 不区分大小写。正则表达式默认是区别大小写的。<code>i</code>则是忽略大小写</li>
+<li><code>m</code> : 表示多行模式，也就是说到达一行文本末尾的时候还会继续查找下一行中是否存在与模式匹配的项。</li>
+</ul>
+<h3 id="创建正则表达式的方式"><a href="#创建正则表达式的方式" class="headerlink" title="创建正则表达式的方式"></a>创建正则表达式的方式</h3><ul>
+<li><p>以<strong>字面量形式</strong>来定义<br><code>var pattern = /sxj/i;</code></p>
+</li>
+<li><p>使用<code>RegExp</code>构造函数<br><code>var pattern = new RegExp(&quot;sxj&quot;, &quot;i&quot;);</code></p>
+</li>
+</ul>
+<p>那么这两种方式的区别除了形式不一样，还有一个差别在于：<br>ECMAScript 3中，正则表达式字面量始终会<strong>共享</strong>同一个<code>RegExp</code>实例；而使用构造函数创建的每一个实例都是一个<strong>新</strong>实例。</p>
+<p>不过！【敲黑板！】ECMAScript 5明确规定了，使用正则表达式字面量必须想直接调用<code>RegExp</code>构造函数一样，每次都创建新的RegExp实例。而各大浏览器也对此进行了修改。</p>
+<h3 id="RegExp实例"><a href="#RegExp实例" class="headerlink" title="RegExp实例"></a><code>RegExp</code>实例</h3><h4 id="实例属性"><a href="#实例属性" class="headerlink" title="实例属性"></a>实例属性</h4><ul>
+<li><code>global</code>: 布尔值，表示是否设置了<code>g</code>标志</li>
+<li><code>ignoreCase</code>: 布尔值，表示是否设置了<code>i</code>标志</li>
+<li><code>multiline</code>: 布尔值，表示是否设置了<code>m</code>标志</li>
+<li><code>lastIndex</code>：整数，表示开始搜索下一个匹配项的字符位置，从0开始。</li>
+<li><code>source</code>： 正则表达式的字符串表示。按照<strong>字面量形式</strong>返回。</li>
+</ul>
+<h4 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h4><h5 id="exec"><a href="#exec" class="headerlink" title="exec()"></a><code>exec()</code></h5><pre><code>pattern.exec(text);
+</code></pre><p>查找text中的匹配项。</p>
+<pre><code>//例子
+var pattern = /sxj/i;
+var text = &quot;sxj is a good student sxj haha&quot;;
+console.log(pattern.exec(text));
+//[&quot;sxj&quot;, index: 0, input: &quot;sxj is a good student sxj haha&quot;]
+var pattern2 = /shi/i;
+console.log(pattern2,exec(text));//null
+</code></pre><p>从上述例子可以发现，若找到，则返回一个数组，该数组包含第一个匹配项，除此之外，还有两个属性：<code>index</code>（匹配项在字符串中的位置）,<code>input</code>（应用正则表达式的字符串）。若没有匹配项返回<code>null</code>。</p>
+<p>对于<code>exec</code>而言，无论是否设置<code>g</code>全局标志，每次也只会返回一个匹配项。但是如果在同一个字符串上多次调用，设置了<code>g</code>标志则会继续查找新的匹配项，而没有设置的话只会返回第一个匹配项信息。除此之外，pattern的<code>lastIndex</code>属性在全局模式会增加，非全局模式始终不变。</p>
+<h5 id="test"><a href="#test" class="headerlink" title="test()"></a><code>test()</code></h5><pre><code>pattern.test(text);
+</code></pre><p>查看目标字符串与该模式是否匹配。匹配返回true，否则返回false。</p>
+<h3 id="String中的正则表达式"><a href="#String中的正则表达式" class="headerlink" title="String中的正则表达式"></a>String中的正则表达式</h3><h5 id="match"><a href="#match" class="headerlink" title="match()"></a><code>match()</code></h5><pre><code>text.match(pattern);
+</code></pre><p><code>match</code>匹配一个字符串和一个正则表达式。若没有<code>g</code>标识，则结果与<code>pattern.exec(text)</code>相同。若有<code>g</code>标志，则返回一个包含所有匹配的数组。</p>
+<h5 id="search"><a href="#search" class="headerlink" title="search()"></a><code>search()</code></h5><pre><code>text.search(pattern);
+</code></pre><p>若找到匹配，返回第一个匹配的首字符位置。若没有找到返回-1。<br>此方法会忽略<code>g</code>标识，且没有position参数。</p>
+<h5 id="replace"><a href="#replace" class="headerlink" title="replace()"></a><code>replace()</code></h5><pre><code>string.replace(searchValue, replaceValue);
+</code></pre><p><code>searchValue</code>可以是一个字符串或一个正则表达式对象。若是一个字符串，只会在第一次出现的地方被替换。若是一个正则表达式，若有<code>g</code>标志则替换所有匹配之处，若没有则只替换第一个匹配之处。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>正则表达式是个非常好用的工具，若掌握了可达到事半功倍的效果。好好学哟~</p>
+
+    
+  </div>
+</article>
+
+</div>
+
+
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持小王子</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/archive/images/qr-wechat.jpg" alt="">
+          </li>
+        
+          <li class="item">
+            <img src="/archive/images/qr-alipay.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/archives/"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/category/"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/tag/"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/link/"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/about/"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/atom.xml"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/search/"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2016/08/15/RegExp-notes/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

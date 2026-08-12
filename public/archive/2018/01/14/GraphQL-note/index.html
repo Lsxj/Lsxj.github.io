@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>GraphQL笔记 | 你看见过我的小熊吗</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="GraphQL,What do I learn," />
+  
+
+  <meta name="description" content="What is GraphQL new API standard.enables declaratative data fetching简单来说，GraphQL是用于API的查询语言，与RESTFul一样，是一种查询规范。  GraphQL vs REST在漫长的岁月中，REST已经成为了WEB API设计标准了。它提供了一些 stateless servers和structured access">
+<meta name="keywords" content="GraphQL,What do I learn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GraphQL笔记">
+<meta property="og:url" content="http://yoursite.com/2018/01/14/GraphQL-note/index.html">
+<meta property="og:site_name" content="你看见过我的小熊吗">
+<meta property="og:description" content="What is GraphQL new API standard.enables declaratative data fetching简单来说，GraphQL是用于API的查询语言，与RESTFul一样，是一种查询规范。  GraphQL vs REST在漫长的岁月中，REST已经成为了WEB API设计标准了。它提供了一些 stateless servers和structured access">
+<meta property="og:updated_time" content="2018-01-17T14:58:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GraphQL笔记">
+<meta name="twitter:description" content="What is GraphQL new API standard.enables declaratative data fetching简单来说，GraphQL是用于API的查询语言，与RESTFul一样，是一种查询规范。  GraphQL vs REST在漫长的岁月中，REST已经成为了WEB API设计标准了。它提供了一些 stateless servers和structured access">
+
+  
+
+  
+    <link rel="icon" href="/archive/favicon.ico">
+  
+
+  <link href="/archive/css/styles.css?v=028c63b1" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/archive/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/archive/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/archives/"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/category/"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/tag/"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/link/"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/about/"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/atom.xml"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/search/"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#What-is-GraphQL"><span class="toc-text"><a href="#What-is-GraphQL" class="headerlink" title="What is GraphQL"></a>What is GraphQL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GraphQL-vs-REST"><span class="toc-text"><a href="#GraphQL-vs-REST" class="headerlink" title="GraphQL vs REST"></a>GraphQL vs REST</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-GraphQL-note" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">GraphQL笔记</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.01.14</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Lsxj</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/archive/categories/前端开发/">前端开发</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://lsxj615.info/2018/01/14/GraphQL-note/#disqus_thread"></a>
+        </span>
+      
+
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="What-is-GraphQL"><a href="#What-is-GraphQL" class="headerlink" title="What is GraphQL"></a>What is GraphQL</h1><blockquote>
+<p>new API standard.<br>enables declaratative data fetching<br>简单来说，GraphQL是用于API的查询语言，与RESTFul一样，是一种查询规范。</p>
+</blockquote>
+<h1 id="GraphQL-vs-REST"><a href="#GraphQL-vs-REST" class="headerlink" title="GraphQL vs REST"></a>GraphQL vs REST</h1><p>在漫长的岁月中，REST已经成为了WEB API设计标准了。它提供了一些 <code>stateless servers</code>和<code>structured access to resources</code>的好的想法，但是也存在着以下这些问题：</p>
+<ol>
+<li>接口灵活性差。返回的数据可能是无用或者多余的；或者一份数据需要调用多个接口才能拿到。</li>
+<li>操作流程繁琐。先构造HTTP，再进行接受，解析等等</li>
+<li>当功能需要拓展的时候，也意味着需要增加新的接口。</li>
+</ol>
+<p>GraphQL是声明式数据获取。</p>
+<ol>
+<li>更能适应不同的前端框架以及客户端平台</li>
+<li>更快的开发速度</li>
+<li>可用于任意语言、任意平台</li>
+</ol>
+<p>但GraphQL也面临着一些安全问题：</p>
+<ol>
+<li>因为一次查询可以包含很多数据操作，当数据操作过多时，也会造成过大的查询压力。</li>
+<li>查询格式会暴露API的结构，但可以通过持久化查询操作来解决，具体可见：<a href="https://medium.com/m/global-identity?redirectUrl=https://dev-blog.apollodata.com/persisted-graphql-queries-with-apollo-client-119fd7e6bba5" target="_blank" rel="noopener">持久化查询</a></li>
+</ol>
+<p>…待续</p>
+
+    
+  </div>
+</article>
+
+</div>
+
+
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持小王子</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/archive/images/qr-wechat.jpg" alt="">
+          </li>
+        
+          <li class="item">
+            <img src="/archive/images/qr-alipay.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/archives/"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/category/"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/tag/"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/link/"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/about/"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/atom.xml"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/search/"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2018/01/14/GraphQL-note/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
