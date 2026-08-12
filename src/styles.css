@@ -69,6 +69,11 @@ section { scroll-margin-top: 30px; }
 .timeline time { color: var(--blue); font: 600 11px/1 var(--mono); text-transform: uppercase; }
 .timeline h3 { margin: 10px 0 8px; color: var(--ink); font-size: 19px; font-weight: 600; letter-spacing: -.015em; }
 .timeline p { max-width: 640px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+.timeline-stages { max-width: 690px; margin-top: 20px; padding-top: 18px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; border-top: 1px solid var(--line); }
+.timeline-stages > div { min-width: 0; }
+.timeline-stages span { color: var(--blue); font: 600 10px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.timeline-stages h4 { margin: 9px 0 7px; color: var(--ink); font-size: 15px; line-height: 1.35; font-weight: 600; }
+.timeline-stages p { font-size: 13px; line-height: 1.62; }
 
 .projects-section { padding-bottom: 118px; }
 .section-heading-row { margin-bottom: 26px; display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
@@ -320,6 +325,7 @@ section { scroll-margin-top: 30px; }
   .name { font-size: 39px; }
   .intro { font-size: 15px; }
   .about-section > p { font-size: 16px; }
+  .timeline-stages { grid-template-columns: 1fr; gap: 18px; }
   .section-heading-row { align-items: flex-start; flex-direction: column; gap: 12px; }
   .section-heading-row > p { text-align: left; }
   .project-card, .project--fushi .project-card { width: calc(100% + 20px); margin-left: -10px; padding: 24px 10px; grid-template-columns: 32px minmax(0,1fr); }

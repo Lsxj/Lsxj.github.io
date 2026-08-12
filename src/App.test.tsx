@@ -17,7 +17,11 @@ describe("portfolio", () => {
   it("switches language and remembers the selection", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: "中" }));
-    expect(screen.getByText(/从类型安全的界面契约/)).toBeInTheDocument();
+    expect(screen.getByText(/喜欢把复杂的问题做成清晰、可靠/)).toBeInTheDocument();
+    expect(screen.getByText(/软件工程和经济学双学位/)).toBeInTheDocument();
+    expect(screen.getByText(/中国团队的 People Manager/)).toBeInTheDocument();
+    expect(screen.getByText("2017—至今")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "花旗 · 高级软件工程师 / Tech Lead" })).toBeInTheDocument();
     expect(window.localStorage.getItem("portfolio-language")).toBe("zh");
   });
 

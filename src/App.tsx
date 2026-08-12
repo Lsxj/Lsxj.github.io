@@ -177,7 +177,21 @@ function App() {
           <h2 className="section-title">{t.journeyTitle}</h2>
           <p className="section-intro">{t.journeyIntro}</p>
           <div className="timeline">
-            {t.journey.map(([period, title, body], index) => <article key={period}><div className="timeline-marker"><i /><span>{String(index + 1).padStart(2, "0")}</span></div><div><time>{period}</time><h3>{title}</h3><p>{body}</p></div></article>)}
+            {t.journey.map((item, index) => (
+              <article key={`${item.period}-${item.title}`}>
+                <div className="timeline-marker"><i /><span>{String(index + 1).padStart(2, "0")}</span></div>
+                <div>
+                  <time>{item.period}</time>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                  {item.stages.length > 0 && (
+                    <div className="timeline-stages">
+                      {item.stages.map(([label, title, body]) => <div key={label}><span>{label}</span><h4>{title}</h4><p>{body}</p></div>)}
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 
