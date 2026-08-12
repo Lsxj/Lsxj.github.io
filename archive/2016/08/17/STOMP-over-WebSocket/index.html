@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>STOMP-over-WebSocket文档 | 你看见过我的小熊吗</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="javascript,Stomp,websocket,html5," />
+  
+
+  <meta name="description" content="前言前两天整理了websocket的资料，今天就把上次没说完的Stomp.js好好说一说~Stomp Over Webscoket参考文档：http://jmesnil.net/stomp-websocket/doc/本文为参考文档的部分翻译，技术不佳，如有失误请指正。 什么是Stomp STOMP即Simple (or Streaming) Text Orientated Messaging P">
+<meta name="keywords" content="javascript,Stomp,websocket,html5">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STOMP-over-WebSocket文档">
+<meta property="og:url" content="http://yoursite.com/2016/08/17/STOMP-over-WebSocket/index.html">
+<meta property="og:site_name" content="你看见过我的小熊吗">
+<meta property="og:description" content="前言前两天整理了websocket的资料，今天就把上次没说完的Stomp.js好好说一说~Stomp Over Webscoket参考文档：http://jmesnil.net/stomp-websocket/doc/本文为参考文档的部分翻译，技术不佳，如有失误请指正。 什么是Stomp STOMP即Simple (or Streaming) Text Orientated Messaging P">
+<meta property="og:updated_time" content="2018-01-13T14:35:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="STOMP-over-WebSocket文档">
+<meta name="twitter:description" content="前言前两天整理了websocket的资料，今天就把上次没说完的Stomp.js好好说一说~Stomp Over Webscoket参考文档：http://jmesnil.net/stomp-websocket/doc/本文为参考文档的部分翻译，技术不佳，如有失误请指正。 什么是Stomp STOMP即Simple (or Streaming) Text Orientated Messaging P">
+
+  
+
+  
+    <link rel="icon" href="/archive/favicon.ico">
+  
+
+  <link href="/archive/css/styles.css?v=028c63b1" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/archive/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/archive/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/archives/"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/category/"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/tag/"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/link/"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/about/"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/atom.xml"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/search/"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是Stomp"><span class="toc-text"><a href="#&#x4EC0;&#x4E48;&#x662F;Stomp" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;Stomp"></a>&#x4EC0;&#x4E48;&#x662F;Stomp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#协议支持"><span class="toc-text"><a href="#&#x534F;&#x8BAE;&#x652F;&#x6301;" class="headerlink" title="&#x534F;&#x8BAE;&#x652F;&#x6301;"></a>&#x534F;&#x8BAE;&#x652F;&#x6301;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#下载STOMP-JS"><span class="toc-text"><a href="#&#x4E0B;&#x8F7D;STOMP-JS" class="headerlink" title="&#x4E0B;&#x8F7D;STOMP.JS"></a>&#x4E0B;&#x8F7D;STOMP.JS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务端要求"><span class="toc-text"><a href="#&#x670D;&#x52A1;&#x7AEF;&#x8981;&#x6C42;" class="headerlink" title="&#x670D;&#x52A1;&#x7AEF;&#x8981;&#x6C42;"></a>&#x670D;&#x52A1;&#x7AEF;&#x8981;&#x6C42;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HornetQ"><span class="toc-text"><a href="#HornetQ" class="headerlink" title="HornetQ"></a>HornetQ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ActiveMQ"><span class="toc-text"><a href="#ActiveMQ" class="headerlink" title="ActiveMQ"></a>ActiveMQ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ActiveMQ-Apollo"><span class="toc-text"><a href="#ActiveMQ-Apollo" class="headerlink" title="ActiveMQ Apollo"></a>ActiveMQ Apollo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RabbitMQ"><span class="toc-text"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Stilts-amp-Torquebox"><span class="toc-text"><a href="#Stilts-amp-Torquebox" class="headerlink" title="Stilts &amp; Torquebox"></a>Stilts &amp; Torquebox</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stomp-API"><span class="toc-text"><a href="#Stomp-API" class="headerlink" title="Stomp API"></a>Stomp API</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#STOMP-帧（Frame）"><span class="toc-text"><a href="#STOMP-&#x5E27;&#xFF08;Frame&#xFF09;" class="headerlink" title="STOMP &#x5E27;&#xFF08;Frame&#xFF09;"></a>STOMP &#x5E27;&#xFF08;Frame&#xFF09;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建STOMP客户端"><span class="toc-text"><a href="#&#x521B;&#x5EFA;STOMP&#x5BA2;&#x6237;&#x7AEF;" class="headerlink" title="&#x521B;&#x5EFA;STOMP&#x5BA2;&#x6237;&#x7AEF;"></a>&#x521B;&#x5EFA;<code>STOMP</code>&#x5BA2;&#x6237;&#x7AEF;</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#在web浏览器中使用普通的Web-Socket"><span class="toc-text"><a href="#&#x5728;web&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x4F7F;&#x7528;&#x666E;&#x901A;&#x7684;Web-Socket" class="headerlink" title="&#x5728;web&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x4F7F;&#x7528;&#x666E;&#x901A;&#x7684;Web Socket"></a>&#x5728;web&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x4F7F;&#x7528;&#x666E;&#x901A;&#x7684;Web Socket</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在web浏览器中使用定制的WebSocket"><span class="toc-text"><a href="#&#x5728;web&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x4F7F;&#x7528;&#x5B9A;&#x5236;&#x7684;WebSocket" class="headerlink" title="&#x5728;web&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x4F7F;&#x7528;&#x5B9A;&#x5236;&#x7684;WebSocket"></a>&#x5728;web&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x4F7F;&#x7528;&#x5B9A;&#x5236;&#x7684;WebSocket</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在node-js程序中"><span class="toc-text"><a href="#&#x5728;node-js&#x7A0B;&#x5E8F;&#x4E2D;" class="headerlink" title="&#x5728;node.js&#x7A0B;&#x5E8F;&#x4E2D;"></a>&#x5728;<code>node.js</code>&#x7A0B;&#x5E8F;&#x4E2D;</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#连接服务端"><span class="toc-text"><a href="#&#x8FDE;&#x63A5;&#x670D;&#x52A1;&#x7AEF;" class="headerlink" title="&#x8FDE;&#x63A5;&#x670D;&#x52A1;&#x7AEF;"></a>&#x8FDE;&#x63A5;&#x670D;&#x52A1;&#x7AEF;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Heart-beating"><span class="toc-text"><a href="#Heart-beating" class="headerlink" title="Heart-beating"></a>Heart-beating</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#发送消息"><span class="toc-text"><a href="#&#x53D1;&#x9001;&#x6D88;&#x606F;" class="headerlink" title="&#x53D1;&#x9001;&#x6D88;&#x606F;"></a>&#x53D1;&#x9001;&#x6D88;&#x606F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#订阅（Subscribe）和接收（receive）消息"><span class="toc-text"><a href="#&#x8BA2;&#x9605;&#xFF08;Subscribe&#xFF09;&#x548C;&#x63A5;&#x6536;&#xFF08;receive&#xFF09;&#x6D88;&#x606F;" class="headerlink" title="&#x8BA2;&#x9605;&#xFF08;Subscribe&#xFF09;&#x548C;&#x63A5;&#x6536;&#xFF08;receive&#xFF09;&#x6D88;&#x606F;"></a>&#x8BA2;&#x9605;&#xFF08;Subscribe&#xFF09;&#x548C;&#x63A5;&#x6536;&#xFF08;receive&#xFF09;&#x6D88;&#x606F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#支持JSON"><span class="toc-text"><a href="#&#x652F;&#x6301;JSON" class="headerlink" title="&#x652F;&#x6301;JSON"></a>&#x652F;&#x6301;JSON</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Acknowledgment-确认"><span class="toc-text"><a href="#Acknowledgment-&#x786E;&#x8BA4;" class="headerlink" title="Acknowledgment(&#x786E;&#x8BA4;)"></a>Acknowledgment(&#x786E;&#x8BA4;)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#事务-Transactions"><span class="toc-text"><a href="#&#x4E8B;&#x52A1;-Transactions" class="headerlink" title="&#x4E8B;&#x52A1;(Transactions)"></a>&#x4E8B;&#x52A1;(Transactions)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调试（Debug）"><span class="toc-text"><a href="#&#x8C03;&#x8BD5;&#xFF08;Debug&#xFF09;" class="headerlink" title="&#x8C03;&#x8BD5;&#xFF08;Debug&#xFF09;"></a>&#x8C03;&#x8BD5;&#xFF08;Debug&#xFF09;</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-STOMP-over-WebSocket" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">STOMP-over-WebSocket文档</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.08.17</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Lsxj</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/archive/categories/前端开发/">前端开发</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://lsxj615.info/2016/08/17/STOMP-over-WebSocket/#disqus_thread"></a>
+        </span>
+      
+
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前两天整理了<code>websocket</code>的资料，今天就把上次没说完的<code>Stomp.js</code>好好说一说~<br>Stomp Over Webscoket参考文档：<a href="http://jmesnil.net/stomp-websocket/doc/" target="_blank" rel="noopener">http://jmesnil.net/stomp-websocket/doc/</a><br>本文为参考文档的部分翻译，技术不佳，如有失误请指正。</p>
+<h2 id="什么是Stomp"><a href="#什么是Stomp" class="headerlink" title="什么是Stomp"></a>什么是Stomp</h2><blockquote>
+<p>STOMP即Simple (or Streaming) Text Orientated Messaging Protocol，简单(流)文本定向消息协议，它提供了一个可互操作的连接格式，允许STOMP客户端与任意STOMP消息代理（Broker）进行交互。STOMP协议由于设计简单，易于开发客户端，因此在多种语言和多种平台上得到广泛地应用。</p>
+</blockquote>
+<h2 id="协议支持"><a href="#协议支持" class="headerlink" title="协议支持"></a>协议支持</h2><p>该库支持多种版本的STOMP协议：</p>
+<ul>
+<li><a href="http://stomp.github.io/stomp-specification-1.0.html" target="_blank" rel="noopener">STOMP 1.0</a></li>
+<li><a href="http://stomp.github.io/stomp-specification-1.1.html" target="_blank" rel="noopener">STOMP 1.1</a>(包含 heart-beating)</li>
+</ul>
+<h2 id="下载STOMP-JS"><a href="#下载STOMP-JS" class="headerlink" title="下载STOMP.JS"></a>下载STOMP.JS</h2><p>你可以下载 <a href="https://raw.githubusercontent.com/jmesnil/stomp-websocket/master/lib/stomp.js" target="_blank" rel="noopener">stomp.js</a> 并在你自己的WEB应用程序中使用。<br>提供了<a href="https://raw.githubusercontent.com/jmesnil/stomp-websocket/master/lib/stomp.min.js" target="_blank" rel="noopener">多种版本</a>也可以直接用于生产。<br>这个js文件由CoffeeScript文件构建，请查看<a href="http://jmesnil.net/stomp-websocket/doc/#contribute" target="_blank" rel="noopener">Contribute</a>部分下载源码或浏览 <a href="http://jmesnil.net/stomp-websocket/doc/stomp.html" target="_blank" rel="noopener">annote source code</a></p>
+<h2 id="服务端要求"><a href="#服务端要求" class="headerlink" title="服务端要求"></a>服务端要求</h2><p>这个库不是单纯的Stomp 客户端。它旨在WebSockets上运行而不是TCP。基本上，WebSocket协议需要在浏览器客户端和服务端之间进行握手，确保浏览器的“same-origin”（同源）安全模型仍然有效。</p>
+<p>这意味着该库不能连接常规的STOMP 代理，因为Websocket初始化的握手不是STOMP协议的一部分，他们不能理解从而会拒绝连接。</p>
+<p>有一些正在进行的工作添加了WebSocket支持STOMP代理，从而他们可以在WebSocket协议上接受STOMP连接。</p>
+<h3 id="HornetQ"><a href="#HornetQ" class="headerlink" title="HornetQ"></a>HornetQ</h3><p>HornetQ是由Red Hat and JBoss创立的开源消息系统.</p>
+<p>要使HornetQ支持STOMP Over WebSocket，下载最新版本并按照下列步骤执行：</p>
+<pre><code>$ cd hornetq-x.y.z/examples/jms/stomp-websockets
+$ mvn clean install
+...
+INFO: HQ221020: Started Netty Acceptor version 3.6.2.Final-c0d783c         localhost:61614 for STOMP_WS protocol
+Apr 15, 2013 1:15:33 PM org.hornetq.core.server.impl.HornetQServerImpl$SharedStoreLiveActivation run
+INFO: HQ221007: Server is now live
+Apr 15, 2013 1:15:33 PM org.hornetq.core.server.impl.HornetQServerImpl start
+INFO: HQ221001: HornetQ Server version 2.3.0.CR2 (black&apos;n&apos;yellow2, 123) [c9e29e45-a5bd-11e2-976a-b3fef7ceb5df]
+</code></pre><p>此时HornetQ已经开启了，并且61614在端口监听STOMP over WebSocket<br>它从URL为ws://localhost:61614/stomp 接受WebSocket的连接。</p>
+<p><a href="http://docs.jboss.org/hornetq/2.3.0.CR2/docs/user-manual/html/interoperability.html#stomp.websockets" target="_blank" rel="noopener">配置文档</a></p>
+<h3 id="ActiveMQ"><a href="#ActiveMQ" class="headerlink" title="ActiveMQ"></a>ActiveMQ</h3><p><a href="http://activemq.apache.org/websockets.html" target="_blank" rel="noopener">配置文档</a></p>
+<h3 id="ActiveMQ-Apollo"><a href="#ActiveMQ-Apollo" class="headerlink" title="ActiveMQ Apollo"></a>ActiveMQ Apollo</h3><p><a href="http://activemq.apache.org/apollo/documentation/user-manual.html#WebSocket_Transports" target="_blank" rel="noopener">配置文档</a></p>
+<h3 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h3><p><a href="RabbitMQ">配置文档</a></p>
+<h3 id="Stilts-amp-Torquebox"><a href="#Stilts-amp-Torquebox" class="headerlink" title="Stilts &amp; Torquebox"></a>Stilts &amp; Torquebox</h3><p><a href="http://stilts.projectodd.org/" target="_blank" rel="noopener">Stilts</a> 是一个STOMP原生的消息框架。</p>
+<p><a href="http://torquebox.org/" target="_blank" rel="noopener">TorqueBox</a> 使用Stilts去提供它的<a href="http://torquebox.org/documentation/2.1.2/stomp.html" target="_blank" rel="noopener">Websockets and STOMP stack</a>。</p>
+<h2 id="Stomp-API"><a href="#Stomp-API" class="headerlink" title="Stomp API"></a>Stomp API</h2><h3 id="STOMP-帧（Frame）"><a href="#STOMP-帧（Frame）" class="headerlink" title="STOMP 帧（Frame）"></a>STOMP 帧（Frame）</h3><p>STOMP Over WebSocket 提供了一个直接从<code>Stomp Frame</code>映射到 Javascript 对象的方式。<br><code>Stomp Frame</code>帧格式如下：</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th style="text-align:center">Type</th>
+<th style="text-align:right">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>command</td>
+<td style="text-align:center">String</td>
+<td style="text-align:right">name of the frame (“CONNECT”, “SEND”, etc.)</td>
+</tr>
+<tr>
+<td>headers</td>
+<td style="text-align:center">JavaScript object    </td>
+</tr>
+<tr>
+<td>body</td>
+<td style="text-align:center">String</td>
+</tr>
+</tbody>
+</table>
+<p><code>command</code>和<code>headers</code>属性始终会被定义，不过当这个<code>frame</code>没有头部时，<code>headers</code>可以为空。若这个<code>frame</code>没有<code>body</code>，<code>body</code>的值可以为<code>null</code>。</p>
+<h3 id="创建STOMP客户端"><a href="#创建STOMP客户端" class="headerlink" title="创建STOMP客户端"></a>创建<code>STOMP</code>客户端</h3><h4 id="在web浏览器中使用普通的Web-Socket"><a href="#在web浏览器中使用普通的Web-Socket" class="headerlink" title="在web浏览器中使用普通的Web Socket"></a>在web浏览器中使用普通的Web Socket</h4><p>STOMP javascript 客户端会使用<code>ws://</code>的URL与STOMP 服务端进行交互。</p>
+<p>为了创建一个STOMP客户端js对象，你需要使用<code>Stomp.client(url)</code>，而这个URL连接着服务端的WebSocket的代理：</p>
+<pre><code>var url = &quot;ws://localhost:61614/stomp&quot;;
+var client = Stomp.client(url);
+</code></pre><p><code>Stomp.client(url, protocols)</code>也可以用来覆盖默认的<code>subprotocols</code>。第二个参数可以是一个字符串或一个字符串数组去指定多个<code>subprotocols</code>。</p>
+<h4 id="在web浏览器中使用定制的WebSocket"><a href="#在web浏览器中使用定制的WebSocket" class="headerlink" title="在web浏览器中使用定制的WebSocket"></a>在web浏览器中使用定制的WebSocket</h4><p>浏览器提供了不同的WebSocket的协议，一些老的浏览器不支持WebSocket的脚本或者使用别的名字。默认下，<code>stomp.js</code>会使用浏览器原生的<code>WebSocket class</code>去创建WebSocket。</p>
+<p>但是利用<code>Stomp.over(ws)</code>这个方法可以使用其他类型的WebSockets。这个方法得到一个满足WebSocket定义的对象。</p>
+<p>例如，可以使用由<code>SockJS</code>实现的Websocket：</p>
+<pre><code>&lt;script src=&quot;http://cdn.sockjs.org/sockjs-0.3.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    // use SockJS implementation instead of the browser&apos;s native implementation
+    var ws = new SockJS(url);
+    var client = Stomp.over(ws);
+    [...]
+&lt;/script&gt;
+</code></pre><p>如果使用原生的Websockets就使用<code>Stomp.client(url)</code>，如果需要使用其他类型的Websocket（例如由SockJS包装的Websocket）就使用<code>Stomp.over(ws)</code>。</p>
+<p>除了初始化有差别，Stomp API在这两种方式下是相同的。</p>
+<h4 id="在node-js程序中"><a href="#在node-js程序中" class="headerlink" title="在node.js程序中"></a>在<code>node.js</code>程序中</h4><p>通过<code>stompjs npm package</code>同样也可以在<code>node.js</code>程序中使用这个库。</p>
+<pre><code>$ npm install stompjs
+</code></pre><p>在node.js<code>app</code>中, <code>require</code>这个模块:</p>
+<pre><code>var Stomp = require(&apos;stompjs&apos;);
+</code></pre><p>为了与建立在TCP socket的STOMP-broker连接，使用<code>Stomp.overTCP(host, port)</code>方法。</p>
+<pre><code>var client = Stomp.overTCP(&apos;localhost&apos;, 61613);
+</code></pre><p>为了与建立在Web Socket的STOMP broker连接，使用<code>Stomp.overWS(url)</code>方法。</p>
+<pre><code>var client = Stomp.overWS(&apos;ws://localhost:61614/stomp&apos;);
+</code></pre><p>除了初始化不同，无论是浏览器还是node.js环境下，Stomp API都是相同的。</p>
+<h3 id="连接服务端"><a href="#连接服务端" class="headerlink" title="连接服务端"></a>连接服务端</h3><p>一旦Stomp 客户端建立了，必须调用它的<code>connect()</code>方法去连接，从而Stomp服务端进行验证。这个方法需要两个参数，用户的登录和密码凭证。</p>
+<p>这种情况下，客户端会使用Websocket打开连接，并发送一个<code>CONNECT frame</code>。</p>
+<p>这个连接是异步进行的：你不能保证当这个方法返回时是有效连接的。为了知道连接的结果，你需要一个回调函数。</p>
+<pre><code>var connect_callback = function() {
+    // called back after the client is connected and authenticated to the STOMP server
+};
+</code></pre><p>但是如果连接失败会发生什么呢？<code>connect()</code>方法接受一个可选的参数(<code>error_callback</code>)，当客户端不能连接上服务端时，这个回调函数<code>error_callback</code>会被调用，该函数的参数为对应的错误对象。</p>
+<pre><code>var error_callback = function(error) {
+    // display the error&apos;s message header:
+    alert(error.headers.message);
+};
+</code></pre><p>在大多数情况下，<code>connect()</code>方法可接受不同数量的参数来提供简单的API：</p>
+<pre><code>client.connect(login, passcode, connectCallback);
+client.connect(login, passcode, connectCallback, errorCallback);
+client.connect(login, passcode, connectCallback, errorCallback, host);
+</code></pre><p><code>login</code>和<code>passcode</code>是strings，<code>connectCallback</code>和<code>errorCallback</code>则是functions。（有些brokers（代理）还需要传递一个<code>host</code>（String类型）参数。）</p>
+<p>如果你需要附加一个<code>headers</code>头部，<code>connect</code>方法还接受其他两种形式的参数：</p>
+<pre><code>client.connect(headers, connectCallback);
+client.connect(headers, connectCallback, errorCallback);
+</code></pre><p><code>header</code>是<code>map</code>形式，<code>connectCallback</code>和<code>errorCallback</code>为functions。</p>
+<p>需要注意：如果你使用上述这种方式，你需要自行在<code>headers</code>添加<code>login</code>,<code>passcode</code>（甚至<code>host</code>）：</p>
+<pre><code>var headers = {
+    login: &apos;mylogin&apos;,
+    passcode: &apos;mypasscode&apos;,
+    // additional header
+    &apos;client-id&apos;: &apos;my-client-id&apos;
+};
+client.connect(headers, connectCallback);
+</code></pre><p>断开连接时，调用<code>disconnect</code>方法，这个方法也是异步的，当断开成功后会接收一个额外的回调函数的参数。如下所示。<br>    client.disconnect(function() {<br>        alert(“See you next time!”);<br>    };</p>
+<p>当客户端与服务端断开连接，就不会再发送或接收消息了。</p>
+<h3 id="Heart-beating"><a href="#Heart-beating" class="headerlink" title="Heart-beating"></a>Heart-beating</h3><p>如果STOMP broker(代理)接收STOMP 1.1版本的帧，<code>heart-beating</code>是默认启用的。<code>heart-beating</code>也就是频率，<code>incoming</code>是接收频率，<code>outgoing</code>是发送频率。</p>
+<p>通过改变<code>incoming</code>和<code>outgoing</code>可以更改客户端的<code>heart-beating</code>(默认为10000ms)：</p>
+<pre><code>client.heartbeat.outgoing = 20000; 
+// client will send heartbeats every 20000ms
+client.heartbeat.incoming = 0;
+// client does not want to receive heartbeats
+// from the server
+</code></pre><p><code>heart-beating</code>是利用<code>window.setInterval()</code>去规律地发送<code>heart-beats</code>或者检查服务端的<code>heart-beats</code>。</p>
+<h3 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h3><p>当客户端与服务端连接成功后，可以调用<code>send()</code>来发送STOMP消息。这个方法必须有一个参数，用来描述对应的STOMP的目的地。另外可以有两个可选的参数：<code>headers</code>，<code>object</code>类型包含额外的信息头部；<code>body</code>，一个String类型的参数。</p>
+<pre><code>client.send(&quot;/queue/test&quot;, {priority: 9}, &quot;Hello, STOMP&quot;);
+</code></pre><p>client会发送一个STOMP发送帧给<code>/queue/test</code>，这个帧包含一个设置了<code>priority</code>为9的<code>header</code>和内容为“Hello, STOMP”的<code>body</code>。</p>
+<p>如果你想发送一个有<code>body</code>的信息，也必须传递<code>headers</code>参数。如果没有<code>headers</code>需要传递，那么就传<code>{}</code>即可，如下所示：</p>
+<pre><code>client.send(destination, {}, body);
+</code></pre><h3 id="订阅（Subscribe）和接收（receive）消息"><a href="#订阅（Subscribe）和接收（receive）消息" class="headerlink" title="订阅（Subscribe）和接收（receive）消息"></a>订阅（Subscribe）和接收（receive）消息</h3><p>为了在浏览器中接收消息，STOMP客户端必须先订阅一个目的地<code>destination</code>。</p>
+<p>你可以使用<code>subscribe()</code>去订阅。这个方法有2个必需的参数：目的地(<code>destination</code>)，回调函数(<code>callback</code>)；还有一个可选的参数<code>headers</code>。其中<code>destination</code>是String类型，对应目的地，回调函数是伴随着一个参数的<code>function</code>类型。</p>
+<pre><code>var subscription = client.subscribe(&quot;/queue/test&quot;, callback);
+</code></pre><p><code>subscribe()</code>方法返回一个<code>object</code>，这个<code>object</code>包含一个<code>id</code>属性，对应这个这个客户端的订阅ID。而<code>unsubscribe()</code>可以用来取消客户端对这个目的地<code>destination</code>的订阅。</p>
+<p>默认情况下，如果没有在<code>headers</code>额外添加，这个库会默认构建一个独一无二的<code>ID</code>。在传递<code>headers</code>这个参数时，可以使用你自己的<code>ID</code>:</p>
+<pre><code>var mysubid = &apos;...&apos;;
+var subscription = client.subscribe(destination, callback, { id: mysubid });
+</code></pre><p>这个客户端会向服务端发送一个STOMP订阅帧（<code>SUBSCRIBE frame</code>）并注册回调事件。每次服务端向客户端发送消息时，客户端都会轮流调用回调函数，参数为对应消息的STOMP帧对象（<code>Frame object</code>）。如下所示：</p>
+<pre><code>callback = function(message) {
+    // called when the client receives a STOMP message from the server
+    if (message.body) {
+        alert(&quot;got message with body &quot; + message.body)
+    } else {
+        alert(&quot;got empty message&quot;);
+    }
+});
+</code></pre><p><code>subscribe()</code>方法，接受一个可选的<code>headers</code>参数用来标识附加的头部。</p>
+<pre><code>var headers = {ack: &apos;client&apos;, &apos;selector&apos;: &quot;location = &apos;Europe&apos;&quot;};
+
+client.subscribe(&quot;/queue/test&quot;, message_callback, headers);
+</code></pre><p>这个客户端指定了它会确认接收的信息，只接收符合这个<code>selector : location = &#39;Europe&#39;</code>的消息。</p>
+<p>如果想让客户端订阅多个目的地，你可以在接收所有信息的时候调用相同的回调函数：</p>
+<pre><code>onmessage = function(message) {
+    // called every time the client receives a message
+}
+var sub1 = client.subscribe(&quot;queue/test&quot;, onmessage);
+var sub2 = client.subscribe(&quot;queue/another&quot;, onmessage)
+</code></pre><p>如果要中止接收消息，客户端可以在<code>subscribe()</code>返回的<code>object</code>对象调用<code>unsubscribe()</code>来结束接收。</p>
+<pre><code>var subscription = client.subscribe(...);
+
+...
+
+subscription.unsubscribe();
+</code></pre><h3 id="支持JSON"><a href="#支持JSON" class="headerlink" title="支持JSON"></a>支持JSON</h3><p>STOMP消息的<code>body</code>必须为字符串。如果你需要发送/接收<code>JSON</code>对象，你可以使用<code>JSON.stringify()</code>和<code>JSON.parse()</code>去转换JSON对象。</p>
+<pre><code>var quote = {symbol: &apos;APPL&apos;, value: 195.46};
+client.send(&quot;/topic/stocks&quot;, {}, JSON.stringify(quote));
+
+client.subcribe(&quot;/topic/stocks&quot;, function(message) {
+    var quote = JSON.parse(message.body);
+    alert(quote.symbol + &quot; is at &quot; + quote.value);
+};
+</code></pre><h3 id="Acknowledgment-确认"><a href="#Acknowledgment-确认" class="headerlink" title="Acknowledgment(确认)"></a>Acknowledgment(确认)</h3><p>默认情况，在消息发送给客户端之前，服务端会自动确认（<code>acknowledged</code>）。</p>
+<p>客户端可以选择通过订阅一个目的地时设置一个<code>ack header</code>为<code>client</code>或<code>client-individual</code>来处理消息确认。</p>
+<p>在下面这个例子，客户端必须调用<code>message.ack()</code>来通知客户端它已经接收了消息。</p>
+<pre><code>var subscription = client.subscribe(&quot;/queue/test&quot;,
+    function(message) {
+        // do something with the message
+        ...
+        // and acknowledge it
+        message.ack();
+    },
+    {ack: &apos;client&apos;}
+);
+</code></pre><p><code>ack()</code>接受<code>headers</code>参数用来附加确认消息。例如，将消息作为事务(transaction)的一部分，当要求接收消息时其实代理（broker）已经将<code>ACK STOMP frame</code>处理了。</p>
+<pre><code>var tx = client.begin();
+message.ack({ transaction: tx.id, receipt: &apos;my-receipt&apos; });
+tx.commit();
+</code></pre><p><code>nack()</code>也可以用来通知STOMP 1.1.brokers（代理）：客户端不能消费这个消息。与<code>ack()</code>方法的参数相同。</p>
+<h3 id="事务-Transactions"><a href="#事务-Transactions" class="headerlink" title="事务(Transactions)"></a>事务(Transactions)</h3><p>可以在将消息的发送和确认接收放在一个事务中。</p>
+<p>客户端调用自身的<code>begin()</code>方法就可以开始启动事务了，<code>begin()</code>有一个可选的参数<code>transaction</code>，一个唯一的可标识事务的字符串。如果没有传递这个参数，那么库会自动构建一个。</p>
+<p>这个方法会返回一个object。这个对象有一个<code>id</code>属性对应这个事务的ID，还有两个方法：<br><code>commit()</code>提交事务<br><code>abort()</code>中止事务</p>
+<p>在一个事务中，客户端可以在发送/接受消息时指定transaction id来设置transaction。</p>
+<pre><code>// start the transaction
+var tx = client.begin();
+// send the message in a transaction
+client.send(&quot;/queue/test&quot;, {transaction: tx.id}, &quot;message in a transaction&quot;);
+// commit the transaction to effectively send the message
+tx.commit();
+</code></pre><p>如果你在调用<code>send()</code>方法发送消息的时候忘记添加transction header，那么这不会称为事务的一部分，这个消息会直接发送，不会等到事务完成后才发送。</p>
+<pre><code>var txid = &quot;unique_transaction_identifier&quot;;
+// start the transaction
+var tx = client.begin();
+// oops! send the message outside the transaction
+client.send(&quot;/queue/test&quot;, {}, &quot;I thought I was in a transaction!&quot;);
+tx.abort(); // Too late! the message has been sent
+</code></pre><h3 id="调试（Debug）"><a href="#调试（Debug）" class="headerlink" title="调试（Debug）"></a>调试（Debug）</h3><p>有一些测试代码能有助于你知道库发送或接收的是什么，从而来调试程序。</p>
+<p>客户端可以将其<code>debug</code>属性设置为一个函数，传递一个字符串参数去观察库所有的debug语句。</p>
+<pre><code>client.debug = function(str) {
+    // append the debug log to a #debug div somewhere in the page using JQuery:
+    $(&quot;#debug&quot;).append(str + &quot;\n&quot;);
+};
+</code></pre><p>默认情况，debug消息会被记录在在浏览器的控制台。</p>
+
+    
+  </div>
+</article>
+
+</div>
+
+
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持小王子</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/archive/images/qr-wechat.jpg" alt="">
+          </li>
+        
+          <li class="item">
+            <img src="/archive/images/qr-alipay.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/archives/"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/category/"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/tag/"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/link/"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/about/"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/atom.xml"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/search/"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2016/08/17/STOMP-over-WebSocket/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

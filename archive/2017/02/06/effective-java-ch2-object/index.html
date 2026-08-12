@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>JAVA创建和销毁对象--《Effective Java》 | 你看见过我的小熊吗</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JAVA,Effective Java," />
+  
+
+  <meta name="description" content="前言本文为阅读《Effective Java》第二章的笔记。 用静态工厂方法代替构造器静态工厂方法优势 有名称-调用更清晰 每次调用时不会创建一个新对象 可以返回原返回类型的任何子类型的对象 创建参数化类型实例的时候，使代码更简洁静态工厂方法缺点 类如果不含共有的或受保护的构造器，就不能被子类化 与其他静态方法实际上没有任何区别   遇到多个构造器参数时要考虑用构建器 重叠构造器模式但是，在有很多">
+<meta name="keywords" content="JAVA,Effective Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA创建和销毁对象--《Effective Java》">
+<meta property="og:url" content="http://yoursite.com/2017/02/06/effective-java-ch2-object/index.html">
+<meta property="og:site_name" content="你看见过我的小熊吗">
+<meta property="og:description" content="前言本文为阅读《Effective Java》第二章的笔记。 用静态工厂方法代替构造器静态工厂方法优势 有名称-调用更清晰 每次调用时不会创建一个新对象 可以返回原返回类型的任何子类型的对象 创建参数化类型实例的时候，使代码更简洁静态工厂方法缺点 类如果不含共有的或受保护的构造器，就不能被子类化 与其他静态方法实际上没有任何区别   遇到多个构造器参数时要考虑用构建器 重叠构造器模式但是，在有很多">
+<meta property="og:updated_time" content="2018-01-13T14:35:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JAVA创建和销毁对象--《Effective Java》">
+<meta name="twitter:description" content="前言本文为阅读《Effective Java》第二章的笔记。 用静态工厂方法代替构造器静态工厂方法优势 有名称-调用更清晰 每次调用时不会创建一个新对象 可以返回原返回类型的任何子类型的对象 创建参数化类型实例的时候，使代码更简洁静态工厂方法缺点 类如果不含共有的或受保护的构造器，就不能被子类化 与其他静态方法实际上没有任何区别   遇到多个构造器参数时要考虑用构建器 重叠构造器模式但是，在有很多">
+
+  
+
+  
+    <link rel="icon" href="/archive/favicon.ico">
+  
+
+  <link href="/archive/css/styles.css?v=028c63b1" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/archive/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/archive/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/archives/"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/category/"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/tag/"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/link/"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/about/"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/atom.xml"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/search/"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用静态工厂方法代替构造器"><span class="toc-text"><a href="#&#x7528;&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x4EE3;&#x66FF;&#x6784;&#x9020;&#x5668;" class="headerlink" title="&#x7528;&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x4EE3;&#x66FF;&#x6784;&#x9020;&#x5668;"></a>&#x7528;&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x4EE3;&#x66FF;&#x6784;&#x9020;&#x5668;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#静态工厂方法优势"><span class="toc-text"><a href="#&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x4F18;&#x52BF;" class="headerlink" title="&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x4F18;&#x52BF;"></a>&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x4F18;&#x52BF;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态工厂方法缺点"><span class="toc-text"><a href="#&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x7F3A;&#x70B9;" class="headerlink" title="&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x7F3A;&#x70B9;"></a>&#x9759;&#x6001;&#x5DE5;&#x5382;&#x65B9;&#x6CD5;&#x7F3A;&#x70B9;</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#遇到多个构造器参数时要考虑用构建器"><span class="toc-text"><a href="#&#x9047;&#x5230;&#x591A;&#x4E2A;&#x6784;&#x9020;&#x5668;&#x53C2;&#x6570;&#x65F6;&#x8981;&#x8003;&#x8651;&#x7528;&#x6784;&#x5EFA;&#x5668;" class="headerlink" title="&#x9047;&#x5230;&#x591A;&#x4E2A;&#x6784;&#x9020;&#x5668;&#x53C2;&#x6570;&#x65F6;&#x8981;&#x8003;&#x8651;&#x7528;&#x6784;&#x5EFA;&#x5668;"></a>&#x9047;&#x5230;&#x591A;&#x4E2A;&#x6784;&#x9020;&#x5668;&#x53C2;&#x6570;&#x65F6;&#x8981;&#x8003;&#x8651;&#x7528;&#x6784;&#x5EFA;&#x5668;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#重叠构造器模式"><span class="toc-text"><a href="#&#x91CD;&#x53E0;&#x6784;&#x9020;&#x5668;&#x6A21;&#x5F0F;" class="headerlink" title=" &#x91CD;&#x53E0;&#x6784;&#x9020;&#x5668;&#x6A21;&#x5F0F;"></a><strong> &#x91CD;&#x53E0;&#x6784;&#x9020;&#x5668;&#x6A21;&#x5F0F;</strong></span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JavaBeans模式-。"><span class="toc-text"><a href="#JavaBeans&#x6A21;&#x5F0F;-&#x3002;" class="headerlink" title=" JavaBeans&#x6A21;&#x5F0F; &#x3002;"></a><strong> JavaBeans&#x6A21;&#x5F0F;</strong> &#x3002;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Builder模式"><span class="toc-text"><a href="#Builder&#x6A21;&#x5F0F;" class="headerlink" title="Builder&#x6A21;&#x5F0F;"></a>Builder&#x6A21;&#x5F0F;</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用私有构造器或枚举类型强化Singleton属性"><span class="toc-text"><a href="#&#x7528;&#x79C1;&#x6709;&#x6784;&#x9020;&#x5668;&#x6216;&#x679A;&#x4E3E;&#x7C7B;&#x578B;&#x5F3A;&#x5316;Singleton&#x5C5E;&#x6027;" class="headerlink" title="&#x7528;&#x79C1;&#x6709;&#x6784;&#x9020;&#x5668;&#x6216;&#x679A;&#x4E3E;&#x7C7B;&#x578B;&#x5F3A;&#x5316;Singleton&#x5C5E;&#x6027;"></a>&#x7528;&#x79C1;&#x6709;&#x6784;&#x9020;&#x5668;&#x6216;&#x679A;&#x4E3E;&#x7C7B;&#x578B;&#x5F3A;&#x5316;Singleton&#x5C5E;&#x6027;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过私有构造器强化不可实例化的能力"><span class="toc-text"><a href="#&#x901A;&#x8FC7;&#x79C1;&#x6709;&#x6784;&#x9020;&#x5668;&#x5F3A;&#x5316;&#x4E0D;&#x53EF;&#x5B9E;&#x4F8B;&#x5316;&#x7684;&#x80FD;&#x529B;" class="headerlink" title="&#x901A;&#x8FC7;&#x79C1;&#x6709;&#x6784;&#x9020;&#x5668;&#x5F3A;&#x5316;&#x4E0D;&#x53EF;&#x5B9E;&#x4F8B;&#x5316;&#x7684;&#x80FD;&#x529B;"></a>&#x901A;&#x8FC7;&#x79C1;&#x6709;&#x6784;&#x9020;&#x5668;&#x5F3A;&#x5316;&#x4E0D;&#x53EF;&#x5B9E;&#x4F8B;&#x5316;&#x7684;&#x80FD;&#x529B;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#避免创建不必要的对象"><span class="toc-text"><a href="#&#x907F;&#x514D;&#x521B;&#x5EFA;&#x4E0D;&#x5FC5;&#x8981;&#x7684;&#x5BF9;&#x8C61;" class="headerlink" title="&#x907F;&#x514D;&#x521B;&#x5EFA;&#x4E0D;&#x5FC5;&#x8981;&#x7684;&#x5BF9;&#x8C61;"></a>&#x907F;&#x514D;&#x521B;&#x5EFA;&#x4E0D;&#x5FC5;&#x8981;&#x7684;&#x5BF9;&#x8C61;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#消除过期的对象调用"><span class="toc-text"><a href="#&#x6D88;&#x9664;&#x8FC7;&#x671F;&#x7684;&#x5BF9;&#x8C61;&#x8C03;&#x7528;" class="headerlink" title="&#x6D88;&#x9664;&#x8FC7;&#x671F;&#x7684;&#x5BF9;&#x8C61;&#x8C03;&#x7528;"></a>&#x6D88;&#x9664;&#x8FC7;&#x671F;&#x7684;&#x5BF9;&#x8C61;&#x8C03;&#x7528;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#避免使用终结方法"><span class="toc-text"><a href="#&#x907F;&#x514D;&#x4F7F;&#x7528;&#x7EC8;&#x7ED3;&#x65B9;&#x6CD5;" class="headerlink" title="&#x907F;&#x514D;&#x4F7F;&#x7528;&#x7EC8;&#x7ED3;&#x65B9;&#x6CD5;"></a>&#x907F;&#x514D;&#x4F7F;&#x7528;&#x7EC8;&#x7ED3;&#x65B9;&#x6CD5;</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#终止方法的用途"><span class="toc-text"><a href="#&#x7EC8;&#x6B62;&#x65B9;&#x6CD5;&#x7684;&#x7528;&#x9014;" class="headerlink" title="&#x7EC8;&#x6B62;&#x65B9;&#x6CD5;&#x7684;&#x7528;&#x9014;"></a>&#x7EC8;&#x6B62;&#x65B9;&#x6CD5;&#x7684;&#x7528;&#x9014;</span></a></li></ol></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-effective-java-ch2-object" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">JAVA创建和销毁对象--《Effective Java》</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.02.06</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Lsxj</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/archive/categories/后台开发/">后台开发</a> / <a class="article-category-link" href="/archive/categories/后台开发/JAVA开发/">JAVA开发</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://lsxj615.info/2017/02/06/effective-java-ch2-object/#disqus_thread"></a>
+        </span>
+      
+
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文为阅读《Effective Java》第二章的笔记。</p>
+<h2 id="用静态工厂方法代替构造器"><a href="#用静态工厂方法代替构造器" class="headerlink" title="用静态工厂方法代替构造器"></a>用静态工厂方法代替构造器</h2><h3 id="静态工厂方法优势"><a href="#静态工厂方法优势" class="headerlink" title="静态工厂方法优势"></a>静态工厂方法优势</h3><ul>
+<li>有名称-调用更清晰</li>
+<li>每次调用时不会创建一个新对象</li>
+<li>可以返回原返回类型的任何子类型的对象</li>
+<li>创建参数化类型实例的时候，使代码更简洁<h3 id="静态工厂方法缺点"><a href="#静态工厂方法缺点" class="headerlink" title="静态工厂方法缺点"></a>静态工厂方法缺点</h3></li>
+<li>类如果不含共有的或受保护的构造器，就不能被子类化</li>
+<li>与其他静态方法实际上没有任何区别</li>
+</ul>
+<hr>
+<h2 id="遇到多个构造器参数时要考虑用构建器"><a href="#遇到多个构造器参数时要考虑用构建器" class="headerlink" title="遇到多个构造器参数时要考虑用构建器"></a>遇到多个构造器参数时要考虑用构建器</h2><h3 id="重叠构造器模式"><a href="#重叠构造器模式" class="headerlink" title=" 重叠构造器模式"></a><strong> 重叠构造器模式</strong></h3><p>但是，在有很多参数时，客户端代码难以编写且难以阅读。</p>
+<h3 id="JavaBeans模式-。"><a href="#JavaBeans模式-。" class="headerlink" title=" JavaBeans模式 。"></a><strong> JavaBeans模式</strong> 。</h3><p>调用一个无参构造器来创建对象，调用<code>setter</code>方法来设置参数。<br>缺点：构造过程被分到了几个调用，导致可能处于不一致状态。</p>
+<h3 id="Builder模式"><a href="#Builder模式" class="headerlink" title="Builder模式"></a>Builder模式</h3><p>让客户端利用所有必要参数调用构造器/静态工厂，得到builder对象，再调用类似于setter方法，最后调用无参的build方法来生成不可变对象。</p>
+<pre><code>public class NutritionFacts {
+    private final int servingSize;
+    private final int servings;
+    private final int calories;
+    private final int fat;
+    private final int sodium;
+    private final int carbohydrate;
+
+    public static class Builder {
+        //Required parameters
+        private final int servingSize;
+        private final int servings;
+
+        //Optional parameters - initialized to default values
+        private int calories     = 0;
+        private int fat          = 0;
+        private int carbohydrate = 0;
+        private int sodium       = 0;
+
+
+        public Builder(int servingSize, int servings) {
+            this.servingSize = servingSize;
+            this.servings = servings;
+        }
+
+        public Builder calories(int val){
+            calories = val; return this;
+        }
+        public Builder fat(int val){
+            fat = val; return this;
+        }
+        public Builder carbohydrate(int val){
+            carbohydrate = val; return this;
+        }
+        public Builder sodium(int val){
+            sodium = val; return this;
+        }
+
+        public NutritionFacts build(){
+            return new NutritionFacts(this);
+        }
+    }
+
+    private NutritionFacts(Builder builder) {
+        servings     = builder.servings;
+        servingSize  = builder.servingSize;
+        calories     = builder.calories;
+        fat          = builder.fat;
+        sodium       = builder.sodium;
+        carbohydrate = builder.carbohydrate;
+    }
+}
+
+//Client
+NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8).
+    calories(100).sodium(35).carbohydrate(27).build();
+</code></pre><p>builder可以检验约束条件，并且可有多个可变参数。<br>但是Builder模式更为冗长，只有在很多参数（&gt;=4）时才使用。</p>
+<hr>
+<h2 id="用私有构造器或枚举类型强化Singleton属性"><a href="#用私有构造器或枚举类型强化Singleton属性" class="headerlink" title="用私有构造器或枚举类型强化Singleton属性"></a>用私有构造器或枚举类型强化Singleton属性</h2><p>单元素的枚举类型已经成为实现Singleton的最佳方法。</p>
+<pre><code>public enum Elvis {
+    INSTANCE;
+
+    public void leaveTheBuilding() {...}
+}
+</code></pre><p>这种方式提供了序列化机制，并可防止多次实例化。</p>
+<hr>
+<h2 id="通过私有构造器强化不可实例化的能力"><a href="#通过私有构造器强化不可实例化的能力" class="headerlink" title="通过私有构造器强化不可实例化的能力"></a>通过私有构造器强化不可实例化的能力</h2><p>为了不被实例化，可使用私有构造器来实现。</p>
+<pre><code>//Noninstantiable utility class
+public class UtilityClass {
+    private UtilityClass() {
+        throw new AssertionError();
+    }
+
+    ... // Remainder omitted
+}
+</code></pre><p>这种方式使得一个类不能被子类化。<br>所有构造器必须显式或隐式调用超类构造器，在这种情形下，子类就没有可访问的超类构造器调用。</p>
+<hr>
+<h2 id="避免创建不必要的对象"><a href="#避免创建不必要的对象" class="headerlink" title="避免创建不必要的对象"></a>避免创建不必要的对象</h2><p>重用不可变对象，重用已知不会被修改的可变对象。</p>
+<p>对于同时提供了静态工厂方法和构造器的不可变类，通常可以使用静态工厂方法，避免创建不必要的对象。构造器每次被调用时都会创建一个新对象。</p>
+<p>自动装箱（autoboxing）– 创建多余对象的新方法。要优先使用基本类型而不是装箱基本类型。</p>
+<hr>
+<h2 id="消除过期的对象调用"><a href="#消除过期的对象调用" class="headerlink" title="消除过期的对象调用"></a>消除过期的对象调用</h2><p>只要类是自己管理内存，就应该警惕内存泄漏问题。一旦元素被释放掉，则该元素中包含的任何对象引用都应该被清空。<br>常见的内存泄漏还有： 缓存、监听器和其他回调。<br>确保回调立即被当作垃圾回收的最佳方法是只保存它们的弱引用。</p>
+<hr>
+<h2 id="避免使用终结方法"><a href="#避免使用终结方法" class="headerlink" title="避免使用终结方法"></a>避免使用终结方法</h2><p>终结方法的缺点在于不能保证会被及时地执行。<br>不应该依赖终结方法来更新重要的持久状态。<br>显式的终止方法通常与try-finally结构结合使用，以确保及时终止。</p>
+<h4 id="终止方法的用途"><a href="#终止方法的用途" class="headerlink" title="终止方法的用途"></a>终止方法的用途</h4><ul>
+<li>当对象所有者忘记调用显式终止方法时，终结方法可充当“安全网” – 终结方法发现资源还未被终止，应在日志中记录一条警告。</li>
+<li>终止非关键的本地资源。</li>
+</ul>
+<p>使用了终结方法就要记住调用<code>super.finalize</code>。</p>
+
+    
+  </div>
+</article>
+
+</div>
+
+
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持小王子</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/archive/images/qr-wechat.jpg" alt="">
+          </li>
+        
+          <li class="item">
+            <img src="/archive/images/qr-alipay.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/archives/"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/category/"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/tag/"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/link/"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/about/"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/atom.xml"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/search/"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2017/02/06/effective-java-ch2-object/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

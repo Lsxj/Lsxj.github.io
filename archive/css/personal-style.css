@@ -1,0 +1,14 @@
+pre {
+	padding: 4px 12px;
+	border: 2px dashed #fd6162;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+code {
+	padding: 0;
+	font-family: Comic Sans MS;
+	font-size: 18px;
+	color: #1abc9c;
+	background: none;
+}

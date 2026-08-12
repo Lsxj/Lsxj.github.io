@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>一道笔试题引发的promise笔记 | 你看见过我的小熊吗</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="javascript,es6,promise," />
+  
+
+  <meta name="description" content="前言近来参加校招笔试，发现有好几道关于Promise的题目。然而我都没有了解过。所以，这篇文章以网易笔试的一道题开始，记录关于Promise的那些事。 笔试题console.log(1); new Promise(function (resolve, reject){     reject(true);     window.setTimeout(function (){         reso">
+<meta name="keywords" content="javascript,es6,promise">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一道笔试题引发的promise笔记">
+<meta property="og:url" content="http://yoursite.com/2016/08/04/promise-notes/index.html">
+<meta property="og:site_name" content="你看见过我的小熊吗">
+<meta property="og:description" content="前言近来参加校招笔试，发现有好几道关于Promise的题目。然而我都没有了解过。所以，这篇文章以网易笔试的一道题开始，记录关于Promise的那些事。 笔试题console.log(1); new Promise(function (resolve, reject){     reject(true);     window.setTimeout(function (){         reso">
+<meta property="og:image" content="http://oao50r2ex.bkt.clouddn.com/image/blog0804_1.png">
+<meta property="og:image" content="http://oao50r2ex.bkt.clouddn.com/image.blog0804_2.png">
+<meta property="og:updated_time" content="2018-01-13T14:35:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一道笔试题引发的promise笔记">
+<meta name="twitter:description" content="前言近来参加校招笔试，发现有好几道关于Promise的题目。然而我都没有了解过。所以，这篇文章以网易笔试的一道题开始，记录关于Promise的那些事。 笔试题console.log(1); new Promise(function (resolve, reject){     reject(true);     window.setTimeout(function (){         reso">
+<meta name="twitter:image" content="http://oao50r2ex.bkt.clouddn.com/image/blog0804_1.png">
+
+  
+
+  
+    <link rel="icon" href="/archive/favicon.ico">
+  
+
+  <link href="/archive/css/styles.css?v=028c63b1" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/archive/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/archive/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/archives/"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/category/"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/tag/"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/link/"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/about/"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/atom.xml"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/search/"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-text"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#笔试题"><span class="toc-text"><a href="#&#x7B14;&#x8BD5;&#x9898;" class="headerlink" title="&#x7B14;&#x8BD5;&#x9898;"></a>&#x7B14;&#x8BD5;&#x9898;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Promise是什么"><span class="toc-text"><a href="#Promise&#x662F;&#x4EC0;&#x4E48;" class="headerlink" title="Promise&#x662F;&#x4EC0;&#x4E48;"></a>Promise&#x662F;&#x4EC0;&#x4E48;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Promise的API"><span class="toc-text"><a href="#Promise&#x7684;API" class="headerlink" title="Promise&#x7684;API"></a>Promise&#x7684;API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Constructor"><span class="toc-text"><a href="#Constructor" class="headerlink" title="Constructor"></a>Constructor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Instance-Method"><span class="toc-text"><a href="#Instance-Method" class="headerlink" title="Instance Method"></a>Instance Method</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他方法"><span class="toc-text"><a href="#&#x5176;&#x4ED6;&#x65B9;&#x6CD5;" class="headerlink" title="&#x5176;&#x4ED6;&#x65B9;&#x6CD5;"></a>&#x5176;&#x4ED6;&#x65B9;&#x6CD5;</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Promise的状态"><span class="toc-text"><a href="#Promise&#x7684;&#x72B6;&#x6001;" class="headerlink" title="Promise&#x7684;&#x72B6;&#x6001;"></a>Promise&#x7684;&#x72B6;&#x6001;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Promise-resolve-amp-Promise-reject"><span class="toc-text"><a href="#Promise-resolve-amp-Promise-reject" class="headerlink" title="Promise.resolve &amp; Promise.reject"></a><code>Promise.resolve</code> &amp; <code>Promise.reject</code></span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Promise-resolve"><span class="toc-text"><a href="#Promise-resolve" class="headerlink" title="Promise.resolve"></a>Promise.resolve</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Promise-reject"><span class="toc-text"><a href="#Promise-reject" class="headerlink" title="Promise.reject"></a>Promise.reject</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#笔试题解答"><span class="toc-text"><a href="#&#x7B14;&#x8BD5;&#x9898;&#x89E3;&#x7B54;" class="headerlink" title="&#x7B14;&#x8BD5;&#x9898;&#x89E3;&#x7B54;"></a>&#x7B14;&#x8BD5;&#x9898;&#x89E3;&#x7B54;</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-promise-notes" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">一道笔试题引发的promise笔记</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.08.04</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Lsxj</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/archive/categories/前端开发/">前端开发</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://lsxj615.info/2016/08/04/promise-notes/#disqus_thread"></a>
+        </span>
+      
+
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>近来参加校招笔试，发现有好几道关于Promise的题目。然而我都没有了解过。所以，这篇文章以网易笔试的一道题开始，记录关于Promise的那些事。</p>
+<h3 id="笔试题"><a href="#笔试题" class="headerlink" title="笔试题"></a>笔试题</h3><pre><code>console.log(1);
+new Promise(function (resolve, reject){
+    reject(true);
+    window.setTimeout(function (){
+        resolve(false);
+    }, 0);
+}).then(function(){
+    console.log(2);
+}, function(){
+    console.log(3);
+});
+console.log(4);
+</code></pre><p>请问输出结果是什么？在揭晓答案之前，我们还是先来了解一下Promise吧。</p>
+<h3 id="Promise是什么"><a href="#Promise是什么" class="headerlink" title="Promise是什么"></a>Promise是什么</h3><blockquote>
+<p>Promise 对象用于异步(asynchronous)计算.。一个Promise对象代表着一个还未完成，但预期将来会完成的操作。<br>Promise 对象是一个返回值的代理，这个返回值在promise对象创建时未必已知。它允许你为异步操作的成功或失败指定处理方法。 这使得异步方法可以像同步方法那样返回值：异步方法会返回一个包含了原返回值的 promise 对象来替代原返回值。</p>
+</blockquote>
+<h3 id="Promise的API"><a href="#Promise的API" class="headerlink" title="Promise的API"></a>Promise的API</h3><h4 id="Constructor"><a href="#Constructor" class="headerlink" title="Constructor"></a>Constructor</h4><p>使用<code>new</code>来调用<code>Promise</code>的构造器进行实例化</p>
+<pre><code>var promise = new Promise(function(resolve, reject){
+    //异步处理
+    //处理结束后，调用resolve或reject
+});
+</code></pre><h4 id="Instance-Method"><a href="#Instance-Method" class="headerlink" title="Instance Method"></a>Instance Method</h4><p>对通过new生成的promise对象为了设置其在resolve(成功)/reject(失败)时调用的回调函数可以使用<code>promise.then()</code>实例方法</p>
+<pre><code>promise.then(onFulfilled, onRejected);
+//以防误解，上述的即为以下这种形式
+promise.then(function(){...}, function(){...});
+</code></pre><p>当resolve(成功)时，会调用<code>onFulfilled</code>函数；<br>reject(失败)时，会调用<code>onRejected</code>函数。<br>这也对应了前面笔试题中,<code>onFulfilled</code>其实就是<code>console.log(2)</code>，也就是说成功时会调用<code>console.log(2)</code>，而失败时，<code>onRejected</code>就是调用<code>console.log(3)</code>。</p>
+<p>若只想处理异常情况的函数，可<code>promise.then(undefined, onRejected)</code>，当然更好的选择是用<code>promise.catch()</code>来处理。二者效果相同。</p>
+<pre><code>promise.then(function (value) {
+    console.log(value); 
+}).catch(function (error) {
+    console.log(error);
+});
+
+//等同于以下形式
+promise.then(function (value) {
+    console.log(value);
+}, function (error) {
+    console.log(error);
+});
+</code></pre><h4 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h4><ul>
+<li><code>Promise.all()</code></li>
+<li><code>Promise.race()</code></li>
+<li><code>Promise.resolve()</code></li>
+<li><code>Promise.reject()</code></li>
+</ul>
+<h3 id="Promise的状态"><a href="#Promise的状态" class="headerlink" title="Promise的状态"></a>Promise的状态</h3><p>Promise对象有三种状态</p>
+<ul>
+<li>pending 初始状态，既不是fulfilled也不是rejected</li>
+<li>fulfilled 成功。此时调用<code>onFulfilled</code></li>
+<li>rejected 失败。此时调用<code>onRejected</code></li>
+</ul>
+<p>Fulfilled和Rejected都可以表示为<code>Settled</code>。<br>由下图可以了解，最初Promise为<code>pending</code>状态，在执行后转为<code>settled</code>状态，而<code>settled</code>状态分为两种：在成功后转为<code>fulfilled</code>，执行<code>.then(onFulfilled)</code>方法；在失败后转为<code>reject</code>，执行<code>.then(onRejecttion)</code>或<code>.catch(onRejecttion)</code>，进行异步操作，再返回Promise对象，转为<code>pending</code>状态。</p>
+<p><img src="http://oao50r2ex.bkt.clouddn.com/image/blog0804_1.png" alt="Promise状态图"></p>
+<h3 id="Promise-resolve-amp-Promise-reject"><a href="#Promise-resolve-amp-Promise-reject" class="headerlink" title="Promise.resolve &amp; Promise.reject"></a><code>Promise.resolve</code> &amp; <code>Promise.reject</code></h3><h4 id="Promise-resolve"><a href="#Promise-resolve" class="headerlink" title="Promise.resolve"></a>Promise.resolve</h4><p><code>Promise.resolve(value)</code>可认为是<code>new Promise()</code>方法的快捷方式</p>
+<pre><code>Promise.value(value);
+
+//等同于以下代码
+
+new Promise(function(resolve){
+    resolve(value);
+});
+</code></pre><p>此时这个promise对象会进入<code>fulfilled</code>状态。而<code>resolve(value)</code>中的<code>value</code>会传递给后面<code>then</code>中指定的<code>onFulfilled</code>函数。</p>
+<p><code>Promise.resolve(value)</code>返回值也是一个promise对象，所以可以进行链式调用.</p>
+<h4 id="Promise-reject"><a href="#Promise-reject" class="headerlink" title="Promise.reject"></a>Promise.reject</h4><p><code>Promise.reject(error)</code>与上述静态方法类似，也是<code>new Promise()</code>方法的快捷方式</p>
+<pre><code>Promise.reject(new Error(&quot;出错了&quot;));
+//等同于以下代码
+new Promise(function(resolve, reject){
+    reject(new Error(&quot;出错了&quot;));
+});
+</code></pre><p>这段代码则是调用该promise对象通过<code>then</code>指定的<code>onRejected</code>函数，并将错误对象(Error)传递给<code>onRejected</code>函数。</p>
+<h3 id="笔试题解答"><a href="#笔试题解答" class="headerlink" title="笔试题解答"></a>笔试题解答</h3><p>话不多说，贴图就是。</p>
+<p><img src="http://oao50r2ex.bkt.clouddn.com/image.blog0804_2.png" alt="答案截图"></p>
+<p>可以知道，当promise调用了<code>reject(true)</code>方法，则传递<code>true</code>这个参数给’then’指定的<code>onRejected</code>函数，即题目中的<code>function(){console.log(3);}</code>。但由于’.then’中指定的方法调用是<strong>异步执行</strong>的，所以会先执行console.log(4);</p>
+<p>本篇文章仅是简单介绍promise。欲了解更多内容，可查看以下资料。谢谢~</p>
+<p>资料来源：</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank" rel="noopener">Promise- Javascipt | MDN</a></li>
+<li><a href="http://liubin.org/promises-book/" target="_blank" rel="noopener">JavaScript Promise迷你书（中文版)</a></li>
+</ul>
+
+    
+  </div>
+</article>
+
+</div>
+
+
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持小王子</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/archive/images/qr-wechat.jpg" alt="">
+          </li>
+        
+          <li class="item">
+            <img src="/archive/images/qr-alipay.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/archives/"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/category/"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/tag/"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/link/"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/about/"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/atom.xml"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/search/"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2016/08/04/promise-notes/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

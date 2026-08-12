@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>对于所有对象都通用的方法--《Effective Java》 | 你看见过我的小熊吗</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JAVA,Effective Java," />
+  
+
+  <meta name="description" content="前言本文为阅读《Effective Java》第三章阅读笔记。  覆盖equals时请遵守通用约定什么时候应该覆盖Object.equals？-如果类具有自己的“逻辑相等”，且超类没有覆盖equals来实现我们想要的功能。 覆盖equals方法的约定 自反性对于任何非null的引用值x， x.equals(x)必须返回true 对称性对于任何非null的引用值x和y，当且仅当y.equals(x)">
+<meta name="keywords" content="JAVA,Effective Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对于所有对象都通用的方法--《Effective Java》">
+<meta property="og:url" content="http://yoursite.com/2017/02/07/effective-java-ch3-function/index.html">
+<meta property="og:site_name" content="你看见过我的小熊吗">
+<meta property="og:description" content="前言本文为阅读《Effective Java》第三章阅读笔记。  覆盖equals时请遵守通用约定什么时候应该覆盖Object.equals？-如果类具有自己的“逻辑相等”，且超类没有覆盖equals来实现我们想要的功能。 覆盖equals方法的约定 自反性对于任何非null的引用值x， x.equals(x)必须返回true 对称性对于任何非null的引用值x和y，当且仅当y.equals(x)">
+<meta property="og:updated_time" content="2018-01-13T14:35:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对于所有对象都通用的方法--《Effective Java》">
+<meta name="twitter:description" content="前言本文为阅读《Effective Java》第三章阅读笔记。  覆盖equals时请遵守通用约定什么时候应该覆盖Object.equals？-如果类具有自己的“逻辑相等”，且超类没有覆盖equals来实现我们想要的功能。 覆盖equals方法的约定 自反性对于任何非null的引用值x， x.equals(x)必须返回true 对称性对于任何非null的引用值x和y，当且仅当y.equals(x)">
+
+  
+
+  
+    <link rel="icon" href="/archive/favicon.ico">
+  
+
+  <link href="/archive/css/styles.css?v=028c63b1" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/archive/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/archive/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/archives/"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/category/"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/tag/"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/link/"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/about/"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/atom.xml"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archive/search/"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#覆盖equals时请遵守通用约定"><span class="toc-text"><a href="#&#x8986;&#x76D6;equals&#x65F6;&#x8BF7;&#x9075;&#x5B88;&#x901A;&#x7528;&#x7EA6;&#x5B9A;" class="headerlink" title="&#x8986;&#x76D6;equals&#x65F6;&#x8BF7;&#x9075;&#x5B88;&#x901A;&#x7528;&#x7EA6;&#x5B9A;"></a>&#x8986;&#x76D6;equals&#x65F6;&#x8BF7;&#x9075;&#x5B88;&#x901A;&#x7528;&#x7EA6;&#x5B9A;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么时候应该覆盖Object-equals？"><span class="toc-text"><a href="#&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x8986;&#x76D6;Object-equals&#xFF1F;" class="headerlink" title="&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x8986;&#x76D6;Object.equals&#xFF1F;"></a>&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x8986;&#x76D6;<code>Object.equals</code>&#xFF1F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#覆盖equals方法的约定"><span class="toc-text"><a href="#&#x8986;&#x76D6;equals&#x65B9;&#x6CD5;&#x7684;&#x7EA6;&#x5B9A;" class="headerlink" title="&#x8986;&#x76D6;equals&#x65B9;&#x6CD5;&#x7684;&#x7EA6;&#x5B9A;"></a>&#x8986;&#x76D6;equals&#x65B9;&#x6CD5;&#x7684;&#x7EA6;&#x5B9A;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现高质量equals方法诀窍"><span class="toc-text"><a href="#&#x5B9E;&#x73B0;&#x9AD8;&#x8D28;&#x91CF;equals&#x65B9;&#x6CD5;&#x8BC0;&#x7A8D;" class="headerlink" title="&#x5B9E;&#x73B0;&#x9AD8;&#x8D28;&#x91CF;equals&#x65B9;&#x6CD5;&#x8BC0;&#x7A8D;"></a>&#x5B9E;&#x73B0;&#x9AD8;&#x8D28;&#x91CF;equals&#x65B9;&#x6CD5;&#x8BC0;&#x7A8D;</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#覆盖equals时总要覆盖hashCode"><span class="toc-text"><a href="#&#x8986;&#x76D6;equals&#x65F6;&#x603B;&#x8981;&#x8986;&#x76D6;hashCode" class="headerlink" title="&#x8986;&#x76D6;equals&#x65F6;&#x603B;&#x8981;&#x8986;&#x76D6;hashCode"></a>&#x8986;&#x76D6;equals&#x65F6;&#x603B;&#x8981;&#x8986;&#x76D6;hashCode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#始终要覆盖toString"><span class="toc-text"><a href="#&#x59CB;&#x7EC8;&#x8981;&#x8986;&#x76D6;toString" class="headerlink" title="&#x59CB;&#x7EC8;&#x8981;&#x8986;&#x76D6;toString"></a>&#x59CB;&#x7EC8;&#x8981;&#x8986;&#x76D6;toString</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#谨慎地覆盖clone"><span class="toc-text"><a href="#&#x8C28;&#x614E;&#x5730;&#x8986;&#x76D6;clone" class="headerlink" title="&#x8C28;&#x614E;&#x5730;&#x8986;&#x76D6;clone"></a>&#x8C28;&#x614E;&#x5730;&#x8986;&#x76D6;clone</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#考虑实现Comparable接口"><span class="toc-text"><a href="#&#x8003;&#x8651;&#x5B9E;&#x73B0;Comparable&#x63A5;&#x53E3;" class="headerlink" title="&#x8003;&#x8651;&#x5B9E;&#x73B0;Comparable&#x63A5;&#x53E3;"></a>&#x8003;&#x8651;&#x5B9E;&#x73B0;Comparable&#x63A5;&#x53E3;</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-effective-java-ch3-function" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">对于所有对象都通用的方法--《Effective Java》</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.02.07</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Lsxj</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/archive/categories/后台开发/">后台开发</a> / <a class="article-category-link" href="/archive/categories/后台开发/JAVA开发/">JAVA开发</a>
+  </span>
+
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://lsxj615.info/2017/02/07/effective-java-ch3-function/#disqus_thread"></a>
+        </span>
+      
+
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文为阅读《Effective Java》第三章阅读笔记。</p>
+<hr>
+<h2 id="覆盖equals时请遵守通用约定"><a href="#覆盖equals时请遵守通用约定" class="headerlink" title="覆盖equals时请遵守通用约定"></a>覆盖equals时请遵守通用约定</h2><h3 id="什么时候应该覆盖Object-equals？"><a href="#什么时候应该覆盖Object-equals？" class="headerlink" title="什么时候应该覆盖Object.equals？"></a>什么时候应该覆盖<code>Object.equals</code>？</h3><p>-如果类具有自己的“逻辑相等”，且超类没有覆盖equals来实现我们想要的功能。</p>
+<h3 id="覆盖equals方法的约定"><a href="#覆盖equals方法的约定" class="headerlink" title="覆盖equals方法的约定"></a>覆盖equals方法的约定</h3><ul>
+<li>自反性<br>对于任何非null的引用值x， <code>x.equals(x)</code>必须返回true</li>
+<li>对称性<br>对于任何非null的引用值x和y，当且仅当<code>y.equals(x)</code>返回true时，<code>x.equals(y)</code>必须返回true。</li>
+<li>传递性<br>对于任何非null的引用值x、y和z，如果<code>x.equals(y)</code>返回true，并且<code>y.equals(z)</code>也true，则<code>x.equals(z)</code>必须true。</li>
+<li>一致性<br>对于任何非null的引用值x和y，只要比较操作在对象中所用的信息没有被修改，多次调用<code>x.equals(y)</code>结果都会一致。</li>
+<li>对于任何非null的引用值x，<code>x.equals(null) = false</code></li>
+</ul>
+<h3 id="实现高质量equals方法诀窍"><a href="#实现高质量equals方法诀窍" class="headerlink" title="实现高质量equals方法诀窍"></a>实现高质量equals方法诀窍</h3><ol>
+<li>使用 == 操作符检查“参数是否为这个对象的引用”。如果是则返回true。</li>
+<li>使用 instanceof 操作符检查“参数是否为正确类型”。如果不是则返回false。</li>
+<li>把参数转换为正确类型</li>
+<li>对于该类中每个“关键”域，检查参数中的域是否与该对象中对应的域相匹配。</li>
+<li>编写完成后见检查是否对称、传递、一致</li>
+<li>覆盖equals时总要覆盖hashCode</li>
+<li>不啊哟将equals声明中的Object对象替换为其他类型</li>
+</ol>
+<hr>
+<h2 id="覆盖equals时总要覆盖hashCode"><a href="#覆盖equals时总要覆盖hashCode" class="headerlink" title="覆盖equals时总要覆盖hashCode"></a>覆盖equals时总要覆盖hashCode</h2><p>Object规范中： </p>
+<ul>
+<li>在应用程序执行期间，只要对象的equals方法的比较操作所用到信息没有被修改，这同一个对象调用多次，hashCode方法必须返回一致的答案。在同一个应用程序的多次执行过程中，每次执行返回的整数可以不一致。</li>
+<li>如果两个对象根据equals方法比较是相等的，那么调用两个对象中任意一个对象的hashCode方法都必须产生同样的整数结果。</li>
+<li>如果两个对象根据equals方法比较是不等，那么调用两个对象中任意一个对象的hashCode方法不一定要产生不同的整数结果。但是给不相等的对象产生截然不同的整数结果，有可能提高散列表性能。</li>
+</ul>
+<hr>
+<h2 id="始终要覆盖toString"><a href="#始终要覆盖toString" class="headerlink" title="始终要覆盖toString"></a>始终要覆盖toString</h2><p><code>java.lang.Object</code>的toString实现返回的字符串是 类名称+ @ + 散列码的无符号十六机制表示法。<br>当调用<code>println</code>、<code>printf</code>、<code>+</code>以及<code>assert</code>或被调试器打印出来，toString方法会被自动调用。</p>
+<hr>
+<h2 id="谨慎地覆盖clone"><a href="#谨慎地覆盖clone" class="headerlink" title="谨慎地覆盖clone"></a>谨慎地覆盖clone</h2><p>实现对象拷贝的方法有以下：</p>
+<ul>
+<li>一个实现了<code>Cloneable</code>接口的类，用一个公有方法覆盖<code>lone。先调用</code>super.clone`然后修正任何需要修正的域。</li>
+<li>提供一个拷贝构造器或拷贝工厂。</li>
+</ul>
+<p>第二种方法更具优势。<br>拷贝构造器:</p>
+<pre><code>public Yum(Yum yum);
+</code></pre><p>拷贝工厂是类似于拷贝构造器的静态工厂：</p>
+<pre><code>public static Yum newInstance(Yum yum);
+</code></pre><hr>
+<h2 id="考虑实现Comparable接口"><a href="#考虑实现Comparable接口" class="headerlink" title="考虑实现Comparable接口"></a>考虑实现Comparable接口</h2><p><code>compareTo</code>方法是<code>Comparable</code>接口中唯一的方法。不但允许进行简单的等同性比较，而且允许执行顺序比较。<br>一旦类实现Comparable接口，就可以和许多泛型算法和依赖于该接口的集合实现进行协作。</p>
+
+    
+  </div>
+</article>
+
+</div>
+
+
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持小王子</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/archive/images/qr-wechat.jpg" alt="">
+          </li>
+        
+          <li class="item">
+            <img src="/archive/images/qr-alipay.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/archives/"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/category/"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/tag/"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/link/"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/about/"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/atom.xml"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archive/search/"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2017/02/07/effective-java-ch3-function/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
