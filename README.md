@@ -25,6 +25,12 @@ npm test
 npm run build
 ```
 
+Publish the verified `dist` output to the dedicated GitHub Pages branch with:
+
+```bash
+npm run deploy
+```
+
 ## Content and license
 
 Site code is available under the MIT License. Personal biography, employment history, project narratives, names, and portfolio content remain © Xuejia Shi and are not licensed for reuse.
