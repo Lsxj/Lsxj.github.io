@@ -96,14 +96,14 @@ export const content = {
     ],
     evidence: [["300+", "users · Aug 2026"], ["96.63%", "API line coverage"], ["89.88%", "React line coverage"]],
     journeyTitle: "Engineering journey",
-    journeyIntro: "From front-end systems to platform leadership and independent product work, my scope has expanded while the thread stayed consistent: make complex systems understandable, deliverable and reusable.",
+    journeyIntro: "I started out building front-end experiences, gradually took on larger systems and teams, and eventually turned a problem from my own life into a product used by real families.",
     journey: [
-      { period: "2026—Now", title: "Independent full-stack product practice", body: "Built and operate Baby Food Buddy across product design, TypeScript full-stack engineering, AI workflows and cloud delivery.", stages: [] },
-      { period: "2017—Present", title: "Citi · AVP / Senior Software Engineer", body: "Progressed from hands-on engineering to Scrum Team Lead, Tech Lead and Line Manager while continuing to deliver global institutional platforms.", stages: [
-        ["Recent stage", "Full-stack and team leadership", "Spring Boot services, React micro-frontends, secure entitlements, migration quality and cross-border delivery."],
-        ["Foundation stage", "Front-end systems engineering", "React architecture, institutional search, micro-frontends, FDC3 integration and performance engineering."],
+      { period: "2026—Now", title: "Building an AI agent product independently", body: "Designed and launched Baby Food Buddy, combining a user-facing AI agent with an AI-native workflow for building, testing and iteration.", stages: [] },
+      { period: "2017—Present", title: "Citi · AVP / Senior Software Engineer", body: "Grew from an individual contributor into a Tech Lead and people manager, while staying hands-on with the systems my teams deliver.", stages: [
+        ["Today", "Building and leading across the stack", "Develop core backend and frontend features, guide a China–India team, and work with global partners to move a complex banking platform forward safely."],
+        ["Earlier years", "Making front ends faster and easier to build", "Rebuilt a high-traffic search experience and helped create reusable React components for several business lines."],
       ] },
-      { period: "2013—2017", title: "Software engineering foundation", body: "Software Engineering and Economics dual degree at Xiamen University.", stages: [] },
+      { period: "2013—2017", title: "Xiamen University", body: "Studied Software Engineering and Economics, learning to look at products from both a technical and business perspective.", stages: [] },
     ],
     contactTitle: "Let’s build something dependable.",
     contactBody: "I’m interested in full-stack engineering roles where product judgment, implementation quality and long-term ownership all matter.",
@@ -202,14 +202,14 @@ export const content = {
     ],
     evidence: [["300+", "用户 · 2026 年 8 月"], ["96.63%", "API 行覆盖率"], ["89.88%", "React 行覆盖率"]],
     journeyTitle: "成长路径",
-    journeyIntro: "从前端系统工程到平台技术领导，再到独立产品实践，职责不断扩展，但主线始终是让复杂系统更容易理解、交付和复用。",
+    journeyIntro: "我从前端开发起步，后来开始负责更复杂的系统和更大的团队，也把生活中遇到的问题真正做成了有人使用的产品。",
     journey: [
-      { period: "2026—至今", title: "独立全栈产品实践", body: "独立构建并运营辅食搭子，覆盖产品设计、TypeScript 全栈工程、AI 工作流与云端交付。", stages: [] },
-      { period: "2017—至今", title: "花旗 · AVP / 高级软件工程师", body: "从一线开发逐步成长为 Scrum Team Lead、Tech Lead 和 Line Manager，同时持续参与全球机构级平台的核心交付。", stages: [
-        ["近期阶段", "全栈与团队领导", "Spring Boot 服务、React 微前端、安全权限、迁移质量与跨国交付。"],
-        ["早期阶段", "前端系统工程", "React 架构、机构搜索、微前端、FDC3 集成与性能工程。"],
+      { period: "2026—至今", title: "独立构建 AI Agent 产品", body: "独立设计并发布“辅食搭子”，将面向用户的 AI Agent 与用于开发、测试和迭代的 AI-native 工作流结合起来。", stages: [] },
+      { period: "2017—至今", title: "花旗 · AVP / 高级软件工程师", body: "从一线开发逐步成长为 Tech Lead 和 People Manager，同时始终参与团队负责系统的核心开发。", stages: [
+        ["现在", "一边做核心开发，一边带领团队", "负责关键的前后端功能，带领中印团队，并与全球多个团队合作，稳步推进复杂银行平台的改造。"],
+        ["早期", "把前端做得更快、更好用", "重构高流量搜索体验，也参与建设供多条业务线复用的 React 组件库。"],
       ] },
-      { period: "2013—2017", title: "软件工程基础", body: "厦门大学软件工程与经济学双学位。", stages: [] },
+      { period: "2013—2017", title: "厦门大学", body: "修读软件工程与经济学双学位，开始习惯同时从技术实现和业务价值理解产品。", stages: [] },
     ],
     contactTitle: "一起构建经得起长期使用的软件。",
     contactBody: "我希望寻找同时重视产品判断、实现质量和长期所有权的全栈工程岗位。",
