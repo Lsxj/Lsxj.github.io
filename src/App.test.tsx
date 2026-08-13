@@ -19,9 +19,11 @@ describe("portfolio", () => {
     fireEvent.click(screen.getByRole("button", { name: "中" }));
     expect(screen.getByText(/喜欢把复杂的问题做成清晰、可靠/)).toBeInTheDocument();
     expect(screen.getByText(/软件工程和经济学双学位/)).toBeInTheDocument();
-    expect(screen.getByText(/中国团队的 People Manager/)).toBeInTheDocument();
+    expect(screen.getByText(/直接管理和辅导 6 名中国工程师/)).toBeInTheDocument();
     expect(screen.getByText("2017—至今")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "花旗 · 高级软件工程师 / Tech Lead" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "花旗 · AVP / 高级软件工程师" })).toBeInTheDocument();
+    expect(screen.getByText(/150 个国家的近 10 万名机构投资者/)).toBeInTheDocument();
+    expect(screen.getByText(/2018\.07—2019\.01/)).toBeInTheDocument();
     expect(window.localStorage.getItem("portfolio-language")).toBe("zh");
   });
 
