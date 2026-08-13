@@ -11,7 +11,7 @@ function initialLanguage(): Language {
 
 const anchors = ["about", "journey", "projects", "contact"];
 const projectIds = ["fushi", "nextgen", "velocity", "platform"];
-const galleryImages = ["/assets/fushi-mini-devtools.jpg", "/assets/fushi-support.jpg", "/assets/fushi-safety.jpg"];
+const galleryImages = ["/assets/fushi-overview.jpg", "/assets/fushi-pain-points.jpg", "/assets/fushi-home-guide.jpg"];
 
 function projectFromUrl() {
   const id = new URLSearchParams(window.location.search).get("project");
