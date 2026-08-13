@@ -111,6 +111,7 @@ section { scroll-margin-top: 30px; }
 .project-hero > p:last-child { max-width: 800px; margin: 0; color: var(--text); font-size: 18px; line-height: 1.7; letter-spacing: -.008em; }
 .project-gallery { margin: 54px 0 64px; }
 .gallery-frame { width: min(100%,600px); aspect-ratio: 3 / 4; margin: 0 auto; overflow: hidden; display: grid; place-items: center; background: #fff7ed; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 18px 50px rgba(42,83,117,.12); }
+.gallery-view-3 .gallery-frame { width: 100%; aspect-ratio: 16 / 10; background: #f4f5ef; }
 .gallery-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
 .gallery-controls { margin-top: 12px; display: flex; gap: 6px; }
 .gallery-controls button { padding: 11px 14px; border: 0; border-radius: 8px; color: var(--muted); background: transparent; cursor: pointer; font: 600 11px/1 var(--mono); }
@@ -354,7 +355,7 @@ section { scroll-margin-top: 30px; }
   .project-hero h1 { font-size: 42px; }
   .project-hero > p:last-child { font-size: 16px; }
   .gallery-frame { height: auto; }
-  .gallery-controls { display: grid; grid-template-columns: repeat(3,1fr); }
+  .gallery-controls { display: grid; grid-template-columns: repeat(2,1fr); }
   .gallery-controls button { padding: 10px 4px; font-size: 11px; }
   .gallery-controls button span { display: none; }
   .detail-grid { margin-top: 50px; grid-template-columns: 1fr; gap: 14px; }

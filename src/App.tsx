@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { content, type Language } from "./content";
 
-type GalleryView = 0 | 1 | 2;
+type GalleryView = 0 | 1 | 2 | 3;
 
 function initialLanguage(): Language {
   const stored = window.localStorage.getItem("portfolio-language");
@@ -11,7 +11,7 @@ function initialLanguage(): Language {
 
 const anchors = ["about", "journey", "projects", "contact"];
 const projectIds = ["fushi", "nextgen", "velocity", "platform"];
-const galleryImages = ["/assets/fushi-overview.jpg", "/assets/fushi-pain-points.jpg", "/assets/fushi-home-guide.jpg"];
+const galleryImages = ["/assets/fushi-overview.jpg", "/assets/fushi-pain-points.jpg", "/assets/fushi-home-guide.jpg", "/assets/fushi-support.jpg"];
 
 function projectFromUrl() {
   const id = new URLSearchParams(window.location.search).get("project");
