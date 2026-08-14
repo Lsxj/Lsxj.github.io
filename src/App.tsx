@@ -23,10 +23,36 @@ function Arrow() {
   return <span aria-hidden="true">↗</span>;
 }
 
+function ActionPoint({ text }: { text: string }) {
+  const parts = text.split(/——| — /, 2);
+  if (parts.length < 2) return <p>{text}</p>;
+  return <p><strong>{parts[0]}</strong><span>{parts[1]}</span></p>;
+}
+
+function CaseEvidence({ text, label }: { text: string; label: string }) {
+  const parts = text.split(/——| — /, 2);
+  return (
+    <article className="case-evidence-row">
+      <div><span>{label}</span><h3>{parts[0]}</h3></div>
+      <p>{parts[1] ?? text}</p>
+    </article>
+  );
+}
+
+function EditorialAction({ text, meta, index }: { text: string; meta: string; index: number }) {
+  const parts = text.split(/——| — /, 2);
+  return (
+    <article className="editorial-action-row">
+      <span className="editorial-action-number">{String(index + 1).padStart(2, "0")}</span>
+      <h3>{parts[0]}</h3>
+      <div><p>{parts[1] ?? text}</p><small>{meta}</small></div>
+    </article>
+  );
+}
+
 function App() {
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [galleryView, setGalleryView] = useState<GalleryView>(0);
-  const [perspective, setPerspective] = useState(0);
   const [activeProject, setActiveProject] = useState<number | null>(projectFromUrl);
   const t = content[language];
   const selectedProject = activeProject === null ? null : t.projects[activeProject];
@@ -53,7 +79,6 @@ function App() {
     if (replace) window.history.replaceState({ portfolioProject: true }, "", url);
     else window.history.pushState({ portfolioProject: true }, "", url);
     setGalleryView(0);
-    setPerspective(0);
     setActiveProject(index);
   }
 
@@ -81,7 +106,7 @@ function App() {
     const nextIndex = (activeProject + 1) % t.projects.length;
 
     return (
-      <div className={`project-detail-shell ${selectedProject.id === "fushi" ? "project-detail-shell--media" : "project-detail-shell--compact"}`} key={selectedProject.id}>
+      <div className={`project-detail-shell ${selectedProject.id === "fushi" ? "project-detail-shell--media" : selectedProject.id === "nextgen" ? "project-detail-shell--case-study project-detail-shell--nextgen" : selectedProject.id === "velocity" ? "project-detail-shell--case-study project-detail-shell--velocity" : "project-detail-shell--case-study project-detail-shell--library"}`} key={selectedProject.id}>
         <aside className="project-detail-panel">
           <div>
             <button className="back-link" onClick={returnHome}><span aria-hidden="true">←</span>{t.backToPortfolio}</button>
@@ -89,6 +114,13 @@ function App() {
             <h1>{selectedProject.title}</h1>
             <p className="detail-panel-role">{selectedProject.role}</p>
             <p className="detail-panel-context">{selectedProject.detail.challenge}</p>
+            <div className={`detail-panel-stack${selectedProject.id === "fushi" ? " detail-panel-stack--fushi" : ""}`}>
+                <span>STACK</span>
+                <ul>{selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+                {selectedProject.id === "fushi" && (
+                  <a className="detail-panel-source" href="https://github.com/Lsxj/fushi-dazi" target="_blank" rel="noreferrer">{selectedProject.link}<Arrow /></a>
+                )}
+            </div>
           </div>
           <div className="detail-panel-footer"><LanguageSwitch /><a href="mailto:lsxj615@foxmail.com">Mail</a><a href="https://github.com/Lsxj" target="_blank" rel="noreferrer">GitHub</a></div>
         </aside>
@@ -100,9 +132,17 @@ function App() {
             <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${t.projects[previousIndex].title}`} title={t.previousProject}>←</button>
             <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${t.projects[nextIndex].title}`} title={t.nextProject}>→</button>
           </nav>
-          <div className="project-narrative">
-            <p className="narrative-ownership">{selectedProject.detail.ownership}</p>
-          </div>
+          {selectedProject.id !== "fushi" ? (
+            <section className="case-study-intro">
+              <p>{t.detailLabels.ownership}</p>
+              <h2>{selectedProject.detail.focus}</h2>
+              <span>{selectedProject.detail.scope}</span>
+            </section>
+          ) : (
+            <div className="project-narrative">
+              <p className="narrative-ownership">{selectedProject.detail.ownership}</p>
+            </div>
+          )}
 
           {selectedProject.id === "fushi" && (
             <div className={`project-gallery gallery-view-${galleryView}`}>
@@ -118,26 +158,56 @@ function App() {
             </div>
           )}
 
-          <div className={`project-actions project-actions--${selectedProject.detail.approach.length}`}>
-            {selectedProject.detail.approach.map((item) => <p key={item}>{item}</p>)}
-          </div>
-          <blockquote className="project-outcome">{selectedProject.result}</blockquote>
-
-          {selectedProject.id === "fushi" && (
-            <div className="perspective-lab">
-              <p>{t.perspectiveTitle}</p>
-              <div className="perspective-tabs" role="tablist">
-                {t.perspectives.map(([title], index) => <button role="tab" aria-selected={perspective === index} className={perspective === index ? "active" : ""} key={title} onClick={() => setPerspective(index)}>{title}</button>)}
+          {selectedProject.id === "nextgen" ? (
+            <div className="enterprise-case">
+              <section className="enterprise-architecture">
+                <span>{language === "zh" ? "01 · 核心全栈实现" : "01 · Full-stack delivery"}</span>
+                <h3>{selectedProject.detail.architectureTitle}</h3>
+                <p>{selectedProject.detail.architectureSummary}</p>
+                <div className="architecture-flow">
+                  {selectedProject.detail.architectureNodes.map((node, index) => (
+                    <div className="architecture-node" key={node[0]}>
+                      <strong>{node[0]}</strong>
+                      <p>{node[1]}</p>
+                      {index === 0 && <i aria-hidden="true">↔</i>}
+                    </div>
+                  ))}
+                </div>
+              </section>
+              <div className="enterprise-evidence">
+                <CaseEvidence text={selectedProject.detail.approach[2]} label={language === "zh" ? "02 · 安全与数据一致性" : "02 · Security & integrity"} />
+                <CaseEvidence text={selectedProject.detail.approach[3]} label={language === "zh" ? "03 · 测试与云原生交付" : "03 · Testing & delivery"} />
               </div>
-              <div className="perspective-content"><span>0{perspective + 1}</span><p>{t.perspectives[perspective][1]}</p></div>
-              <div className="evidence-strip">{t.evidence.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
+            </div>
+          ) : selectedProject.id === "velocity" ? (
+            <div className="velocity-action-list">
+              {selectedProject.detail.approach.map((item, index) => (
+                <EditorialAction text={item} meta={selectedProject.detail.actionMeta[index]} index={index} key={item} />
+              ))}
+            </div>
+          ) : selectedProject.id === "platform" ? (
+            <div className="library-action-list">
+              {selectedProject.detail.approach.map((item, index) => (
+                <EditorialAction text={item} meta={selectedProject.detail.actionMeta[index]} index={index} key={item} />
+              ))}
+            </div>
+          ) : (
+            <div className={`project-actions project-actions--${selectedProject.detail.approach.length}`}>
+              {selectedProject.detail.approach.map((item) => <ActionPoint text={item} key={item} />)}
             </div>
           )}
+          <section className="project-outcome-slide" aria-label={t.detailLabels.impact}>
+            <p>{t.detailLabels.impact}</p>
+            <div className="outcome-editorial">
+              <div className="outcome-primary"><strong>{selectedProject.outcomes[0][0]}</strong><span>{selectedProject.outcomes[0][1]}</span></div>
+              <div className="outcome-support">
+                <h2>{selectedProject.outcomeStatement}</h2>
+                <p>{selectedProject.outcomes[1][1]}</p>
+                <div><span>{selectedProject.outcomes[2][1]}</span><strong>{selectedProject.outcomes[2][0]}</strong></div>
+              </div>
+            </div>
+          </section>
 
-          <div className="project-detail-footer">
-            <ul className="tag-list">{selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
-            {selectedProject.id === "fushi" && <a className="project-link" href="https://github.com/Lsxj/fushi-dazi" target="_blank" rel="noreferrer">{selectedProject.link}<Arrow /></a>}
-          </div>
         </main>
 
       </div>
@@ -202,7 +272,12 @@ function App() {
               <article className={`project project--${project.id}`} key={project.id}>
                 <button className="project-card" onClick={() => showProject(projectIndex)} aria-label={`${t.openProject}: ${project.title}`}>
                   <div className="project-index">0{projectIndex + 1}</div>
-                  <div className="project-card-body"><p className="project-role">{project.role}</p><h3>{project.title}<Arrow /></h3><p className="project-summary">{project.body}</p><ul className="tag-list">{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul></div>
+                  <div className="project-card-body">
+                    <p className="project-role">{project.role}</p>
+                    <h3>{project.title}<Arrow /></h3>
+                    <p className="project-summary">{project.body}</p>
+                    <ul className="tag-list">{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+                  </div>
                   {project.id === "fushi" && <div className="project-thumb"><img src={galleryImages[0]} alt="" /></div>}
                 </button>
               </article>
