@@ -7,8 +7,10 @@ describe("portfolio", () => {
     window.history.replaceState(null, "", "/");
   });
 
-  it("shows the verified featured project and public contact only", () => {
+  it("leads with Citi experience while retaining the verified AI project", () => {
     render(<App />);
+    const projectButtons = screen.getAllByRole("button", { name: /Open project|打开项目/ });
+    expect(projectButtons[0]).toHaveAccessibleName(/CitiDirect NextGen/);
     expect(screen.getByRole("heading", { name: /Baby Food Buddy|辅食搭子/ })).toBeInTheDocument();
     expect(screen.getByText(/live AI agent product|已经上线的 AI Agent/)).toBeInTheDocument();
     expect(screen.getByText(/300\+ users|300\+ 用户/)).toBeInTheDocument();
@@ -31,13 +33,13 @@ describe("portfolio", () => {
 
   it("navigates through project pages without a modal", () => {
     render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: /Open project: Baby Food Buddy|打开项目: 辅食搭子/ }));
-    expect(screen.getByRole("heading", { level: 1, name: /Baby Food Buddy|辅食搭子/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Open project: CitiDirect NextGen|打开项目: CitiDirect NextGen/ }));
+    expect(screen.getByRole("heading", { level: 1, name: "CitiDirect NextGen" })).toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(window.location.search).toContain("project=fushi");
+    expect(window.location.search).toContain("project=nextgen");
 
     fireEvent.click(screen.getByRole("button", { name: /Next project|下一个项目/ }));
-    expect(screen.getByRole("heading", { level: 1, name: "CitiDirect NextGen" })).toBeInTheDocument();
-    expect(window.location.search).toContain("project=nextgen");
+    expect(screen.getByRole("heading", { level: 1, name: /Citi Velocity Search/ })).toBeInTheDocument();
+    expect(window.location.search).toContain("project=velocity");
   });
 });

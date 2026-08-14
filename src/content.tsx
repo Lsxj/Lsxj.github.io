@@ -111,13 +111,13 @@ export const content = {
     ],
     galleryAlt: ["Baby Food Buddy product overview poster showing the mini-program and its core features", "Illustrated poster explaining four everyday complementary-feeding challenges for parents", "Baby Food Buddy home-screen guide showing daily meal and reaction-tracking features", "Baby Food Buddy web support console showing the case queue and selected case details"],
     journeyTitle: "Engineering journey",
-    journeyIntro: "I started out building front-end experiences, gradually took on larger systems and teams, and eventually turned a problem from my own life into a product used by real families.",
+    journeyIntro: "My core experience comes from building and leading enterprise systems at Citi; more recently, I have extended that foundation by taking an AI agent product from idea to real-world use.",
     journey: [
-      { period: "2026—Now", title: "Building an AI agent product independently", body: "Designed and launched Baby Food Buddy, combining a user-facing AI agent with an AI-native workflow for building, testing and iteration.", stages: [] },
       { period: "2017—Present", title: "Citi · AVP / Senior Software Engineer", body: "Grew from an individual contributor into a Tech Lead and people manager, while staying hands-on with the systems my teams deliver.", stages: [
         ["Today", "Building and leading across the stack", "Develop core backend and frontend features, guide a China–India team, and work with global partners to move a complex banking platform forward safely."],
         ["Earlier years", "Making front ends faster and easier to build", "Rebuilt a high-traffic search experience and helped create reusable React components for several business lines."],
       ] },
+      { period: "2026—Now", title: "Extending my full-stack work into AI agents", body: "Designed and launched Baby Food Buddy, combining a user-facing AI agent with an AI-native workflow for building, testing and iteration.", stages: [] },
       { period: "2013—2017", title: "Xiamen University", body: "Studied Software Engineering and Economics, learning to look at products from both a technical and business perspective.", stages: [] },
     ],
     contactTitle: "Let’s build something dependable.",
@@ -232,13 +232,13 @@ export const content = {
     galleryCaptions: ["辅食搭子把每日安排、食材排敏、不适回溯和冰箱库存整合进一个微信小程序。", "产品来自新手父母每天面对的真实问题：今天吃什么、哪些食材试过、宝宝不舒服可能与什么有关，以及冰箱里还剩什么。", "首页把今日安排、进度、不适记录、辅食建议和明日预告整理成一张可以直接执行的清单。", "只有在用户授权后才会上报问题，并仅携带调查所需的必要诊断信息。支持人员可以查看证据、升级安全审核并记录处理结论，但不能修改家庭过敏档案。"],
     galleryAlt: ["展示辅食搭子小程序及核心功能的产品概览海报", "说明新手父母四类日常辅食难题的插画海报", "展示每日辅食安排与不适记录功能的辅食搭子首页说明图", "展示工单队列与选中工单详情的辅食搭子 Web 支持控制台"],
     journeyTitle: "成长路径",
-    journeyIntro: "我从前端开发起步，后来开始负责更复杂的系统和更大的团队，也把生活中遇到的问题真正做成了有人使用的产品。",
+    journeyIntro: "我的核心经验来自花旗企业级系统的开发与技术管理；最近，我也在这套工程基础上继续拓展 AI Agent 的产品实践。",
     journey: [
-      { period: "2026—至今", title: "独立构建 AI Agent 产品", body: "独立设计并发布“辅食搭子”，将面向用户的 AI Agent 与用于开发、测试和迭代的 AI-native 工作流结合起来。", stages: [] },
       { period: "2017—至今", title: "花旗 · AVP / 高级软件工程师", body: "从一线开发逐步成长为 Tech Lead 和 People Manager，同时始终参与团队负责系统的核心开发。", stages: [
         ["现在", "一边做核心开发，一边带领团队", "负责关键的前后端功能，带领中印团队，并与全球多个团队合作，稳步推进复杂银行平台的改造。"],
         ["早期", "把前端做得更快、更好用", "重构高流量搜索体验，也参与建设供多条业务线复用的 React 组件库。"],
       ] },
+      { period: "2026—至今", title: "将全栈经验拓展到 AI Agent", body: "独立设计并发布“辅食搭子”，将面向用户的 AI Agent 与用于开发、测试和迭代的 AI-native 工作流结合起来。", stages: [] },
       { period: "2013—2017", title: "厦门大学", body: "修读软件工程与经济学双学位，开始习惯同时从技术实现和业务价值理解产品。", stages: [] },
     ],
     contactTitle: "一起构建经得起长期使用的软件。",

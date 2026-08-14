@@ -10,7 +10,7 @@ function initialLanguage(): Language {
 }
 
 const anchors = ["about", "journey", "projects", "contact"];
-const projectIds = ["fushi", "nextgen", "velocity", "platform"];
+const projectIds = ["nextgen", "velocity", "platform", "fushi"];
 const galleryImages = ["/assets/fushi-overview.jpg", "/assets/fushi-pain-points.jpg", "/assets/fushi-home-guide.jpg", "/assets/fushi-support.jpg"];
 
 function projectFromUrl() {
@@ -55,7 +55,8 @@ function App() {
   const [galleryView, setGalleryView] = useState<GalleryView>(0);
   const [activeProject, setActiveProject] = useState<number | null>(projectFromUrl);
   const t = content[language];
-  const selectedProject = activeProject === null ? null : t.projects[activeProject];
+  const projects = [...t.projects].sort((a, b) => projectIds.indexOf(a.id) - projectIds.indexOf(b.id));
+  const selectedProject = activeProject === null ? null : projects[activeProject];
 
   useEffect(() => {
     document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
@@ -102,15 +103,15 @@ function App() {
   }
 
   if (selectedProject && activeProject !== null) {
-    const previousIndex = (activeProject - 1 + t.projects.length) % t.projects.length;
-    const nextIndex = (activeProject + 1) % t.projects.length;
+    const previousIndex = (activeProject - 1 + projects.length) % projects.length;
+    const nextIndex = (activeProject + 1) % projects.length;
 
     return (
       <div className={`project-detail-shell ${selectedProject.id === "fushi" ? "project-detail-shell--media" : selectedProject.id === "nextgen" ? "project-detail-shell--case-study project-detail-shell--nextgen" : selectedProject.id === "velocity" ? "project-detail-shell--case-study project-detail-shell--velocity" : "project-detail-shell--case-study project-detail-shell--library"}`} key={selectedProject.id}>
         <aside className="project-detail-panel">
           <div>
             <button className="back-link" onClick={returnHome}><span aria-hidden="true">←</span>{t.backToPortfolio}</button>
-            <p className="detail-panel-label">{t.projectPageLabel} · {String(activeProject + 1).padStart(2, "0")}/{String(t.projects.length).padStart(2, "0")}</p>
+            <p className="detail-panel-label">{t.projectPageLabel} · {String(activeProject + 1).padStart(2, "0")}/{String(projects.length).padStart(2, "0")}</p>
             <h1>{selectedProject.title}</h1>
             <p className="detail-panel-role">{selectedProject.role}</p>
             <p className="detail-panel-context">{selectedProject.detail.challenge}</p>
@@ -127,10 +128,10 @@ function App() {
 
         <main className="project-detail-main">
           <nav className="detail-slide-controls" aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
-            <span>{String(activeProject + 1).padStart(2, "0")} / {String(t.projects.length).padStart(2, "0")}</span>
-            <div className="slide-dots" aria-hidden="true">{t.projects.map((project, index) => <i className={index === activeProject ? "active" : ""} key={project.id} />)}</div>
-            <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${t.projects[previousIndex].title}`} title={t.previousProject}>←</button>
-            <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${t.projects[nextIndex].title}`} title={t.nextProject}>→</button>
+            <span>{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+            <div className="slide-dots" aria-hidden="true">{projects.map((project, index) => <i className={index === activeProject ? "active" : ""} key={project.id} />)}</div>
+            <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
+            <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
           </nav>
           {selectedProject.id !== "fushi" ? (
             <section className="case-study-intro">
@@ -268,7 +269,7 @@ function App() {
         <section id="projects" className="projects-section">
           <div className="section-heading-row"><h2 className="section-title">{t.projectsTitle}</h2><p>{t.projectsHint}</p></div>
           <div className="project-list">
-            {t.projects.map((project, projectIndex) => (
+            {projects.map((project, projectIndex) => (
               <article className={`project project--${project.id}`} key={project.id}>
                 <button className="project-card" onClick={() => showProject(projectIndex)} aria-label={`${t.openProject}: ${project.title}`}>
                   <div className="project-index">0{projectIndex + 1}</div>
