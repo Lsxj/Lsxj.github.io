@@ -35,7 +35,10 @@ describe("portfolio", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Open project: CitiDirect NextGen|打开项目: CitiDirect NextGen/ }));
     expect(screen.getByRole("heading", { level: 1, name: "CitiDirect NextGen" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Connected Persona-based entitlements to automated onboarding|贯通 Persona 权限模型与全自动开户/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Rebuilt how corporate access is created and assigned|重新设计企业客户的开户与权限分配方式/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /02Migration & production|02迁移与生产/ }));
+    expect(screen.getByText("Authorization Server")).toBeInTheDocument();
+    expect(screen.getByText(/Shared Spring Security JAR|共享 Spring Security JAR/)).toBeInTheDocument();
     expect(screen.getByText("100+ → 0")).toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(window.location.search).toContain("project=nextgen");

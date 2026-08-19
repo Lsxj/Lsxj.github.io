@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { content, type Language } from "./content";
 
 type GalleryView = 0 | 1 | 2 | 3;
+type NextgenView = 0 | 1;
 
 function initialLanguage(): Language {
   const stored = window.localStorage.getItem("portfolio-language");
@@ -50,9 +51,26 @@ function EditorialAction({ text, meta, index }: { text: string; meta: string; in
   );
 }
 
+function OutcomeSlide({ label, statement, outcomes }: { label: string; statement: string; outcomes: readonly (readonly [string, string])[] }) {
+  return (
+    <section className="project-outcome-slide" aria-label={label}>
+      <p>{label}</p>
+      <div className="outcome-editorial">
+        <div className="outcome-primary"><strong>{outcomes[0][0]}</strong><span>{outcomes[0][1]}</span></div>
+        <div className="outcome-support">
+          <h2>{statement}</h2>
+          <p>{outcomes[1][1]}</p>
+          <div><span>{outcomes[2][1]}</span><strong>{outcomes[2][0]}</strong></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [galleryView, setGalleryView] = useState<GalleryView>(0);
+  const [nextgenView, setNextgenView] = useState<NextgenView>(0);
   const [activeProject, setActiveProject] = useState<number | null>(projectFromUrl);
   const t = content[language];
   const projects = [...t.projects].sort((a, b) => projectIds.indexOf(a.id) - projectIds.indexOf(b.id));
@@ -80,6 +98,7 @@ function App() {
     if (replace) window.history.replaceState({ portfolioProject: true }, "", url);
     else window.history.pushState({ portfolioProject: true }, "", url);
     setGalleryView(0);
+    setNextgenView(0);
     setActiveProject(index);
   }
 
@@ -133,17 +152,17 @@ function App() {
             <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
             <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
           </nav>
-          {selectedProject.id !== "fushi" ? (
+          {selectedProject.id !== "fushi" && selectedProject.id !== "nextgen" ? (
             <section className="case-study-intro">
               <p>{t.detailLabels.ownership}</p>
               <h2>{selectedProject.detail.focus}</h2>
               <span>{selectedProject.detail.scope}</span>
             </section>
-          ) : (
+          ) : selectedProject.id === "fushi" ? (
             <div className="project-narrative">
               <p className="narrative-ownership">{selectedProject.detail.ownership}</p>
             </div>
-          )}
+          ) : null}
 
           {selectedProject.id === "fushi" && (
             <div className={`project-gallery gallery-view-${galleryView}`}>
@@ -160,25 +179,72 @@ function App() {
           )}
 
           {selectedProject.id === "nextgen" ? (
-            <div className="enterprise-case">
-              <section className="enterprise-architecture">
-                <span>{language === "zh" ? "01 · 核心全栈实现" : "01 · Full-stack delivery"}</span>
-                <h3>{selectedProject.detail.architectureTitle}</h3>
-                <p>{selectedProject.detail.architectureSummary}</p>
-                <div className="architecture-flow">
-                  {selectedProject.detail.architectureNodes.map((node, index) => (
-                    <div className="architecture-node" key={node[0]}>
-                      <strong>{node[0]}</strong>
-                      <p>{node[1]}</p>
-                      {index === 0 && <i aria-hidden="true">↔</i>}
+            <div className="nextgen-case-study">
+              <nav className="case-page-switcher" aria-label={language === "zh" ? "CitiDirect 案例页" : "CitiDirect case-study pages"}>
+                {selectedProject.detail.casePages.map((page, index) => (
+                  <button className={nextgenView === index ? "active" : ""} onClick={() => setNextgenView(index as NextgenView)} aria-pressed={nextgenView === index} key={page}>
+                    <span>0{index + 1}</span>{page}
+                  </button>
+                ))}
+              </nav>
+
+              {nextgenView === 0 ? (
+                <div className="nextgen-page nextgen-page--solution">
+                  <section className="case-study-intro nextgen-page-intro">
+                    <p>{t.detailLabels.ownership}</p>
+                    <h2>{selectedProject.detail.focus}</h2>
+                    <span>{selectedProject.detail.scope}</span>
+                  </section>
+                  <section className="nextgen-model">
+                    <div className="nextgen-section-heading">
+                      <span>{language === "zh" ? "权限模型" : "Entitlement model"}</span>
+                      <h3>{selectedProject.detail.architectureTitle}</h3>
+                      <p>{selectedProject.detail.architectureSummary}</p>
                     </div>
-                  ))}
+                    <div className="nextgen-comparison">
+                      {selectedProject.detail.architectureNodes.map((node, index) => (
+                        <article className={index === 1 ? "is-after" : ""} key={node[0]}>
+                          <strong>{node[0]}</strong><p>{node[1]}</p>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                  <section className="nextgen-onboarding">
+                    <div className="nextgen-section-heading compact">
+                      <span>{language === "zh" ? "全自动开户" : "Automated onboarding"}</span>
+                      <h3>{language === "zh" ? "从 CRM 事件贯通至 Persona 权限分配" : "From CRM event to Persona access assignment"}</h3>
+                    </div>
+                    <ol>{selectedProject.detail.onboardingFlow.map((step) => <li key={step}>{step}</li>)}</ol>
+                  </section>
+                  <div className="nextgen-scale">{selectedProject.detail.scaleMetrics.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
                 </div>
-              </section>
-              <div className="enterprise-evidence">
-                <CaseEvidence text={selectedProject.detail.approach[2]} label={language === "zh" ? "02 · 数据驱动迁移" : "02 · Data-driven migration"} />
-                <CaseEvidence text={selectedProject.detail.approach[3]} label={language === "zh" ? "03 · 授权与安全门禁" : "03 · Authorization & security"} />
-              </div>
+              ) : (
+                <div className="nextgen-page nextgen-page--delivery">
+                  <section className="case-study-intro nextgen-page-intro">
+                    <p>{language === "zh" ? "迁移与生产" : "Migration & production"}</p>
+                    <h2>{selectedProject.detail.deliveryTitle}</h2>
+                    <span>{selectedProject.detail.deliverySummary}</span>
+                  </section>
+                  <section className="nextgen-migration">
+                    <div className="nextgen-section-heading compact">
+                      <span>{language === "zh" ? "数据驱动迁移" : "Data-driven migration"}</span>
+                      <h3>{language === "zh" ? "以生产数据制定规则，逐阶段验证上线" : "Production data informed each migration rule and rollout phase"}</h3>
+                    </div>
+                    <ol>{selectedProject.detail.migrationSteps.map((step) => <li key={step}>{step}</li>)}</ol>
+                  </section>
+                  <section className="nextgen-security">
+                    <div className="nextgen-section-heading compact">
+                      <span>{language === "zh" ? "授权与安全治理" : "Authorization & security"}</span>
+                      <h3>{language === "zh" ? "两个独立的授权能力，共用自动化安全门禁" : "Two separate authorization capabilities with shared security gates"}</h3>
+                    </div>
+                    <div className="nextgen-security-tracks">
+                      {selectedProject.detail.securityTracks.map(([title, body]) => <article key={title}><strong>{title}</strong><p>{body}</p></article>)}
+                    </div>
+                    <p className="nextgen-security-tools">{selectedProject.detail.securityTools}</p>
+                  </section>
+                  <OutcomeSlide label={t.detailLabels.impact} statement={selectedProject.outcomeStatement} outcomes={selectedProject.outcomes} />
+                </div>
+              )}
             </div>
           ) : selectedProject.id === "velocity" ? (
             <div className="velocity-action-list">
@@ -197,17 +263,7 @@ function App() {
               {selectedProject.detail.approach.map((item) => <ActionPoint text={item} key={item} />)}
             </div>
           )}
-          <section className="project-outcome-slide" aria-label={t.detailLabels.impact}>
-            <p>{t.detailLabels.impact}</p>
-            <div className="outcome-editorial">
-              <div className="outcome-primary"><strong>{selectedProject.outcomes[0][0]}</strong><span>{selectedProject.outcomes[0][1]}</span></div>
-              <div className="outcome-support">
-                <h2>{selectedProject.outcomeStatement}</h2>
-                <p>{selectedProject.outcomes[1][1]}</p>
-                <div><span>{selectedProject.outcomes[2][1]}</span><strong>{selectedProject.outcomes[2][0]}</strong></div>
-              </div>
-            </div>
-          </section>
+          {selectedProject.id !== "nextgen" && <OutcomeSlide label={t.detailLabels.impact} statement={selectedProject.outcomeStatement} outcomes={selectedProject.outcomes} />}
 
         </main>
 
