@@ -26,7 +26,7 @@ describe("portfolio", () => {
     expect(screen.getByText(/直接管理和辅导 6 名中国工程师/)).toBeInTheDocument();
     expect(screen.getByText("2017—至今")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "花旗 · AVP / 高级软件工程师" })).toBeInTheDocument();
-    expect(screen.getByText(/150 个国家的近 10 万名机构投资者/)).toBeInTheDocument();
+    expect(screen.getByText(/150 个国家近 10 万名机构投资者/)).toBeInTheDocument();
     expect(screen.getByText(/2018\.07—2019\.01/)).toBeInTheDocument();
     expect(window.localStorage.getItem("portfolio-language")).toBe("zh");
   });
@@ -35,16 +35,18 @@ describe("portfolio", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Open project: CitiDirect NextGen|打开项目: CitiDirect NextGen/ }));
     expect(screen.getByRole("heading", { level: 1, name: "CitiDirect NextGen" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Rebuilt how corporate access is created and assigned|重新设计企业客户的开户与权限分配方式/ })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: /02Migration & production|02迁移与生产/ }));
-    expect(screen.getByText("Authorization Server")).toBeInTheDocument();
-    expect(screen.getByText(/Shared Spring Security JAR|共享 Spring Security JAR/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Selected contributions|我的核心贡献/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Shaped the full-stack architecture|共同设计全栈技术架构/ })).toBeInTheDocument();
+    expect(screen.getByText(/Authorization Server/)).toBeInTheDocument();
+    expect(screen.getByText(/Spring Security JAR/)).toBeInTheDocument();
     expect(screen.getByText("100+ → 0")).toBeInTheDocument();
+    expect(screen.getByText(/end-to-end administration journey in production|端到端用户管理链路投入生产/)).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: /CitiDirect case-study pages|CitiDirect 案例页/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(window.location.search).toContain("project=nextgen");
 
     fireEvent.click(screen.getByRole("button", { name: /Next project|下一个项目/ }));
-    expect(screen.getByRole("heading", { level: 1, name: /Citi Velocity Search/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: /Citi Velocity Content & Search/ })).toBeInTheDocument();
     expect(window.location.search).toContain("project=velocity");
   });
 });

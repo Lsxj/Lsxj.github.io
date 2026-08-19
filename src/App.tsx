@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { content, type Language } from "./content";
 
 type GalleryView = 0 | 1 | 2 | 3;
-type NextgenView = 0 | 1;
 
 function initialLanguage(): Language {
   const stored = window.localStorage.getItem("portfolio-language");
@@ -24,53 +23,9 @@ function Arrow() {
   return <span aria-hidden="true">↗</span>;
 }
 
-function ActionPoint({ text }: { text: string }) {
-  const parts = text.split(/——| — /, 2);
-  if (parts.length < 2) return <p>{text}</p>;
-  return <p><strong>{parts[0]}</strong><span>{parts[1]}</span></p>;
-}
-
-function CaseEvidence({ text, label }: { text: string; label: string }) {
-  const parts = text.split(/——| — /, 2);
-  return (
-    <article className="case-evidence-row">
-      <div><span>{label}</span><h3>{parts[0]}</h3></div>
-      <p>{parts[1] ?? text}</p>
-    </article>
-  );
-}
-
-function EditorialAction({ text, meta, index }: { text: string; meta: string; index: number }) {
-  const parts = text.split(/——| — /, 2);
-  return (
-    <article className="editorial-action-row">
-      <span className="editorial-action-number">{String(index + 1).padStart(2, "0")}</span>
-      <h3>{parts[0]}</h3>
-      <div><p>{parts[1] ?? text}</p><small>{meta}</small></div>
-    </article>
-  );
-}
-
-function OutcomeSlide({ label, statement, outcomes }: { label: string; statement: string; outcomes: readonly (readonly [string, string])[] }) {
-  return (
-    <section className="project-outcome-slide" aria-label={label}>
-      <p>{label}</p>
-      <div className="outcome-editorial">
-        <div className="outcome-primary"><strong>{outcomes[0][0]}</strong><span>{outcomes[0][1]}</span></div>
-        <div className="outcome-support">
-          <h2>{statement}</h2>
-          <p>{outcomes[1][1]}</p>
-          <div><span>{outcomes[2][1]}</span><strong>{outcomes[2][0]}</strong></div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function App() {
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [galleryView, setGalleryView] = useState<GalleryView>(0);
-  const [nextgenView, setNextgenView] = useState<NextgenView>(0);
   const [activeProject, setActiveProject] = useState<number | null>(projectFromUrl);
   const t = content[language];
   const projects = [...t.projects].sort((a, b) => projectIds.indexOf(a.id) - projectIds.indexOf(b.id));
@@ -98,7 +53,6 @@ function App() {
     if (replace) window.history.replaceState({ portfolioProject: true }, "", url);
     else window.history.pushState({ portfolioProject: true }, "", url);
     setGalleryView(0);
-    setNextgenView(0);
     setActiveProject(index);
   }
 
@@ -125,148 +79,255 @@ function App() {
     const previousIndex = (activeProject - 1 + projects.length) % projects.length;
     const nextIndex = (activeProject + 1) % projects.length;
 
+    if (selectedProject.id === "nextgen") {
+      return (
+        <div className="nextgen-deck" key={selectedProject.id}>
+          <header className="nextgen-deck-header">
+            <div className="nextgen-deck-primary">
+              <button className="back-link" onClick={returnHome}><span aria-hidden="true">←</span>{t.backToPortfolio}</button>
+              <div className="nextgen-deck-controls">
+                <LanguageSwitch />
+                <nav aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
+                  <span>{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                  <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
+                  <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
+                </nav>
+              </div>
+            </div>
+
+          </header>
+
+          <main className="nextgen-deck-main">
+            <div className="nextgen-page nextgen-page--solution">
+              <section className="nextgen-slide-hero">
+                <div className="nextgen-hero-title">
+                  <p>{language === "zh" ? "01 · 核心项目 / 用户与权限管理" : "01 · Core project / User & Entitlements"}</p>
+                  <h1>{selectedProject.title}</h1>
+                  <strong>{selectedProject.detail.focus}</strong>
+                  <span>{selectedProject.role}</span>
+                </div>
+                <aside className="nextgen-hero-context">
+                  <p>{language === "zh" ? "项目背景" : "Project context"}</p>
+                  <span>{selectedProject.detail.challenge}</span>
+                  <strong>{selectedProject.detail.scope}</strong>
+                </aside>
+              </section>
+              <section className="nextgen-results">
+                <span>{language === "zh" ? "关键成果" : "Selected outcomes"}</span>
+                <div className="nextgen-proof-strip nextgen-proof-strip--results">{selectedProject.detail.scaleMetrics.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
+              </section>
+              <section className="nextgen-contributions">
+                <div className="nextgen-contributions-heading">
+                  <h3>{language === "zh" ? "我的核心贡献" : "Selected contributions"}</h3>
+                </div>
+                <div className="nextgen-contribution-grid">
+                  {selectedProject.detail.contributions.map(([title, body], index) => (
+                    <article key={title}>
+                      <span>0{index + 1}</span>
+                      <h4>{title}</h4>
+                      <p>{body}</p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+              <ul className="nextgen-stack-rail">{selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    if (selectedProject.id === "velocity") {
+      const velocityMetrics = language === "zh"
+        ? [["≈60%", "首屏等待与白屏时间降幅"], ["端到端", "Typeahead 至完整搜索结果页"], ["Golden + Silver", "2019 / 2021 Citi Gratitude Awards"], ["技术分享", "公司级工程大会演讲"]] as const
+        : [["≈60%", "less initial wait and blank-screen time"], ["End-to-end", "typeahead through the complete results page"], ["Golden + Silver", "2019 / 2021 Citi Gratitude Awards"], ["Tech talk", "company-wide engineering conference"]] as const;
+
+      return (
+        <div className="nextgen-deck velocity-deck" key={selectedProject.id}>
+          <header className="nextgen-deck-header">
+            <div className="nextgen-deck-primary">
+              <button className="back-link" onClick={returnHome}><span aria-hidden="true">←</span>{t.backToPortfolio}</button>
+              <div className="nextgen-deck-controls">
+                <LanguageSwitch />
+                <nav aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
+                  <span>{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                  <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
+                  <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
+                </nav>
+              </div>
+            </div>
+          </header>
+
+          <main className="nextgen-deck-main">
+            <div className="nextgen-page nextgen-page--solution">
+              <section className="nextgen-slide-hero">
+                <div className="nextgen-hero-title">
+                  <p>{language === "zh" ? "02 · 核心项目 / 机构搜索与前端现代化" : "02 · Core project / Institutional search"}</p>
+                  <h1>{selectedProject.title}</h1>
+                  <strong>{selectedProject.detail.focus}</strong>
+                  <span>{selectedProject.role}</span>
+                </div>
+                <aside className="nextgen-hero-context">
+                  <p>{language === "zh" ? "项目背景" : "Project context"}</p>
+                  <span>{selectedProject.detail.challenge}</span>
+                  <strong>{selectedProject.detail.scope}</strong>
+                </aside>
+              </section>
+
+              <section className="nextgen-results">
+                <span>{language === "zh" ? "关键成果" : "Selected outcomes"}</span>
+                <div className="nextgen-proof-strip nextgen-proof-strip--results">{velocityMetrics.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
+              </section>
+
+              <section className="nextgen-contributions">
+                <div className="nextgen-contributions-heading"><h3>{language === "zh" ? "我的核心贡献" : "Selected contributions"}</h3></div>
+                <div className="nextgen-contribution-grid">
+                  {selectedProject.detail.approach.map((item, index) => {
+                    const [title, body = item] = item.split(/——| — /, 2);
+                    const displayBody = body.charAt(0).toUpperCase() + body.slice(1);
+                    return <article key={item}><span>0{index + 1}</span><h4>{title}</h4><p>{displayBody}</p><small>{selectedProject.detail.actionMeta[index]}</small></article>;
+                  })}
+                </div>
+              </section>
+              <ul className="nextgen-stack-rail">{selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    if (selectedProject.id === "platform") {
+      const platformMetrics = language === "zh"
+        ? [["3 条业务线", "采用同一套组件库"], ["8 种主题", "覆盖 4 套界面规范"]] as const
+        : [["3 business lines", "adopted the shared library"], ["8 themes", "across 4 interface standards"]] as const;
+
+      return (
+        <div className="nextgen-deck platform-deck" key={selectedProject.id}>
+          <header className="nextgen-deck-header">
+            <div className="nextgen-deck-primary">
+              <button className="back-link" onClick={returnHome}><span aria-hidden="true">←</span>{t.backToPortfolio}</button>
+              <div className="nextgen-deck-controls">
+                <LanguageSwitch />
+                <nav aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
+                  <span>{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                  <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
+                  <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
+                </nav>
+              </div>
+            </div>
+          </header>
+
+          <main className="nextgen-deck-main">
+            <div className="nextgen-page nextgen-page--solution">
+              <section className="nextgen-slide-hero">
+                <div className="nextgen-hero-title">
+                  <p>{language === "zh" ? "03 · 工程基础设施 / 共享组件库" : "03 · Engineering foundation / Shared UI library"}</p>
+                  <h1>{selectedProject.title}</h1>
+                  <strong>{selectedProject.detail.focus}</strong>
+                  <span>{selectedProject.role}</span>
+                </div>
+                <aside className="nextgen-hero-context">
+                  <p>{language === "zh" ? "项目背景" : "Project context"}</p>
+                  <span>{selectedProject.detail.challenge}</span>
+                  <strong>{selectedProject.detail.scope}</strong>
+                </aside>
+              </section>
+
+              <section className="nextgen-results">
+                <span>{language === "zh" ? "关键成果" : "Selected outcomes"}</span>
+                <div className="nextgen-proof-strip nextgen-proof-strip--results">{platformMetrics.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
+              </section>
+
+              <section className="nextgen-contributions">
+                <div className="nextgen-contributions-heading"><h3>{language === "zh" ? "我的核心贡献" : "Selected contributions"}</h3></div>
+                <div className="nextgen-contribution-grid">
+                  {selectedProject.detail.approach.map((item, index) => {
+                    const [title, body = item] = item.split(/——| — /, 2);
+                    const displayBody = body.charAt(0).toUpperCase() + body.slice(1);
+                    return <article key={item}><span>0{index + 1}</span><h4>{title}</h4><p>{displayBody}</p><small>{selectedProject.detail.actionMeta[index]}</small></article>;
+                  })}
+                </div>
+              </section>
+              <ul className="nextgen-stack-rail">{selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    const fushiMetrics = language === "zh"
+      ? [["300+", "截至 2026 年 8 月累计用户"], ["已上线", "AI 辅食规划与健康记录投入真实使用"], ["90%+", "API 与 React 自动化测试覆盖"]] as const
+      : [["300+", "cumulative users by Aug 2026"], ["Live", "AI planning and health tracking in production"], ["90%+", "automated API and React test coverage"]] as const;
+
     return (
-      <div className={`project-detail-shell ${selectedProject.id === "fushi" ? "project-detail-shell--media" : selectedProject.id === "nextgen" ? "project-detail-shell--case-study project-detail-shell--nextgen" : selectedProject.id === "velocity" ? "project-detail-shell--case-study project-detail-shell--velocity" : "project-detail-shell--case-study project-detail-shell--library"}`} key={selectedProject.id}>
-        <aside className="project-detail-panel">
-          <div>
+      <div className="nextgen-deck fushi-deck" key={selectedProject.id}>
+        <header className="nextgen-deck-header">
+          <div className="nextgen-deck-primary">
             <button className="back-link" onClick={returnHome}><span aria-hidden="true">←</span>{t.backToPortfolio}</button>
-            <p className="detail-panel-label">{t.projectPageLabel} · {String(activeProject + 1).padStart(2, "0")}/{String(projects.length).padStart(2, "0")}</p>
-            <h1>{selectedProject.title}</h1>
-            <p className="detail-panel-role">{selectedProject.role}</p>
-            <p className="detail-panel-context">{selectedProject.detail.challenge}</p>
-            <div className={`detail-panel-stack${selectedProject.id === "fushi" ? " detail-panel-stack--fushi" : ""}`}>
-                <span>STACK</span>
-                <ul>{selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
-                {selectedProject.id === "fushi" && (
-                  <a className="detail-panel-source" href="https://github.com/Lsxj/fushi-dazi" target="_blank" rel="noreferrer">{selectedProject.link}<Arrow /></a>
-                )}
+            <div className="nextgen-deck-controls">
+              <LanguageSwitch />
+              <nav aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
+                <span>{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
+                <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
+              </nav>
             </div>
           </div>
-          <div className="detail-panel-footer"><LanguageSwitch /><a href="mailto:lsxj615@foxmail.com">Mail</a><a href="https://github.com/Lsxj" target="_blank" rel="noreferrer">GitHub</a></div>
-        </aside>
+        </header>
 
-        <main className="project-detail-main">
-          <nav className="detail-slide-controls" aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
-            <span>{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-            <div className="slide-dots" aria-hidden="true">{projects.map((project, index) => <i className={index === activeProject ? "active" : ""} key={project.id} />)}</div>
-            <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
-            <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
-          </nav>
-          {selectedProject.id !== "fushi" && selectedProject.id !== "nextgen" ? (
-            <section className="case-study-intro">
-              <p>{t.detailLabels.ownership}</p>
-              <h2>{selectedProject.detail.focus}</h2>
-              <span>{selectedProject.detail.scope}</span>
-            </section>
-          ) : selectedProject.id === "fushi" ? (
-            <div className="project-narrative">
-              <p className="narrative-ownership">{selectedProject.detail.ownership}</p>
-            </div>
-          ) : null}
+        <main className="nextgen-deck-main">
+          <div className="nextgen-page nextgen-page--solution">
+            <section className="fushi-spotlight">
+              <div className="fushi-spotlight-copy">
+                <p>{language === "zh" ? "04 · 独立产品 / AI Agent" : "04 · Independent product / AI agent"}</p>
+                <h1>{selectedProject.title}</h1>
+                <strong>{language === "zh" ? "独立设计并上线一款已有 300+ 用户使用的 AI Agent 产品" : "Sole-built and launched a production AI agent used by 300+ users"}</strong>
+                <p className="fushi-problem">{language === "zh" ? "把每日辅食安排、食材尝试记录和不适回溯放进同一套产品流程，并让 AI 只在明确的安全规则内提供帮助。" : "One product brings meal planning, food-introduction tracking and reaction history together, while allowing AI to act only within explicit safety rules."}</p>
+                <span>{language === "zh" ? "独立全栈 / AI 工程师 · 覆盖产品、开发、测试、部署与线上排障" : "Independent Full-Stack / AI Engineer · Product, engineering, testing and production ownership"}</span>
 
-          {selectedProject.id === "fushi" && (
-            <div className={`project-gallery gallery-view-${galleryView}`}>
-              <div className="gallery-frame"><img src={galleryImages[galleryView]} alt={t.galleryAlt[galleryView]} /></div>
-              <div className="gallery-controls" role="tablist" aria-label={language === "zh" ? "项目画面" : "Project screens"}>
-                {t.galleryTabs.map((tab, index) => (
-                  <button key={tab} role="tab" aria-selected={galleryView === index} className={galleryView === index ? "active" : ""} onClick={() => setGalleryView(index as GalleryView)}>
-                    <span>0{index + 1}</span>{tab}
-                  </button>
-                ))}
+                <div className="fushi-proof-cluster">
+                  <div className="fushi-primary-proof"><strong>{fushiMetrics[0][0]}</strong><span>{fushiMetrics[0][1]}</span></div>
+                  <div className="fushi-secondary-proof">
+                    {fushiMetrics.slice(1).map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}
+                  </div>
+                </div>
               </div>
-              <p className="gallery-caption">{t.galleryCaptions[galleryView]}</p>
-            </div>
-          )}
 
-          {selectedProject.id === "nextgen" ? (
-            <div className="nextgen-case-study">
-              <nav className="case-page-switcher" aria-label={language === "zh" ? "CitiDirect 案例页" : "CitiDirect case-study pages"}>
-                {selectedProject.detail.casePages.map((page, index) => (
-                  <button className={nextgenView === index ? "active" : ""} onClick={() => setNextgenView(index as NextgenView)} aria-pressed={nextgenView === index} key={page}>
-                    <span>0{index + 1}</span>{page}
-                  </button>
-                ))}
-              </nav>
-
-              {nextgenView === 0 ? (
-                <div className="nextgen-page nextgen-page--solution">
-                  <section className="case-study-intro nextgen-page-intro">
-                    <p>{t.detailLabels.ownership}</p>
-                    <h2>{selectedProject.detail.focus}</h2>
-                    <span>{selectedProject.detail.scope}</span>
-                  </section>
-                  <section className="nextgen-model">
-                    <div className="nextgen-section-heading">
-                      <span>{language === "zh" ? "权限模型" : "Entitlement model"}</span>
-                      <h3>{selectedProject.detail.architectureTitle}</h3>
-                      <p>{selectedProject.detail.architectureSummary}</p>
-                    </div>
-                    <div className="nextgen-comparison">
-                      {selectedProject.detail.architectureNodes.map((node, index) => (
-                        <article className={index === 1 ? "is-after" : ""} key={node[0]}>
-                          <strong>{node[0]}</strong><p>{node[1]}</p>
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-                  <section className="nextgen-onboarding">
-                    <div className="nextgen-section-heading compact">
-                      <span>{language === "zh" ? "全自动开户" : "Automated onboarding"}</span>
-                      <h3>{language === "zh" ? "从 CRM 事件贯通至 Persona 权限分配" : "From CRM event to Persona access assignment"}</h3>
-                    </div>
-                    <ol>{selectedProject.detail.onboardingFlow.map((step) => <li key={step}>{step}</li>)}</ol>
-                  </section>
-                  <div className="nextgen-scale">{selectedProject.detail.scaleMetrics.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
+              <section className="fushi-hero-gallery">
+                <p>{language === "zh" ? "真实产品画面" : "Live product experience"}</p>
+                <div className={`project-gallery gallery-view-${galleryView}`}>
+                  <div className="gallery-frame"><img src={galleryImages[galleryView]} alt={t.galleryAlt[galleryView]} /></div>
+                  <div className="gallery-controls" role="tablist" aria-label={language === "zh" ? "项目画面" : "Project screens"}>
+                    {t.galleryTabs.map((tab, index) => (
+                      <button key={tab} role="tab" aria-selected={galleryView === index} className={galleryView === index ? "active" : ""} onClick={() => setGalleryView(index as GalleryView)}>
+                        <span>0{index + 1}</span>{tab}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="gallery-caption">{t.galleryCaptions[galleryView]}</p>
                 </div>
-              ) : (
-                <div className="nextgen-page nextgen-page--delivery">
-                  <section className="case-study-intro nextgen-page-intro">
-                    <p>{language === "zh" ? "迁移与生产" : "Migration & production"}</p>
-                    <h2>{selectedProject.detail.deliveryTitle}</h2>
-                    <span>{selectedProject.detail.deliverySummary}</span>
-                  </section>
-                  <section className="nextgen-migration">
-                    <div className="nextgen-section-heading compact">
-                      <span>{language === "zh" ? "数据驱动迁移" : "Data-driven migration"}</span>
-                      <h3>{language === "zh" ? "以生产数据制定规则，逐阶段验证上线" : "Production data informed each migration rule and rollout phase"}</h3>
-                    </div>
-                    <ol>{selectedProject.detail.migrationSteps.map((step) => <li key={step}>{step}</li>)}</ol>
-                  </section>
-                  <section className="nextgen-security">
-                    <div className="nextgen-section-heading compact">
-                      <span>{language === "zh" ? "授权与安全治理" : "Authorization & security"}</span>
-                      <h3>{language === "zh" ? "两个独立的授权能力，共用自动化安全门禁" : "Two separate authorization capabilities with shared security gates"}</h3>
-                    </div>
-                    <div className="nextgen-security-tracks">
-                      {selectedProject.detail.securityTracks.map(([title, body]) => <article key={title}><strong>{title}</strong><p>{body}</p></article>)}
-                    </div>
-                    <p className="nextgen-security-tools">{selectedProject.detail.securityTools}</p>
-                  </section>
-                  <OutcomeSlide label={t.detailLabels.impact} statement={selectedProject.outcomeStatement} outcomes={selectedProject.outcomes} />
-                </div>
-              )}
-            </div>
-          ) : selectedProject.id === "velocity" ? (
-            <div className="velocity-action-list">
-              {selectedProject.detail.approach.map((item, index) => (
-                <EditorialAction text={item} meta={selectedProject.detail.actionMeta[index]} index={index} key={item} />
-              ))}
-            </div>
-          ) : selectedProject.id === "platform" ? (
-            <div className="library-action-list">
-              {selectedProject.detail.approach.map((item, index) => (
-                <EditorialAction text={item} meta={selectedProject.detail.actionMeta[index]} index={index} key={item} />
-              ))}
-            </div>
-          ) : (
-            <div className={`project-actions project-actions--${selectedProject.detail.approach.length}`}>
-              {selectedProject.detail.approach.map((item) => <ActionPoint text={item} key={item} />)}
-            </div>
-          )}
-          {selectedProject.id !== "nextgen" && <OutcomeSlide label={t.detailLabels.impact} statement={selectedProject.outcomeStatement} outcomes={selectedProject.outcomes} />}
+              </section>
+            </section>
 
+            <section className="fushi-contribution-section">
+              <div className="nextgen-contributions-heading"><h3>{language === "zh" ? "AI 与全栈工程贡献" : "AI & full-stack engineering"}</h3></div>
+              <div className="fushi-contribution-grid">
+                {([0, 2, 1, 3] as const).map((itemIndex, visualIndex) => {
+                  const item = selectedProject.detail.approach[itemIndex];
+                  const [title, body = item] = item.split(/——| — /, 2);
+                  const displayBody = body.charAt(0).toUpperCase() + body.slice(1);
+                  const labels = language === "zh" ? ["AI-NATIVE WORKFLOW", "AI AGENT 安全", "全栈契约", "质量工程"] : ["AI-NATIVE WORKFLOW", "AI AGENT SAFETY", "FULL-STACK CONTRACTS", "QUALITY ENGINEERING"];
+                  return <article className={visualIndex < 2 ? "featured" : "supporting"} key={item}><span>0{visualIndex + 1}</span><small>{labels[visualIndex]}</small><h4>{title}</h4><p>{displayBody}</p></article>;
+                })}
+              </div>
+            </section>
+
+            <div className="fushi-tech-footer">
+              <ul className="nextgen-stack-rail">{selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+              <a href="https://github.com/Lsxj/fushi-dazi" target="_blank" rel="noreferrer">{selectedProject.link}<Arrow /></a>
+            </div>
+          </div>
         </main>
-
       </div>
     );
   }
