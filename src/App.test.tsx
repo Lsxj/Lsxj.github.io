@@ -35,6 +35,8 @@ describe("portfolio", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Open project: CitiDirect NextGen|打开项目: CitiDirect NextGen/ }));
     expect(screen.getByRole("heading", { level: 1, name: "CitiDirect NextGen" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Connected Persona-based entitlements to automated onboarding|贯通 Persona 权限模型与全自动开户/ })).toBeInTheDocument();
+    expect(screen.getByText("100+ → 0")).toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(window.location.search).toContain("project=nextgen");
 

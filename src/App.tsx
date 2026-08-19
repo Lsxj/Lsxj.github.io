@@ -176,8 +176,8 @@ function App() {
                 </div>
               </section>
               <div className="enterprise-evidence">
-                <CaseEvidence text={selectedProject.detail.approach[2]} label={language === "zh" ? "02 · 安全与数据一致性" : "02 · Security & integrity"} />
-                <CaseEvidence text={selectedProject.detail.approach[3]} label={language === "zh" ? "03 · 测试与云原生交付" : "03 · Testing & delivery"} />
+                <CaseEvidence text={selectedProject.detail.approach[2]} label={language === "zh" ? "02 · 数据驱动迁移" : "02 · Data-driven migration"} />
+                <CaseEvidence text={selectedProject.detail.approach[3]} label={language === "zh" ? "03 · 授权与安全门禁" : "03 · Authorization & security"} />
               </div>
             </div>
           ) : selectedProject.id === "velocity" ? (
