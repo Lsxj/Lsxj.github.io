@@ -383,7 +383,7 @@ function App() {
                         : "Entitlements manages access for corporate clients and their users. Within Nextgen, it rebuilds client onboarding and ongoing management, user lifecycle and access assignment while preserving approval and security controls."}</p>
                     </div>
                     <aside className="nextgen-why-scale" aria-label={language === "zh" ? "业务规模" : "Business scale"}>
-                      <span>{language === "zh" ? "平台背景 · 非功能采用量" : "Platform context · not feature adoption"}</span>
+                      <span>{language === "zh" ? "CitiDirect 平台背景" : "CitiDirect platform context"}</span>
                       <div><strong>90K+</strong><small>{language === "zh" ? "家机构" : "organizations"}</small></div>
                       <div><strong>90+</strong><small>{language === "zh" ? "个市场" : "markets"}</small></div>
                     </aside>
@@ -423,7 +423,7 @@ function App() {
               {nextgenSection === "scope" && (
                 <section className="nextgen-overview nextgen-overview--story nextgen-scope-page nextgen-ownership-page">
                   <header className="nextgen-ownership-heading">
-                    <div><p>{language === "zh" ? "02 / 我的角色" : "02 / My role"}</p><h1>{language === "zh" ? "我的角色：技术负责人，也是核心开发者" : "My role: Tech Lead & hands-on engineer"}</h1></div>
+                    <div><p>{language === "zh" ? "02 / 职责边界" : "02 / Ownership"}</p><h1>{language === "zh" ? "我的角色：技术负责人，也是核心开发者" : "My role: Tech Lead & hands-on engineer"}</h1></div>
                   </header>
 
                   <div className="nextgen-team-scope">
@@ -454,9 +454,6 @@ function App() {
                     <div>
                       <p>{language === "zh" ? "03 / 后端与数据" : "03 / Backend & data"}</p>
                       <h1>{language === "zh" ? "跨系统的用户与权限管理" : <>Managing users and access{" "}<br />across systems</>}</h1>
-                      <p className="nextgen-backend-lead">{language === "zh"
-                        ? "经过简化的非保密架构视图：我参与设计服务边界并实现核心用户流程，涵盖审批控制、企业客户范围隔离与下游同步。"
-                        : "Simplified, non-confidential view: I co-designed the service boundaries and implemented core user workflows, with approval controls, client-scoped access and downstream synchronization."}</p>
                     </div>
                     <aside className="nextgen-backend-context">
                       <span>{language === "zh" ? "平台背景" : "Platform context"}</span>
@@ -470,12 +467,13 @@ function App() {
                   </div>
                   <figure className="nextgen-architecture-image" aria-label={language === "zh" ? "经过简化的客户接入与权限服务架构" : "Simplified client onboarding and access service architecture"}>
                     <img
-                      src={language === "zh" ? "/assets/nextgen-architecture-zh.svg?v=10" : "/assets/nextgen-architecture-en.svg?v=10"}
+                      src={language === "zh" ? "/assets/nextgen-architecture-zh.svg?v=25" : "/assets/nextgen-architecture-en.svg?v=26"}
                       alt={language === "zh" ? "经过简化的客户接入、审批、审计与下游同步架构" : "Simplified client onboarding, approval, audit and downstream synchronization architecture"}
                     />
-                    <figcaption className="sr-only">
+                    <figcaption className="nextgen-architecture-note">{language === "zh" ? "经过简化的非保密视图" : "Simplified, non-confidential view"}</figcaption>
+                    <div className="sr-only">
                       <span>Core User Service</span><span>Persona Service</span><span>UI layout metadata</span><span>Criteria Service</span><span>CDC Listener</span><span>Audit Service</span>
-                    </figcaption>
+                    </div>
                   </figure>
                 </section>
               )}
@@ -484,15 +482,14 @@ function App() {
                 <section className="nextgen-case-content">
                   <header className="nextgen-ownership-heading nextgen-backend-heading nextgen-frontend-heading">
                     <div><p>{language === "zh" ? "04 / 前端平台" : "04 / Frontend platform"}</p><h1>{language === "zh" ? "模块化前端中的 Schema 驱动 UI" : "Schema-driven UI on a modular frontend"}</h1></div>
-                    <aside className="nextgen-frontend-context">
-                      <strong>5</strong>
-                      <span>{language === "zh" ? "个 React 应用" : "React applications"}</span>
-                      <small>{language === "zh" ? "1 个 Host + 4 个 Remotes" : "1 host + 4 remotes"}</small>
-                    </aside>
                   </header>
+                  <div className="nextgen-frontend-summary">
+                    <strong>{language === "zh" ? "后端元数据驱动工作流，前端应用保持独立部署" : "Backend metadata drives the workflow; frontend applications remain independently deployable"}</strong>
+                    <span><b>5</b>{language === "zh" ? "个 React 应用 · 1 个 Host + 4 个 Remotes" : "React applications · 1 host + 4 remotes"}</span>
+                  </div>
                   <figure className="nextgen-frontend-architecture-image" aria-label={language === "zh" ? "动态 Persona UI 与 Module Federation 架构" : "Dynamic persona UI and Module Federation architecture"}>
                     <img
-                      src={language === "zh" ? "/assets/nextgen-frontend-architecture-zh.svg" : "/assets/nextgen-frontend-architecture-en.svg"}
+                      src={language === "zh" ? "/assets/nextgen-frontend-architecture-zh.svg?v=3" : "/assets/nextgen-frontend-architecture-en.svg?v=5"}
                       alt={language === "zh" ? "Schema Lens 动态渲染与一个 React Host、四个 Remote 应用的 Module Federation 架构" : "Schema Lens dynamic rendering and a Module Federation architecture with one React host and four remote applications"}
                     />
                     <figcaption className="sr-only">
@@ -536,7 +533,7 @@ function App() {
                       <strong>{language === "zh" ? "分阶段" : "Phased"}</strong>
                       <small>{language === "zh" ? "新旧权限模型并行" : "legacy and new models coexist"}</small>
                     </div>
-                    <p>{language === "zh" ? "共同设计转换规则与分批验证方案，避免把数据和运营风险集中到一次全球切换。" : "Co-designed transformation rules and staged validation so data and operational risk were not concentrated in one global cutover."}</p>
+                    <p>{language === "zh" ? "共同设计转换规则与分批验证方案，在受控发布阶段中逐步管理数据与运营风险。" : "Co-designed transformation rules and staged validation to manage data and operational risk through controlled rollout phases."}</p>
                   </div>
                 </section>
               )}
@@ -548,10 +545,6 @@ function App() {
                       <p>{language === "zh" ? "06 / 项目成果" : "06 / Result"}</p>
                       <h1>{language === "zh" ? "生产中真正发生的改变" : "What changed in production"}</h1>
                     </div>
-                    <aside className="nextgen-result-live">
-                      <strong>{language === "zh" ? "已上线" : "Live"}</strong>
-                      <span>{language === "zh" ? "从请求、审批到下游同步" : "request, approval and downstream sync"}</span>
-                    </aside>
                   </header>
 
                   <div className="nextgen-result-outcomes">
@@ -811,8 +804,8 @@ function App() {
                     <p>{language === "zh" ? "结构化结果返回模型，生成有依据的响应" : "Return a structured result for a grounded response"}</p>
                   </div>
                   <figcaption>
-                    <div><span>{language === "zh" ? "已验证的次级入口 · MCP" : "Validated secondary entry · MCP"}</span><strong>{language === "zh" ? "复用同一应用控制层" : "Reuse the same application control"}</strong></div>
-                    <p>{language === "zh" ? "只读 Resources 提供上下文；状态变更 Tools 仍需校验、授权与确认。23 个 Tools、10 个 Resources 和 3 个 Prompts 仅说明实现范围。" : "Read-only Resources provide context; state-changing Tools still require validation, authorization and confirmation. The 23 Tools, 10 Resources and 3 Prompts describe implementation scope only."}</p>
+                    <div><span>{language === "zh" ? "MCP 集成" : "MCP integration"}</span><strong>{language === "zh" ? "同一控制层，另一种入口" : "Same controls, another entry point"}</strong></div>
+                    <p>{language === "zh" ? "Resources：只读上下文 · Tools：校验、授权并确认" : "Resources: read-only context · Tools: validated, authorized and confirmed"}</p>
                   </figcaption>
                 </figure>
               </section>
@@ -833,7 +826,7 @@ function App() {
                   <div className="fushi-feedback-evidence">
                     <article><strong>&gt;96%</strong><span>{language === "zh" ? "API 行覆盖率" : "API line coverage"}</span></article>
                     <article><strong>≈90%</strong><span>{language === "zh" ? "React 行覆盖率" : "React line coverage"}</span></article>
-                    <article><strong>9</strong><span>{language === "zh" ? "Agent 回归种子案例 · 非准确率" : "Agent regression seed cases · not accuracy"}</span></article>
+                    <article><strong>9</strong><span>{language === "zh" ? "初始 Agent 回归案例" : "Initial Agent regression cases"}</span></article>
                   </div>
                   <ol className="fushi-feedback-loop">
                     {(language === "zh"
@@ -842,8 +835,8 @@ function App() {
                     ).map(([title, body], index) => <li key={title}><span>0{index + 1}</span><strong>{title}</strong><p>{body}</p></li>)}
                   </ol>
                   <div className="fushi-feedback-boundary">
-                    <span>{language === "zh" ? "最小权限调查" : "Least-privilege investigation"}</span>
-                    <strong>{language === "zh" ? "仅查看授权范围内的诊断信息 · 家庭过敏记录只读 · Trace 不保留完整 Prompt · 当前尚无统计意义充分的线上 Agent 质量指标" : "Consent-scoped diagnostics · allergy records remain read-only · traces omit complete prompts · no statistically meaningful online Agent-quality claim yet"}</strong>
+                    <span>{language === "zh" ? "受控诊断" : "Controlled diagnostics"}</span>
+                    <strong>{language === "zh" ? "经用户授权的诊断范围 · 受保护记录保持只读 · 摘要式 Trace 尽量减少家庭数据留存" : "Consent-scoped diagnostics · protected records stay read-only · summary traces minimize retained family data"}</strong>
                   </div>
                 </div>
               </section>

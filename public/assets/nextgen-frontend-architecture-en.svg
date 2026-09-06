@@ -1,60 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="270" viewBox="0 0 1200 270" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
   <title id="title">Schema-driven persona UI and Module Federation architecture</title>
-  <desc id="desc">Persona Service metadata defines the layout, permissions, and criteria calls. Schema Lens renders the interface and triggers Criteria Service on interaction. A React host composes four independently deployed remote applications.</desc>
+  <desc id="desc">Persona Service metadata flows through Schema Lens into a persona-specific UI. Criteria data is loaded on interaction. A React host composes four independently deployed remote applications.</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#718691"/></marker>
     <marker id="blueArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#0078d4"/></marker>
     <style>
-      .eyebrow{font:700 12px Arial,sans-serif;letter-spacing:.075em;fill:#415365}.title{font:700 16.5px Arial,sans-serif;fill:#142b3b}.hero{font:700 24px Arial,sans-serif;fill:#102c3e}.sub{font:400 13px Arial,sans-serif;fill:#415365}.small{font:600 11px Arial,sans-serif;fill:#526678}.node{fill:#fff;stroke:#b8cbd7;stroke-width:1.3}.focus{fill:#eaf7ff;stroke:#0078d4;stroke-width:2}.zone{fill:#f6fbfe;stroke:#73b9e5;stroke-width:1.3}.line{stroke:#667c89;stroke-width:1.7;fill:none;marker-end:url(#arrow)}.blueLine{stroke:#0078d4;stroke-width:2;fill:none;marker-end:url(#blueArrow)}.icon{fill:none;stroke:#0078d4;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.remote{fill:#fff;stroke:#aac8da;stroke-width:1.3}.remoteTitle{font:700 14px Arial,sans-serif;fill:#142b3b}.footer{font:700 12px Arial,sans-serif;fill:#415365}
+      .eyebrow{font:700 12.5px Arial,sans-serif;letter-spacing:.065em;fill:#415365}.title{font:700 17px Arial,sans-serif;fill:#142b3b}.hero{font:700 24px Arial,sans-serif;fill:#102c3e}.sub{font:400 13.5px Arial,sans-serif;fill:#415365}.small{font:600 12px Arial,sans-serif;fill:#526678}.node{fill:#fff;stroke:#b8cbd7;stroke-width:1.3}.focus{fill:#eaf7ff;stroke:#0078d4;stroke-width:2}.zone{fill:#f6fbfe;stroke:#73b9e5;stroke-width:1.3}.line{stroke:#667c89;stroke-width:1.7;fill:none;marker-end:url(#arrow)}.blueLine{stroke:#0078d4;stroke-width:2;fill:none;marker-end:url(#blueArrow)}.icon{fill:none;stroke:#0078d4;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.remote{fill:#fff;stroke:#aac8da;stroke-width:1.3}.remoteTitle{font:700 14.5px Arial,sans-serif;fill:#142b3b}.footer{font:700 12.5px Arial,sans-serif;fill:#415365}
     </style>
   </defs>
-  <rect width="1200" height="270" fill="#fafafa"/>
+  <rect width="1200" height="300" fill="#fafafa"/>
 
-  <text class="eyebrow" x="0" y="16">DYNAMIC PERSONA RENDERING</text>
-  <rect class="node" x="0" y="32" width="220" height="84" rx="10"/>
-  <text class="title" x="18" y="57">Persona Service</text>
-  <text class="sub" x="18" y="78">Layout JSON · permissions</text>
-  <text class="sub" x="18" y="97">Criteria call definition</text>
-  <path class="line" d="M226 74H240"/>
+  <text class="eyebrow" x="0" y="18">DYNAMIC PERSONA RENDERING</text>
+  <rect class="node" x="0" y="42" width="210" height="82" rx="10"/>
+  <text class="title" x="18" y="68">Persona Service</text>
+  <text class="sub" x="18" y="89">Layout JSON · permissions</text>
+  <text class="sub" x="18" y="108">Criteria call definition</text>
+  <path class="line" d="M218 83H248"/>
 
-  <rect class="focus" x="250" y="32" width="230" height="135" rx="12"/>
-  <circle cx="290" cy="77" r="22" fill="#d6efff"/>
-  <path class="icon" d="M279 66h22v7h-22zM279 80h22v7h-22M284 69.5h.01m0 14h.01m5-14h8m-8 14h8"/>
-  <text class="hero" x="323" y="74">Schema Lens</text>
-  <text class="sub" x="323" y="95">Maps metadata to React</text>
-  <text class="sub" x="323" y="114">components and validation</text>
-  <text class="small" x="274" y="145">CONDITIONAL UI · STATE · API CALLS</text>
+  <rect class="focus" x="260" y="42" width="270" height="112" rx="12"/>
+  <text class="hero" x="284" y="73">Schema Lens</text>
+  <text class="sub" x="284" y="103">Metadata → React components</text>
+  <text class="small" x="284" y="128">FIELDS · VALIDATION · STATE</text>
 
-  <path class="line" d="M488 78H520"/><text class="small" x="490" y="65">Render</text>
-  <rect class="node" x="530" y="32" width="140" height="135" rx="11"/>
-  <text class="title" x="548" y="56">Persona UI</text>
-  <rect x="548" y="68" width="104" height="23" rx="4" fill="#e5f3fb"/><rect class="icon" x="556" y="75" width="9" height="9" rx="2"/><path class="icon" d="m558 79 2 2 4-5"/><text class="small" x="572" y="83">Permissions</text>
-  <rect x="548" y="97" width="104" height="23" rx="4" fill="#f0f6f9"/><circle class="icon" cx="561" cy="108" r="4"/><path class="icon" d="M565 108h5"/><text class="small" x="572" y="112">Criteria</text>
-  <rect x="548" y="126" width="104" height="23" rx="4" fill="#f0f6f9"/><path class="icon" d="M557 133h8m-8 5h8"/><text class="small" x="572" y="141">Review</text>
-  <text class="small" x="548" y="160">CLIENT-SPECIFIC</text>
+  <text class="small" x="553" y="70" text-anchor="middle">RENDER</text>
+  <path class="line" d="M538 84H568"/>
+  <rect class="node" x="580" y="42" width="140" height="112" rx="11"/>
+  <text class="title" x="598" y="67">Persona UI</text>
+  <rect x="598" y="79" width="104" height="23" rx="4" fill="#e5f3fb"/><rect x="598" y="79" width="3" height="23" rx="1.5" fill="#0078d4"/><text class="small" x="610" y="94">Permissions</text>
+  <rect x="598" y="108" width="104" height="23" rx="4" fill="#f0f6f9"/><rect x="598" y="108" width="3" height="23" rx="1.5" fill="#73b9e5"/><text class="small" x="610" y="123">Criteria</text>
 
-  <path class="blueLine" d="M365 173V182"/><text class="small" x="375" y="181">Trigger on interaction</text>
-  <rect class="node" x="250" y="190" width="230" height="48" rx="9"/>
-  <text class="title" x="268" y="212">Criteria Service</text>
-  <text class="sub" x="268" y="229">Returns client business data</text>
-  <path class="blueLine" d="M488 214H506V109H520"/>
+  <path class="blueLine" d="M395 162V194"/>
+  <text class="small" x="407" y="180">LOAD ON INTERACTION</text>
+  <rect class="node" x="260" y="198" width="270" height="50" rx="9"/>
+  <text class="title" x="278" y="220">Criteria Service</text>
+  <text class="sub" x="278" y="239">Returns data for the active UI</text>
 
-  <line x1="0" y1="248" x2="670" y2="248" stroke="#c7d6df"/>
-  <text class="footer" x="0" y="266">RESULT</text><text class="title" x="62" y="266">One metadata model supports different persona configurations</text>
+  <line x1="0" y1="266" x2="720" y2="266" stroke="#c7d6df"/>
+  <text class="footer" x="0" y="289">DESIGN OUTCOME</text>
+  <text class="title" x="126" y="289">One metadata model supports different persona configurations</text>
 
-  <line x1="686" y1="0" x2="686" y2="270" stroke="#c7d6df"/>
-  <text class="eyebrow" x="716" y="16">WEBPACK MODULE FEDERATION</text>
-  <rect class="zone" x="716" y="32" width="484" height="225" rx="12"/>
-  <rect class="focus" x="744" y="50" width="428" height="68" rx="10"/>
-  <text class="hero" x="766" y="78">React Host</text>
-  <text class="sub" x="766" y="100">Routing · user context · shared UI · error boundaries</text>
-
-  <path d="M958 118V139M794 139H1122M794 139V153M904 139V153M1012 139V153M1122 139V153" stroke="#7f9eaf" stroke-width="1.5" fill="none"/>
-  <rect class="remote" x="746" y="153" width="96" height="48" rx="8"/><text class="remoteTitle" x="758" y="182">Remote 01</text>
-  <rect class="remote" x="856" y="153" width="96" height="48" rx="8"/><text class="remoteTitle" x="868" y="182">Remote 02</text>
-  <rect class="remote" x="964" y="153" width="96" height="48" rx="8"/><text class="remoteTitle" x="976" y="182">Remote 03</text>
-  <rect class="remote" x="1074" y="153" width="96" height="48" rx="8"/><text class="remoteTitle" x="1086" y="182">Remote 04</text>
-
-  <text class="footer" x="746" y="225">DEPLOYMENT</text><text class="sub" x="844" y="225">Independent Nginx release per application</text>
-  <text class="footer" x="746" y="246">CONTRACT</text><text class="sub" x="824" y="246">Shared dependencies, APIs and failure isolation</text>
+  <line x1="744" y1="0" x2="744" y2="300" stroke="#c7d6df"/>
+  <text class="eyebrow" x="770" y="18">WEBPACK MODULE FEDERATION</text>
+  <rect class="zone" x="770" y="34" width="430" height="222" rx="12"/>
+  <rect class="focus" x="794" y="52" width="382" height="62" rx="10"/>
+  <text class="hero" x="816" y="79">React Host</text>
+  <text class="sub" x="816" y="100">Routing · user context · shared UI · error boundaries</text>
+  <path d="M985 114V137M831 137H1139M831 137V156M934 137V156M1037 137V156M1139 137V156" stroke="#7f9eaf" stroke-width="1.5" fill="none"/>
+  <rect class="remote" x="794" y="156" width="74" height="43" rx="8"/><text class="remoteTitle" x="805" y="182">R 01</text>
+  <rect class="remote" x="897" y="156" width="74" height="43" rx="8"/><text class="remoteTitle" x="908" y="182">R 02</text>
+  <rect class="remote" x="1000" y="156" width="74" height="43" rx="8"/><text class="remoteTitle" x="1011" y="182">R 03</text>
+  <rect class="remote" x="1102" y="156" width="74" height="43" rx="8"/><text class="remoteTitle" x="1113" y="182">R 04</text>
+  <text class="footer" x="794" y="226">DEPLOYMENT</text><text class="sub" x="892" y="226">Independent Nginx release</text>
+  <text class="footer" x="794" y="247">CONTRACT</text><text class="sub" x="870" y="247">Shared dependencies · APIs · failure isolation</text>
 </svg>

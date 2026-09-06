@@ -139,8 +139,8 @@ describe("portfolio", () => {
     expect(screen.getByText("Validate & authorize")).toBeInTheDocument();
     expect(screen.getByText(/Identity comes from the trusted session; only application code can allow execution/)).toBeInTheDocument();
     expect(screen.getByText(/Preview & confirmation/)).toBeInTheDocument();
-    expect(screen.getByText("Reuse the same application control")).toBeInTheDocument();
-    expect(screen.getByText(/describe implementation scope only/)).toBeInTheDocument();
+    expect(screen.getByText("Same controls, another entry point")).toBeInTheDocument();
+    expect(screen.getByText(/Resources: read-only context/)).toBeInTheDocument();
     expect(screen.queryByText(/Agent Lab|does not serve the Mini Program/)).not.toBeInTheDocument();
   });
 
@@ -151,7 +151,7 @@ describe("portfolio", () => {
     expect(screen.getByText("React console I use to investigate real user reports")).toBeInTheDocument();
     expect(screen.getByText("Safe investigation")).toBeInTheDocument();
     expect(screen.getByText("Fix & release")).toBeInTheDocument();
-    expect(screen.getByText(/allergy records remain read-only/)).toBeInTheDocument();
+    expect(screen.getByText(/protected records stay read-only/)).toBeInTheDocument();
     expect(screen.getByText("Presentation page 03 / 03")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Return to.*Introduction/ }));
