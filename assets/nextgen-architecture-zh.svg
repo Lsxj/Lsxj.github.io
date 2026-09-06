@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="280" viewBox="0 0 1200 280" role="img" aria-labelledby="title desc">
-  <title id="title">客户接入与权限服务架构</title>
-  <desc id="desc">两条入口流程汇入用户与权限领域，核心数据变更通过 CDC 和 Kafka 传播至审计与下游同步服务。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">用户与权限旅程相关服务</title>
+  <desc id="desc">图中仅展示初始用户创建路径：CRM Kafka 事件由 CRM Listener 消费，再调用 User Service API。CDC 和 Kafka 将变更发送至并行的审计、用户同步和权限同步服务。</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#7b8d98"/></marker>
     <marker id="eventArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#0078d4"/></marker>
@@ -9,13 +9,15 @@
     </style>
   </defs>
 
-  <text class="eyebrow" x="0" y="17">CLIENT ONBOARDING</text>
-  <g transform="translate(0 31)"><path class="icon" d="M3 30V10l13-4 13 4v20M9 14h3m7 0h3M9 20h3m7 0h3M1 30h30"/><text class="title" x="42" y="22">CRM</text></g>
-  <path class="line" d="M88 51H126"/><text class="small" x="94" y="43">事件</text>
-  <rect class="node" x="136" y="31" width="96" height="42" rx="7"/><g transform="translate(148 41)"><circle class="dot" cx="4" cy="11" r="3"/><circle class="dot" cx="20" cy="4" r="3"/><circle class="dot" cx="20" cy="18" r="3"/><path class="icon" d="M7 10l10-5M7 12l10 5"/><text class="title" x="31" y="15">Kafka</text></g>
-  <path class="line" d="M241 52H275"/>
-  <rect class="node" x="285" y="31" width="139" height="42" rx="7"/><g transform="translate(297 41)"><rect class="icon" x="0" y="2" width="23" height="18" rx="2"/><path class="icon" d="M6 2V0h11v2M6 8h11"/><text class="title" x="33" y="10">Legal Entity</text><text class="sub" x="33" y="24">Service</text></g>
-  <path class="line" d="M433 52H454"/>
+  <text class="eyebrow" x="0" y="17">初始用户创建</text>
+  <text class="title" x="0" y="56">CRM</text>
+  <path class="event" d="M42 52H126"/>
+  <rect class="node" x="136" y="31" width="111" height="42" rx="7"/>
+  <text class="title" x="169" y="56">Kafka</text>
+  <path class="event" d="M252 52H282"/>
+  <rect class="node" x="292" y="31" width="132" height="42" rx="7"/>
+  <text class="title" x="306" y="56">CRM Listener</text>
+  <text class="small" x="435" y="43">API</text>
 
   <text class="eyebrow" x="0" y="104">权限管理</text>
   <g transform="translate(0 117)"><circle class="icon" cx="8" cy="7" r="4"/><circle class="icon" cx="21" cy="8" r="3.5"/><path class="icon" d="M1 28c1-8 4-12 9-12s8 4 9 12m0-10c6-1 10 3 11 10"/><text class="title" x="42" y="16">Maker /</text><text class="title" x="42" y="32">Checker</text></g>
@@ -23,18 +25,16 @@
   <rect class="node" x="136" y="118" width="111" height="42" rx="7"/><g transform="translate(148 128)"><rect class="icon" x="0" y="0" width="23" height="20" rx="2"/><path class="icon" d="M0 5h23"/><text class="title" x="33" y="15">Browser</text></g>
   <path class="line" d="M256 139H282"/><text class="small" x="259" y="130">HTTPS</text>
   <rect class="node" x="292" y="118" width="132" height="42" rx="7"/><g transform="translate(304 128)"><circle class="dot" cx="4" cy="10" r="3"/><circle class="dot" cx="20" cy="3" r="3"/><circle class="dot" cx="20" cy="17" r="3"/><path class="icon" d="M7 10h6m0 0 5-6m-5 6 5 6"/><text class="title" x="31" y="9">NextGen</text><text class="title" x="31" y="24">Gateway</text></g>
-  <path class="line" d="M433 139H454"/>
 
   <rect class="domain" x="464" y="0" width="736" height="164" rx="12"/>
   <text class="domainLabel" x="482" y="19">用户与权限领域</text>
   <rect class="core" x="482" y="31" width="285" height="110" rx="10"/>
   <circle cx="516" cy="72" r="19" fill="#d9f1ff"/><path class="icon" d="M504 65h24v8h-24zM504 80h24v8h-24M510 69h.01m0 15h.01m5-15h9m-9 15h9"/>
   <text class="coreTitle" x="546" y="67">Core User Service</text>
-  <text class="sub" x="546" y="86">系统开户 · 增删改</text>
+  <text class="sub" x="546" y="86">初始用户 · 业务 ID 去重</text>
   <text class="sub" x="546" y="103">管理员变更 · Maker-Checker</text>
   <text class="small" x="546" y="126">ACTIVE + STAGING 用于审批</text>
 
-  <path d="M779 85H802" stroke="#8fc8ec" stroke-width="1.2"/>
   <rect class="service" x="812" y="27" width="368" height="70" rx="9"/>
   <text class="title" x="830" y="49">Persona Service</text>
   <text x="830" y="69" style="font:700 14px Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#0078d4">Persona ∩ Client Subscription</text>
@@ -42,19 +42,30 @@
   <rect class="service" x="812" y="107" width="368" height="38" rx="9"/>
   <text class="title" x="830" y="131">Criteria Service</text><text class="sub" x="956" y="131">按需加载 Client 业务 Criteria</text>
 
-  <path class="line" d="M624 141V178"/><text class="small" x="635" y="167">写入</text>
+  <path class="line" d="M624 141V178"/>
   <text class="eyebrow" x="0" y="197">数据与事件传播</text>
   <rect class="node" x="464" y="181" width="204" height="62" rx="8"/><g transform="translate(482 194)"><ellipse class="icon" cx="11" cy="4" rx="10" ry="3.5"/><path class="icon" d="M1 4v17c0 2 4 4 10 4s10-2 10-4V4M1 12c0 2 4 4 10 4s10-2 10-4"/><text class="title" x="34" y="10">User / Entitlement DB</text><text class="sub" x="34" y="29">Active + Staging</text></g>
-  <path class="event" d="M678 212H710"/><text class="small" x="678" y="199">DB 变更</text>
-  <rect class="node" x="720" y="181" width="126" height="62" rx="8"/><text class="title" x="740" y="208">CDC Listener</text><text class="sub" x="740" y="226">User + Entitlement</text>
-  <path class="event" d="M856 212H882"/>
+  <path class="event" d="M678 212H730"/><text class="small" x="704" y="202" text-anchor="middle">数据变更</text>
+  <rect class="node" x="740" y="181" width="116" height="62" rx="8"/><text class="title" x="750" y="208">CDC Listener</text><text class="sub" x="750" y="226">User + Entitlement</text>
+  <path class="event" d="M866 212H882"/>
   <rect class="node" x="892" y="181" width="82" height="62" rx="8"/><text class="title" x="913" y="217">Kafka</text>
-  <path class="event" d="M984 212H1011"/><text class="small" x="984" y="199">CDC 事件</text>
 
-  <g transform="translate(1023 162)">
-    <circle cx="7" cy="13" r="4" fill="#0078d4"/><text class="consumer" x="19" y="17">Audit Service</text><text class="consumerSub" x="19" y="30">业务事件</text>
-    <circle cx="7" cy="48" r="4" fill="#0078d4"/><text class="consumer" x="19" y="52">User Provisioning</text><text class="consumerSub" x="19" y="65">User 增删改同步</text>
-    <circle cx="7" cy="83" r="4" fill="#0078d4"/><text class="consumer" x="19" y="87">Entitlements Provisioning</text><text class="consumerSub" x="19" y="100">Entitlement 增删改同步</text>
-  </g>
-  <text class="small" x="1023" y="277">下游 / 老平台</text>
+  <path d="M933 243V262H566M933 262H1072" stroke="#0078d4" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
+  <path class="event" d="M566 262V299"/>
+
+  <rect class="service" x="686" y="276" width="514" height="80" rx="9"/>
+  <path class="event" d="M812 262V276"/>
+  <path class="event" d="M1072 262V276"/>
+  <text class="eyebrow" x="702" y="293">下游 / 老平台同步</text>
+  <rect class="node" x="464" y="303" width="204" height="50" rx="8"/>
+  <text class="title" x="482" y="323">Audit Service</text>
+  <text class="sub" x="482" y="342">业务事件审计</text>
+  <text class="title" x="702" y="321">User Provisioning</text>
+  <text class="sub" x="702" y="342">用户创建 / 修改 / 删除</text>
+  <path d="M944 305V345" stroke="#b8cbd7"/>
+  <text class="title" x="960" y="321">Entitlements Provisioning</text>
+  <text class="sub" x="960" y="342">权限创建 / 修改 / 删除</text>
+  <path class="line" d="M429 52H482"/>
+  <path class="line" d="M433 139H454"/>
+  <path class="line" d="M768 50H812"/>
 </svg>
