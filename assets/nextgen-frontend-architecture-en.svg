@@ -17,13 +17,13 @@
   <text class="sub" x="18" y="108">Layout JSON</text>
   <path class="line" d="M218 83H248"/>
 
-  <rect class="focus" x="260" y="42" width="270" height="112" rx="12"/>
+  <rect class="focus" x="260" y="42" width="250" height="112" rx="12"/>
   <text class="hero" x="284" y="73">Schema Lens</text>
   <text class="sub" x="284" y="103">Metadata → React components</text>
   <text class="small" x="284" y="128">FIELDS · VALIDATION · STATE</text>
 
-  <text class="small" x="553" y="70" text-anchor="middle">RENDER</text>
-  <path class="line" d="M538 84H568"/>
+  <text class="small" x="545" y="70" text-anchor="middle">RENDER</text>
+  <path class="line" d="M518 84H568"/>
   <rect class="node" x="580" y="42" width="140" height="112" rx="11"/>
   <text class="title" x="598" y="67">Persona UI</text>
   <rect x="598" y="79" width="104" height="23" rx="4" fill="#e5f3fb"/><rect x="598" y="79" width="3" height="23" rx="1.5" fill="#0078d4"/><text class="small" x="610" y="94">Permissions</text>
