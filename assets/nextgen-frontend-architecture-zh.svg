@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
   <title id="title">Schema 驱动的 Persona UI 与 Module Federation 架构</title>
-  <desc id="desc">Persona Service 元数据经 Schema Lens 转换为对应 Persona UI，Criteria 数据仅在交互时加载。React Host 组合四个可独立部署的 Remote 应用。</desc>
+  <desc id="desc">每个 Persona 提供各自的元数据与 Layout，其中包含各字段所需的额外数据请求定义。Schema Lens 渲染所选 Persona，并在交互时从 Criteria Service 加载这些数据。React Host 组合四个可独立部署的 Remote 应用。</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#718691"/></marker>
     <marker id="blueArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#0078d4"/></marker>
@@ -13,8 +13,8 @@
   <text class="eyebrow" x="0" y="18">动态 PERSONA 渲染</text>
   <rect class="node" x="0" y="42" width="210" height="82" rx="10"/>
   <text class="title" x="18" y="68">Persona Service</text>
-  <text class="sub" x="18" y="89">Layout JSON · 权限</text>
-  <text class="sub" x="18" y="108">Criteria 调用定义</text>
+  <text class="sub" x="18" y="89">元数据</text>
+  <text class="sub" x="18" y="108">Layout JSON</text>
   <path class="line" d="M218 83H248"/>
 
   <rect class="focus" x="260" y="42" width="270" height="112" rx="12"/>
@@ -37,7 +37,7 @@
 
   <line x1="0" y1="266" x2="720" y2="266" stroke="#c7d6df"/>
   <text class="footer" x="0" y="289">设计结果</text>
-  <text class="title" x="70" y="289">一套元数据模型支持不同 Persona 配置</text>
+  <text class="title" x="70" y="289">不同 Persona Layout，共用一套渲染引擎</text>
 
   <line x1="744" y1="0" x2="744" y2="300" stroke="#c7d6df"/>
   <text class="eyebrow" x="770" y="18">WEBPACK MODULE FEDERATION</text>
