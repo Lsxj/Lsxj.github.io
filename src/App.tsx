@@ -156,6 +156,7 @@ function App() {
   }
 
   function LanguageSwitch() {
+    if (presentationMode) return null;
     return (
       <div className="language-switch" aria-label={language === "zh" ? "语言选择" : "Language selection"}>
         <button className={language === "en" ? "active" : ""} onClick={() => setLanguage("en")} aria-pressed={language === "en"}>EN</button>

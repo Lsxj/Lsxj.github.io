@@ -2424,3 +2424,30 @@ html:lang(en) .fushi-feedback-boundary strong { font-size: 12px; }
 @media(max-width:900px){.citi-result-points{gap:32px;margin:38px 0 42px;}.citi-result-points article>p:last-child{font-size:18px;}.citi-result-award{flex-wrap:wrap;gap:12px 24px;}}
 @media(max-width:600px){.citi-result-points{grid-template-columns:1fr;gap:32px;}.citi-result-points .citi-result-label{margin-bottom:12px;}}
 @media(min-width:901px) and (max-height:700px){.citi-result-points{margin:32px 0 36px;}.citi-result-slide{padding:12px 0;}}
+
+/* Presentation stage: center content in the space above a reserved pager row. */
+.presentation-shell > .presentation-header,
+.nextgen-deck--presentation > .nextgen-deck-header { display: none; }
+.presentation-shell,
+.nextgen-deck--presentation { grid-template-rows: minmax(0, 1fr); }
+@media (min-width: 901px) {
+  .presentation-shell .presentation-main,
+  .nextgen-deck--presentation .nextgen-deck-main { padding: 28px 0 20px; }
+  .nextgen-deck--presentation .nextgen-case-page { row-gap: 24px; }
+  .nextgen-deck--presentation .nextgen-case-page > section { padding-top: 0; padding-bottom: 0; min-height: 0; align-self: safe center; }
+  .nextgen-deck--presentation .nextgen-case-pager { margin: 0; padding-top: 10px; }
+  .presentation-intro.intro-cover,
+  .presentation-main .why-role-slide { padding: 0 0 76px; }
+  .citi-backend-slide .ownership-intro h1,
+  .citi-frontend-slide .ownership-intro h1 { font-size: clamp(28px, 3vw, 48px); }
+  .citi-backend-diagram { margin-top: 20px; }
+  .citi-backend-diagram img { max-height: calc(100svh - 300px); object-fit: contain; }
+  .citi-frontend-summary { margin: 18px 0 20px; }
+  .citi-frontend-slide .nextgen-frontend-architecture-image img { width: 100%; height: auto; max-height: calc(100svh - 330px); object-fit: contain; }
+}
+
+@media (min-width: 901px) and (max-height: 700px) {
+  .citi-production-slide .production-stages { margin-top: 20px; }
+  .citi-production-slide .production-stages > section { padding-top: 15px; padding-bottom: 15px; }
+  .citi-production-slide .production-transition { margin-top: 20px; padding-top: 16px; }
+}
