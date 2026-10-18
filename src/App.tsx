@@ -257,13 +257,13 @@ function App() {
         </div>
         <div className="role-motivations">
           {(language === "zh" ? [
-            ["延续企业应用经验", "把在 Citi 积累的复杂权限与业务流程经验带到新的团队。"],
-            ["参与端到端交付", "从用户需求到界面、服务与数据层，继续亲自参与实现。"],
-            ["深入新的业务领域", "与业务伙伴紧密合作，理解企业系统如何支持日常运营。"]
+            ["解决复杂业务问题", "理解业务规则，把复杂操作变成清晰的用户流程。"],
+            ["负责端到端交付", "亲自参与界面、服务与数据层，对完整功能负责。"],
+            ["贴近业务用户", "理解实际工作，通过用户反馈持续改进应用。"]
           ] : [
-            ["Build on my experience", "Bring my experience with complex permissions and enterprise workflows at Citi."],
-            ["Deliver end to end", "Stay hands-on across the UI, services and data layers."],
-            ["Learn a new domain", "Work closely with business partners to understand how their operations work."]
+            ["Solve complex problems", "Turn complex business rules into clear user workflows."],
+            ["Own end-to-end delivery", "Stay hands-on from the UI through services and data."],
+            ["Work with business users", "Understand their work and improve through feedback."]
           ]).map(([title, description], index) => <section key={title}><span className="role-motivation-index">0{index + 1}</span><h3>{title}</h3><p>{description}</p></section>)}
         </div>
       <footer className="presentation-intro-footer why-role-pager"><button onClick={() => showPresentationPage("intro")} aria-label={language === "zh" ? "返回自我介绍" : "Back to Introduction"}><span aria-hidden="true">←</span>{language === "zh" ? "自我介绍" : "Introduction"}</button><button onClick={() => showProject(0)} aria-label="Open CitiDirect presentation">CitiDirect<span aria-hidden="true">→</span></button></footer></section></main><PresentationDock />
