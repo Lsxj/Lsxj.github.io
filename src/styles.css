@@ -2425,19 +2425,18 @@ html:lang(en) .fushi-feedback-boundary strong { font-size: 12px; }
 @media(max-width:600px){.citi-result-points{grid-template-columns:1fr;gap:32px;}.citi-result-points .citi-result-label{margin-bottom:12px;}}
 @media(min-width:901px) and (max-height:700px){.citi-result-points{margin:32px 0 36px;}.citi-result-slide{padding:12px 0;}}
 
-/* Presentation stage: center content in the space above a reserved pager row. */
+/* Presentation stage: center content; the auto-hiding dock handles navigation. */
 .presentation-shell > .presentation-header,
 .nextgen-deck--presentation > .nextgen-deck-header { display: none; }
 .presentation-shell,
 .nextgen-deck--presentation { grid-template-rows: minmax(0, 1fr); }
 @media (min-width: 901px) {
   .presentation-shell .presentation-main,
-  .nextgen-deck--presentation .nextgen-deck-main { padding: 28px 0 20px; }
-  .nextgen-deck--presentation .nextgen-case-page { row-gap: 24px; }
+  .nextgen-deck--presentation .nextgen-deck-main { padding: 28px 0; }
+  .nextgen-deck--presentation .nextgen-case-page { grid-template-rows: minmax(0, 1fr); row-gap: 0; }
   .nextgen-deck--presentation .nextgen-case-page > section { padding-top: 0; padding-bottom: 0; min-height: 0; align-self: safe center; }
-  .nextgen-deck--presentation .nextgen-case-pager { margin: 0; padding-top: 10px; }
   .presentation-intro.intro-cover,
-  .presentation-main .why-role-slide { padding: 0 0 76px; }
+  .presentation-main .why-role-slide { padding: 0; }
   .citi-backend-slide .ownership-intro h1,
   .citi-frontend-slide .ownership-intro h1 { font-size: clamp(28px, 3vw, 48px); }
   .citi-backend-diagram { margin-top: 20px; }
@@ -2451,3 +2450,6 @@ html:lang(en) .fushi-feedback-boundary strong { font-size: 12px; }
   .citi-production-slide .production-stages > section { padding-top: 15px; padding-bottom: 15px; }
   .citi-production-slide .production-transition { margin-top: 20px; padding-top: 16px; }
 }
+
+.presentation-shell .presentation-intro-footer,
+.nextgen-deck--presentation .nextgen-case-pager { display: none; }
