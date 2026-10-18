@@ -253,17 +253,15 @@ function App() {
       <main className="presentation-main"><section className="why-role-slide" aria-labelledby="why-role-title">
         <div className="why-role-heading"><h1 id="why-role-title">{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</h1></div>
         <div className="why-role-message">
-          <h2>{language === "zh" ? <>把复杂的业务需求，<br />做成好用的产品。</> : <>Turn complex business needs<br />into products people can use.</>}</h2>
+          <h2>{language === "zh" ? <>从界面到数据，<br />构建企业级应用。</> : <>Build enterprise applications<br />from UI to data.</>}</h2>
         </div>
         <div className="role-motivations">
           {(language === "zh" ? [
-            ["解决复杂业务问题", "理解业务规则，把复杂操作变成清晰的用户流程。"],
-            ["负责端到端交付", "亲自参与界面、服务与数据层，对完整功能负责。"],
-            ["贴近业务用户", "理解实际工作，通过用户反馈持续改进应用。"]
+            ["端到端全栈开发", "持续参与界面、服务与数据层，对完整功能的交付负责。"],
+            ["大规模企业系统", "延续 CitiDirect 经验，深入解决规模与可靠性问题。"]
           ] : [
-            ["Solve complex problems", "Turn complex business rules into clear user workflows."],
-            ["Own end-to-end delivery", "Stay hands-on from the UI through services and data."],
-            ["Work with business users", "Understand their work and improve through feedback."]
+            ["End-to-end full-stack development", "Stay hands-on across UI, services and data, owning complete features."],
+            ["Enterprise systems at scale", "Build on my CitiDirect experience and deepen my work on scale and reliability."]
           ]).map(([title, description], index) => <section key={title}><span className="role-motivation-index">0{index + 1}</span><h3>{title}</h3><p>{description}</p></section>)}
         </div>
       <footer className="presentation-intro-footer why-role-pager"><button onClick={() => showPresentationPage("intro")} aria-label={language === "zh" ? "返回自我介绍" : "Back to Introduction"}><span aria-hidden="true">←</span>{language === "zh" ? "自我介绍" : "Introduction"}</button><button onClick={() => showProject(0)} aria-label="Open CitiDirect presentation">CitiDirect<span aria-hidden="true">→</span></button></footer></section></main><PresentationDock />
