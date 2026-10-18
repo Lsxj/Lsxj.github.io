@@ -20,6 +20,7 @@ const galleryImages = ["/assets/fushi-overview.jpg", "/assets/fushi-pain-points.
 function projectFromUrl() {
   if (!PROJECT_DETAILS_ENABLED && !isPresentationUrl()) return null;
   const id = new URLSearchParams(window.location.search).get("project");
+  if (isPresentationUrl() && id !== "nextgen") return null;
   const index = id ? projectIds.indexOf(id) : -1;
   return index >= 0 ? index : null;
 }
@@ -54,13 +55,19 @@ function App() {
   const [activeProject, setActiveProject] = useState<number | null>(projectFromUrl);
   const [fushiSection, setFushiSection] = useState<FushiSection>(fushiSectionFromUrl);
   const [nextgenSection, setNextgenSection] = useState<NextgenSection>(nextgenSectionFromUrl);
+  const [whyRole, setWhyRole] = useState(() => new URLSearchParams(window.location.search).get("section") === "why-role");
   const t = content[language];
   const projects = [...t.projects].sort((a, b) => projectIds.indexOf(a.id) - projectIds.indexOf(b.id));
   const selectedProject = activeProject === null ? null : projects[activeProject];
   const presentationMode = isPresentationUrl();
 
   useEffect(() => {
-    if (PROJECT_DETAILS_ENABLED || presentationMode || !new URLSearchParams(window.location.search).has("project")) return;
+    const id = new URLSearchParams(window.location.search).get("project");
+    if (presentationMode && id && id !== "nextgen") {
+      window.history.replaceState(null, "", `${window.location.pathname}?view=present`);
+      return;
+    }
+    if (PROJECT_DETAILS_ENABLED || presentationMode || !id) return;
     window.history.replaceState(null, "", presentationMode ? `${window.location.pathname}?view=present` : window.location.pathname);
   }, [presentationMode]);
 
@@ -89,6 +96,7 @@ function App() {
 
   useEffect(() => {
     const syncRoute = () => {
+      setWhyRole(new URLSearchParams(window.location.search).get("section") === "why-role");
       setActiveProject(projectFromUrl());
       setFushiSection(fushiSectionFromUrl());
       setNextgenSection(nextgenSectionFromUrl());
@@ -112,10 +120,11 @@ function App() {
     };
     window.addEventListener("keydown", navigatePresentation);
     return () => window.removeEventListener("keydown", navigatePresentation);
-  }, [activeProject, fushiSection, nextgenSection, presentationMode]);
+  }, [activeProject, fushiSection, nextgenSection, presentationMode, whyRole]);
 
   function showProject(index: number, replace = false) {
     if (!PROJECT_DETAILS_ENABLED && !presentationMode) return;
+    if (presentationMode && projectIds[index] !== "nextgen") return;
     const url = routeUrl({ project: projectIds[index] });
     if (replace) window.history.replaceState({ portfolioProject: true }, "", url);
     else window.history.pushState({ portfolioProject: true }, "", url);
@@ -139,6 +148,7 @@ function App() {
   }
 
   function returnHome() {
+    setWhyRole(false);
     window.history.replaceState(null, "", presentationMode ? `${window.location.pathname}?view=present` : window.location.pathname);
     setActiveProject(null);
     setFushiSection("overview");
@@ -155,7 +165,13 @@ function App() {
     );
   }
 
-  function showPresentationPage(project: "intro" | "nextgen" | "fushi", section?: NextgenSection | FushiSection) {
+  function showPresentationPage(project: "intro" | "nextgen" | "fushi" | "why-role", section?: NextgenSection | FushiSection) {
+    setWhyRole(project === "why-role");
+    if (project === "why-role") {
+      window.history.pushState(null, "", routeUrl({ section: "why-role" }));
+      setActiveProject(null);
+      return;
+    }
     if (project === "intro") {
       returnHome();
       return;
@@ -174,18 +190,16 @@ function App() {
   }
 
   function movePresentation(direction: -1 | 1) {
-    const sequence: Array<{ project: "intro" | "nextgen" | "fushi"; section?: NextgenSection | FushiSection }> = [
+    const sequence: Array<{ project: "intro" | "nextgen" | "fushi" | "why-role"; section?: NextgenSection | FushiSection }> = [
       { project: "intro" },
+      { project: "why-role" },
       ...nextgenSections.map((section) => ({ project: "nextgen" as const, section })),
-      ...fushiSections.map((section) => ({ project: "fushi" as const, section })),
     ];
-    const currentIndex = activeProject === null
+    const currentIndex = whyRole && activeProject === null ? 1 : activeProject === null
       ? 0
       : selectedProject?.id === "nextgen"
-        ? 1 + nextgenSections.indexOf(nextgenSection)
-        : selectedProject?.id === "fushi"
-          ? 1 + nextgenSections.length + fushiSections.indexOf(fushiSection)
-          : -1;
+        ? 2 + nextgenSections.indexOf(nextgenSection)
+        : -1;
     if (currentIndex < 0) return;
     const nextIndex = currentIndex + direction;
     if (nextIndex < 0) return;
@@ -198,21 +212,20 @@ function App() {
     const nextgenLabels = language === "zh"
       ? ["项目概览", "职责与贡献", "后端与数据", "前端平台", "安全与生产", "项目成果"]
       : ["Overview", "Ownership", "Backend", "Frontend", "Production", "Result"];
-    const fushiLabels = language === "zh"
-      ? ["产品与成果", "Agent 与 MCP", "生产反馈"]
-      : ["Product", "Agent & MCP", "Feedback"];
+
 
     return (
       <div className="presentation-dock-zone">
         <nav className="presentation-dock" aria-label={language === "zh" ? "演示页面快速导航" : "Presentation page shortcuts"}>
           <span className="presentation-dock-handle" aria-hidden="true" />
           <button
-            className={activeProject === null ? "active" : ""}
-            aria-current={activeProject === null ? "page" : undefined}
+            className={activeProject === null && !whyRole ? "active" : ""}
+            aria-current={activeProject === null && !whyRole ? "page" : undefined}
             onClick={() => showPresentationPage("intro")}
           >
-            <span>01</span><strong>{language === "zh" ? "自我介绍" : "Introduction"}</strong>
+            <strong>{language === "zh" ? "自我介绍" : "Introduction"}</strong>
           </button>
+          <button className={activeProject === null && whyRole ? "active" : ""} aria-current={activeProject === null && whyRole ? "page" : undefined} onClick={() => showPresentationPage("why-role")}><strong>{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</strong></button>
           <div className="presentation-dock-group">
             <span>CitiDirect</span>
             <div>
@@ -228,24 +241,32 @@ function App() {
               ))}
             </div>
           </div>
-          <div className="presentation-dock-group presentation-dock-group--fushi">
-            <span>{language === "zh" ? "辅食搭子" : "Baby Food Buddy"}</span>
-            <div>
-              {fushiSections.map((section, index) => (
-                <button
-                  key={section}
-                  className={selectedProject?.id === "fushi" && fushiSection === section ? "active" : ""}
-                  aria-current={selectedProject?.id === "fushi" && fushiSection === section ? "page" : undefined}
-                  aria-label={`${language === "zh" ? "辅食搭子" : "Baby Food Buddy"} ${String(index + 1).padStart(2, "0")}: ${fushiLabels[index]}`}
-                  title={fushiLabels[index]}
-                  onClick={() => showPresentationPage("fushi", section)}
-                >{String(index + 1).padStart(2, "0")}</button>
-              ))}
-            </div>
-          </div>
         </nav>
       </div>
     );
+  }
+
+  if (presentationMode && activeProject === null && whyRole) {
+    return <div className="presentation-shell">
+      <header className="presentation-header"><div><span>Apple Enterprise Systems</span></div><div className="presentation-controls"><LanguageSwitch /></div></header>
+      <main className="presentation-main"><section className="why-role-slide" aria-labelledby="why-role-title">
+        <div className="why-role-heading"><h1 id="why-role-title">{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</h1></div>
+        <div className="why-role-message">
+          <h2>{language === "zh" ? <>把复杂的业务需求，<br />做成好用的产品。</> : <>Turn complex business needs<br />into products people can use.</>}</h2>
+        </div>
+        <div className="role-motivations">
+          {(language === "zh" ? [
+            ["延续企业应用经验", "把在 Citi 积累的复杂权限与业务流程经验带到新的团队。"],
+            ["参与端到端交付", "从用户需求到界面、服务与数据层，继续亲自参与实现。"],
+            ["深入新的业务领域", "与业务伙伴紧密合作，理解企业系统如何支持日常运营。"]
+          ] : [
+            ["Build on my experience", "Bring my experience with complex permissions and enterprise workflows at Citi."],
+            ["Deliver end to end", "Stay hands-on across the UI, services and data layers."],
+            ["Learn a new domain", "Work closely with business partners to understand how their operations work."]
+          ]).map(([title, description], index) => <section key={title}><span className="role-motivation-index">0{index + 1}</span><h3>{title}</h3><p>{description}</p></section>)}
+        </div>
+      <footer className="presentation-intro-footer why-role-pager"><button onClick={() => showPresentationPage("intro")} aria-label={language === "zh" ? "返回自我介绍" : "Back to Introduction"}><span aria-hidden="true">←</span>{language === "zh" ? "自我介绍" : "Introduction"}</button><button onClick={() => showProject(0)} aria-label="Open CitiDirect presentation">CitiDirect<span aria-hidden="true">→</span></button></footer></section></main><PresentationDock />
+    </div>;
   }
 
   if (presentationMode && activeProject === null) {
@@ -253,7 +274,7 @@ function App() {
       <div className="presentation-shell">
         <header className="presentation-header">
           <div>
-            <span>{language === "zh" ? "01 / 自我介绍" : "01 / Introduction"}</span>
+            <span>{language === "zh" ? "自我介绍" : "Introduction"}</span>
           </div>
           <div className="presentation-controls">
             <LanguageSwitch />
@@ -261,51 +282,22 @@ function App() {
         </header>
 
         <main className="presentation-main">
-          <section className="presentation-intro" aria-labelledby="presentation-title">
-            <div className="presentation-title-block">
-              <div className="presentation-identity">
-                <h1>{t.name}</h1>
-                <div>
-                  <strong>{language === "zh" ? "高级全栈工程师 · 九年花旗经历" : "Senior Full-Stack Engineer · Nine years at Citi"}</strong>
-                  <span>{language === "zh" ? "厦门大学 · 软件工程与经济学双学位" : "Xiamen University · Software Engineering & Economics, Dual Degree"}</span>
-                </div>
-              </div>
-              <div className="presentation-thesis">
-                <h2 id="presentation-title">{language === "zh" ? "我关注完整的产品。" : "I care about the whole product."}</h2>
-                <p>{language === "zh" ? "从理解用户需求到构建可靠的生产系统，我始终亲自参与设计与实现。" : "I stay hands-on—from understanding user needs to building reliable production systems."}</p>
-              </div>
+          <section className="presentation-intro intro-cover" aria-labelledby="presentation-name">
+            <div className="intro-cover-copy">
+              <h1 id="presentation-name">{t.name}</h1>
+              <p className="intro-cover-role">{language === "zh" ? "高级全栈工程师 · 九年花旗经历" : "Senior Full-Stack Engineer · Nine years at Citi"}</p>
+              <h2>{language === "zh" ? <>构建贯穿<span className="intro-cover-emphasis">界面、服务与数据层</span>的企业应用。</> : <>Building enterprise applications across <span className="intro-cover-emphasis">UI, services and data.</span></>}</h2>
+              <p className="intro-cover-approach">{language === "zh" ? "从理解用户需求到生产交付，我始终亲自参与。" : "I stay hands-on, from understanding user needs to production delivery."}</p>
             </div>
-
-            <div className="presentation-journey">
-              <header>
-                <span>{language === "zh" ? "我的一线实践路径" : "My hands-on journey"}</span>
-              </header>
-              <ol>
-                <li className="presentation-stage presentation-stage--foundation">
-                  <div className="presentation-stage-meta"><span>01</span><time>2017—2022</time></div>
-                  <h2>{language === "zh" ? "界面" : "Interface"}</h2>
-                  <h3>Citi Velocity</h3>
-                </li>
-                <li className="presentation-stage presentation-stage--foundation">
-                  <div className="presentation-stage-meta"><span>02</span><time>2018—2019</time></div>
-                  <h2>{language === "zh" ? "组件" : "Components"}</h2>
-                  <h3>{language === "zh" ? "企业 React 组件库" : "Enterprise React Library"}</h3>
-                </li>
-                <li className="presentation-stage presentation-stage--focus presentation-stage--primary">
-                  <div className="presentation-stage-meta"><span>03</span><time>2023—Now</time></div>
-                  <h2>{language === "zh" ? "全栈" : "Full Stack"}</h2>
-                  <h3>CitiDirect Nextgen Entitlements</h3>
-                </li>
-                <li className="presentation-stage presentation-stage--focus">
-                  <div className="presentation-stage-meta"><span>04</span><time>2026—Now</time></div>
-                  <h2>{language === "zh" ? "产品" : "Product"}</h2>
-                  <h3>{language === "zh" ? "辅食搭子 · AI 产品" : "Baby Food Buddy · AI product"}</h3>
-                </li>
-              </ol>
-            </div>
+            <div className="intro-work"><p>{language === "zh" ? "项目经历" : "Selected work"}</p><ul aria-label={language === "zh" ? "项目经历" : "Selected work"}>
+              <li>Citi Velocity</li>
+              <li>{language === "zh" ? "企业 React 组件库" : "Enterprise React Library"}</li>
+              <li className="intro-work-featured">CitiDirect Entitlements</li>
+              <li>NutriFlow AI</li>
+            </ul></div>
 
             <footer className="presentation-intro-footer">
-              <button onClick={() => showProject(0)} aria-label={language === "zh" ? "进入 CitiDirect 项目展示" : "Open CitiDirect presentation"}><small>02 /</small>CitiDirect<span aria-hidden="true">→</span></button>
+              <button onClick={() => showPresentationPage("why-role")} aria-label="Open Why this role">Why this role<span aria-hidden="true">→</span></button>
             </footer>
           </section>
         </main>
@@ -339,10 +331,10 @@ function App() {
         <nav className="fushi-case-pager nextgen-case-pager" aria-label={language === "zh" ? "CitiDirect 案例页前后导航" : "CitiDirect case page navigation"}>
           {currentCaseIndex > 0
             ? <button onClick={() => showNextgenSection(nextgenSections[currentCaseIndex - 1])}><span aria-hidden="true">←</span><small>{language === "zh" ? "上一页" : "Previous"}</small><strong>{nextgenCaseLabels[currentCaseIndex - 1]}</strong></button>
-            : <span />}
+            : <button onClick={() => showPresentationPage("why-role")}><span aria-hidden="true">←</span><strong>Why this role</strong></button>}
           {currentCaseIndex < nextgenSections.length - 1
             ? <button className="next" onClick={() => showNextgenSection(nextgenSections[currentCaseIndex + 1])}><small>{language === "zh" ? "下一页" : "Next"}</small><strong>{nextgenCaseLabels[currentCaseIndex + 1]}</strong><span aria-hidden="true">→</span></button>
-            : <button className="next" onClick={() => showProject(nextIndex, true)}><small>{language === "zh" ? "下一个项目" : "Next project"}</small><strong>{projects[nextIndex].title}</strong><span aria-hidden="true">→</span></button>}
+            : <button className="next" onClick={returnHome}><strong>{language === "zh" ? "返回自我介绍" : "Return to introduction"}</strong><span aria-hidden="true">↺</span></button>}
         </nav>
       );
 
@@ -352,10 +344,9 @@ function App() {
             <div className="nextgen-deck-primary">
               <div className="nextgen-deck-controls">
                 <LanguageSwitch />
-                <nav aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
-                  <span>{language === "zh" ? "项目 " : "Project "}{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-                  <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
-                  <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
+                <nav aria-label={language === "zh" ? "演示导航" : "Presentation navigation"}>
+                  <button onClick={returnHome}>{language === "zh" ? "自我介绍" : "Introduction"}</button>
+                  <button onClick={() => showPresentationPage("why-role")}>{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</button>
                 </nav>
               </div>
             </div>
@@ -367,204 +358,146 @@ function App() {
               {caseNavigation}
 
               {nextgenSection === "overview" && (
-                <section className="nextgen-overview nextgen-overview--story nextgen-why-only">
-                  <div className="nextgen-why-hero">
-                    <div className="nextgen-overview-title">
-                      <p>{language === "zh" ? "01 / 项目概览" : "01 / Project overview"}</p>
-                      <h1>{language === "zh"
-                        ? "CitiDirect Nextgen Entitlements"
-                        : <>CitiDirect Nextgen <span className="nextgen-title-nowrap">Entitlements</span></>}</h1>
-                      <span>{selectedProject.role}</span>
-                      <p className="nextgen-product-intro">{language === "zh"
-                        ? "CitiDirect Nextgen 是花旗企业数字银行平台 CitiDirect 的全新一代，围绕用户工作旅程重塑体验，并采用模块化、API 驱动的架构。"
-                        : "CitiDirect Nextgen is the new generation of Citi’s corporate digital banking platform, redesigned around user journeys and a modular, API-driven architecture."}</p>
-                      <p className="nextgen-product-intro">{language === "zh"
-                        ? "Entitlements 是其中管理企业客户及其用户访问权限的模块。新版重建客户接入与持续管理、用户生命周期及权限分配能力，同时保留审批和安全控制。"
-                        : "Entitlements manages access for corporate clients and their users. Within Nextgen, it rebuilds client onboarding and ongoing management, user lifecycle and access assignment while preserving approval and security controls."}</p>
-                    </div>
-                    <aside className="nextgen-why-scale" aria-label={language === "zh" ? "业务规模" : "Business scale"}>
-                      <span>{language === "zh" ? "CitiDirect 平台背景" : "CitiDirect platform context"}</span>
-                      <div><strong>90K+</strong><small>{language === "zh" ? "家机构" : "organizations"}</small></div>
-                      <div><strong>90+</strong><small>{language === "zh" ? "个市场" : "markets"}</small></div>
-                    </aside>
+                <section className="citi-overview-slide">
+                  <div className="citi-overview-top">
+                  <header className="citi-overview-heading">
+                    <p className="citi-overview-label">{language === "zh" ? "01 / 项目概览" : "01 / Project overview"}</p>
+                    <h1>CitiDirect Nextgen Entitlements</h1>
+                    <p className="citi-overview-description">{language === "zh" ? "花旗企业数字银行中的权限管理模块，管理企业客户及其用户的访问权限。" : "Access management for corporate clients and their users within Citi’s digital banking platform."}</p>
+                    <p className="citi-overview-role">{selectedProject.role}</p>
+                  </header>
+                  <aside className="citi-overview-scale" aria-label={language === "zh" ? "CitiDirect 平台规模" : "CitiDirect platform scale"}>
+                    <p>{language === "zh" ? "CitiDirect 平台规模" : "CitiDirect platform scale"}</p>
+                    <div><strong>90K+</strong><span>{language === "zh" ? "家机构" : "organizations"}</span></div>
+                    <div><strong>90+</strong><span>{language === "zh" ? "个市场" : "markets"}</span></div>
+                  </aside>
+                  </div>
+                  <div className="citi-overview-changes">
+                    <div className="citi-overview-table-head"><span>{language === "zh" ? "原有业务问题" : "Business challenge"}</span><span>{language === "zh" ? "Nextgen 的改进" : "What changed in Nextgen"}</span></div>
+                    <article><h2>{language === "zh" ? "权限配置复杂" : "Complex access setup"}</h2><div><h3>{language === "zh" ? "可复用的权限组合（Persona）" : "Reusable permission sets (personas)"}</h3><p>{language === "zh" ? "将权限组织为可复用组合，用于用户权限分配。" : "Group permissions into reusable sets for user access assignment."}</p></div></article>
+                    <article><h2>{language === "zh" ? "企业实体接入依赖人工" : "Manual legal-entity onboarding"}</h2><div><h3>{language === "zh" ? "事件驱动的接入流程" : "Event-driven onboarding"}</h3><p>{language === "zh" ? "通过系统事件触发接入，以独立控制流程创建初始用户。" : "Trigger initial user creation through system events and a separate control path."}</p></div></article>
                   </div>
 
-                  <div className="nextgen-transition-map nextgen-overview-transition-map">
-                    <div className="nextgen-transition-columns" aria-hidden="true">
-                      <span />
-                      <span>{language === "zh" ? "旧版 Entitlements" : "Legacy Entitlements"}</span>
-                      <span />
-                      <span>Nextgen Entitlements</span>
-                    </div>
-                    <article>
-                      <span className="nextgen-transition-number">01</span>
-                      <div className="nextgen-transition-problem">
-                        <strong>{language === "zh" ? "复杂的权限配置" : "Complex entitlement setup"}</strong>
-                      </div>
-                      <span className="nextgen-transition-arrow" aria-hidden="true">→</span>
-                      <div className="nextgen-transition-solution">
-                        <h2>{language === "zh" ? "可复用权限 Persona" : "Reusable entitlement personas"}</h2>
-                      </div>
-                    </article>
-                    <article>
-                      <span className="nextgen-transition-number">02</span>
-                      <div className="nextgen-transition-problem">
-                        <strong>{language === "zh" ? "Legal Entity 人工开户" : "Manual Legal Entity onboarding"}</strong>
-                      </div>
-                      <span className="nextgen-transition-arrow" aria-hidden="true">→</span>
-                      <div className="nextgen-transition-solution">
-                        <h2>{language === "zh" ? "事件驱动开户" : "Event-driven onboarding"}</h2>
-                      </div>
-                    </article>
-                  </div>
                 </section>
               )}
 
               {nextgenSection === "scope" && (
-                <section className="nextgen-overview nextgen-overview--story nextgen-scope-page nextgen-ownership-page">
-                  <header className="nextgen-ownership-heading">
-                    <div><p>{language === "zh" ? "02 / 职责边界" : "02 / Ownership"}</p><h1>{language === "zh" ? "我的角色：技术负责人，也是核心开发者" : "My role: Tech Lead & hands-on engineer"}</h1></div>
+                <section className="citi-scope-slide">
+                  <header className="ownership-intro">
+                    <p className="citi-overview-label">{language === "zh" ? "02 / 我的职责" : "02 / My ownership"}</p>
+                    <h1>{language === "zh" ? "技术负责人，也是核心开发者" : "Tech Lead & hands-on engineer"}</h1>
+                    <p>{language === "zh" ? "带领 10+ 人中印团队，与其他五个团队共同建设 Entitlements。" : "Led 10+ engineers across China and India, working with five other teams."}</p>
                   </header>
-
-                  <div className="nextgen-team-scope">
-                    <p>{language === "zh" ? "六个团队共同建设 Entitlements；我带领的团队负责用户生命周期与权限管理旅程的交付。" : "Six teams built Entitlements. I led the team delivering the user lifecycle and access-management journey."}</p>
-                    <ul>{(language === "zh"
-                      ? ["用户创建、修改与删除", "Persona 权限分配与变更", "Checker 审批与拒绝"]
-                      : ["User creation, updates & deletion", "Persona-based access assignment", "Checker approval & rejection"]
-                    ).map((item) => <li key={item}>{item}</li>)}</ul>
-                    <small>{language === "zh" ? "自动接入入口：初始用户创建，采用独立控制流程。" : "Automated onboarding: initial user creation through a separate control path."}</small>
-                  </div>
-
-                  <div className="nextgen-capability-grid nextgen-ownership-actions nextgen-role-contributions">
-                    <article className="featured">
-                      <h2>{language === "zh" ? "我的直接实现" : "Hands-on implementation"}</h2>
-                      <p><strong>{language === "zh" ? "核心 User Service + React 权限流程" : "Core User Service + React permission workflow"}</strong><br />{language === "zh" ? "参与 Persona、Criteria、CDC、审计与 Provisioning 服务实现。" : "Contributed to Persona, Criteria, CDC, Audit and provisioning services."}</p>
-                    </article>
-                    <article>
-                      <h2>{language === "zh" ? "共同设计与技术交付" : "Shared design & technical delivery"}</h2>
-                      <p>{language === "zh" ? "与其他五个团队共同设计领域模型与 API 契约。带领 10+ 人中印团队完成集成、发布与生产支持。" : "Co-designed domain models and API contracts with the other five teams. Led 10+ engineers across China and India through integration, release and production support."}</p>
-                    </article>
+                  <div className="ownership-columns">
+                    <section>
+                      <h2>{language === "zh" ? "亲自实现" : "Hands-on engineering"}</h2>
+                      <ul>
+                        <li><h3>Core User Service</h3><p>{language === "zh" ? "用户生命周期与权限管理。" : "User lifecycle and access management."}</p></li>
+                        <li><h3>{language === "zh" ? "权限管理流程" : "Permission management workflow"}</h3><p>{language === "zh" ? "用户维护、Persona 分配与审批操作。" : "User maintenance, persona assignment and approvals."}</p></li>
+                        <li><h3>{language === "zh" ? "协作实现相关服务" : "Contributed to related services"}</h3><p>{language === "zh" ? "Persona、Criteria、CDC、审计及下游权限配置。" : "Persona, Criteria, CDC, Audit and provisioning."}</p></li>
+                      </ul>
+                    </section>
+                    <section>
+                      <h2>{language === "zh" ? "技术领导与交付" : "Technical leadership"}</h2>
+                      <ul>
+                        <li><h3>{language === "zh" ? "跨团队设计" : "Cross-team design"}</h3><p>{language === "zh" ? "共同设计领域模型与 API 契约。" : "Co-designed domain models and API contracts."}</p></li>
+                        <li><h3>{language === "zh" ? "团队交付" : "Team delivery"}</h3><p>{language === "zh" ? "负责用户与权限管理流程的集成及发布。" : "Led integration and releases for the user and access workflow."}</p></li>
+                        <li><h3>{language === "zh" ? "生产支持" : "Production support"}</h3><p>{language === "zh" ? "带领团队跟进上线后的生产问题。" : "Led the team through post-release production support."}</p></li>
+                      </ul>
+                    </section>
                   </div>
                 </section>
               )}
 
               {nextgenSection === "backend" && (
-                <section className="nextgen-case-content">
-                  <header className="nextgen-ownership-heading nextgen-backend-heading">
-                    <div>
-                      <p>{language === "zh" ? "03 / 后端与数据" : "03 / Backend & data"}</p>
-                      <h1>{language === "zh" ? "跨系统的用户与权限管理" : <>Managing users and access{" "}<br />across systems</>}</h1>
-                    </div>
-                    <aside className="nextgen-backend-context">
-                      <span>{language === "zh" ? "平台背景" : "Platform context"}</span>
-                      <strong>{language === "zh" ? "多团队 Spring 平台" : "Multi-team Spring platform"}</strong>
-                      <small>Java / Spring WebFlux / WebClient / MongoDB</small>
-                    </aside>
+                <section className="citi-backend-slide">
+                  <header className="ownership-intro">
+                    <p className="citi-overview-label">{language === "zh" ? "03 / 后端与数据" : "03 / Backend & data"}</p>
+                    <h1>{language === "zh" ? "跨系统的用户与权限管理" : "User and access management across systems"}</h1>
                   </header>
-                  <div className="nextgen-shared-auth">
-                    <strong>{language === "zh" ? "共享 Spring Security 库" : "Shared Spring Security library"}</strong>
-                    <p>{language === "zh" ? "统一校验 JWT 并提取登录用户信息；各业务服务执行自身的权限与客户范围规则。" : "Validates JWTs and exposes authenticated-user context; each business service enforces its own authorization and client-scope rules."}</p>
-                  </div>
-                  <figure className="nextgen-architecture-image" aria-label={language === "zh" ? "经过简化的客户接入与权限服务架构" : "Simplified client onboarding and access service architecture"}>
-                    <img
-                      src={language === "zh" ? "/assets/nextgen-architecture-zh.svg?v=25" : "/assets/nextgen-architecture-en.svg?v=26"}
-                      alt={language === "zh" ? "经过简化的客户接入、审批、审计与下游同步架构" : "Simplified client onboarding, approval, audit and downstream synchronization architecture"}
-                    />
-                    <figcaption className="nextgen-architecture-note">{language === "zh" ? "经过简化的非保密视图" : "Simplified, non-confidential view"}</figcaption>
-                    <div className="sr-only">
-                      <span>Core User Service</span><span>Persona Service</span><span>UI layout metadata</span><span>Criteria Service</span><span>CDC Listener</span><span>Audit Service</span>
-                    </div>
+
+                  <figure className="citi-backend-diagram">
+                    <img src={language === "zh" ? "/assets/nextgen-architecture-zh.svg?v=43" : "/assets/nextgen-architecture-en.svg?v=43"} alt={language === "zh" ? "CRM 事件与用户操作进入核心 User Service；数据库变更经 CDC 和 Kafka 传播至审计及下游权限配置服务。" : "CRM events and user actions reach the Core User Service; database changes propagate through CDC and Kafka to audit and downstream provisioning."} />
+                    <figcaption>{language === "zh" ? "简化的非保密架构 · 实线：请求或写入 · 虚线：事件传播" : "Simplified, non-confidential view · Solid: requests or writes · Dashed: events"}</figcaption>
                   </figure>
+
                 </section>
               )}
 
               {nextgenSection === "frontend" && (
-                <section className="nextgen-case-content">
-                  <header className="nextgen-ownership-heading nextgen-backend-heading nextgen-frontend-heading">
-                    <div><p>{language === "zh" ? "04 / 前端平台" : "04 / Frontend platform"}</p><h1>{language === "zh" ? "模块化前端中的 Schema 驱动 UI" : "Schema-driven UI on a modular frontend"}</h1></div>
+                <section className="citi-frontend-slide">
+                  <header className="ownership-intro">
+                    <p className="citi-overview-label">{language === "zh" ? "04 / 前端平台" : "04 / Frontend platform"}</p>
+                    <h1>{language === "zh" ? "Schema 驱动界面，模块化交付" : "Schema-driven UI and modular delivery"}</h1>
                   </header>
-                  <div className="nextgen-frontend-summary">
-                    <strong>{language === "zh" ? "后端元数据驱动工作流，前端应用保持独立部署" : "Backend metadata drives the workflow; frontend applications remain independently deployable"}</strong>
-                    <span><b>5</b>{language === "zh" ? "个 React 应用 · 1 个 Host + 4 个 Remotes" : "React applications · 1 host + 4 remotes"}</span>
+                  <div className="citi-frontend-summary">
+                    <p>{language === "zh" ? "Persona 元数据与布局配置驱动界面，复用同一套渲染引擎。" : "Persona metadata and layout drive the UI through a shared rendering engine."}</p>
+
                   </div>
                   <figure className="nextgen-frontend-architecture-image" aria-label={language === "zh" ? "动态 Persona UI 与 Module Federation 架构" : "Dynamic persona UI and Module Federation architecture"}>
                     <img
-                      src={language === "zh" ? "/assets/nextgen-frontend-architecture-zh.svg?v=3" : "/assets/nextgen-frontend-architecture-en.svg?v=5"}
-                      alt={language === "zh" ? "Schema Lens 动态渲染与一个 React Host、四个 Remote 应用的 Module Federation 架构" : "Schema Lens dynamic rendering and a Module Federation architecture with one React host and four remote applications"}
+                      src={language === "zh" ? "/assets/nextgen-frontend-architecture-zh.svg?v=15" : "/assets/nextgen-frontend-architecture-en.svg?v=15"}
+                      alt={language === "zh" ? "Schema Lens 动态渲染与一个 Host、四个 Remote 应用的 Module Federation 架构" : "Schema Lens dynamic rendering and a Module Federation architecture with one host and four remote applications"}
                     />
                     <figcaption className="sr-only">
-                      <span>Schema Lens</span><span>Persona Service</span><span>Criteria Service</span><span>React Host</span><span>Webpack Module Federation</span><span>Nginx</span>
+                      <span>Schema Lens</span><span>Persona Service</span><span>Criteria Service</span><span>Host</span><span>Webpack Module Federation</span><span>Nginx</span>
                     </figcaption>
                   </figure>
                 </section>
               )}
 
               {nextgenSection === "production" && (
-                <section className="nextgen-case-content nextgen-production-page">
-                  <header className="nextgen-ownership-heading nextgen-backend-heading">
-                    <div>
-                      <p>{language === "zh" ? "05 / 安全与生产工程" : "05 / Security & production"}</p>
-                      <h1>{language === "zh" ? "安全与生产工程" : "Security and production engineering"}</h1>
-                    </div>
+                <section className="citi-production-slide">
+                  <header className="ownership-intro">
+                    <p className="citi-overview-label">{language === "zh" ? "05 / 安全与生产工程" : "05 / Security & production"}</p>
+                    <h1>{language === "zh" ? "从发布前验证到生产支持" : "From release checks to production support"}</h1>
                   </header>
-                  <div className="nextgen-production-flow">
-                    <article>
-                      <span>{language === "zh" ? "01 / 门禁" : "01 / Gate"}</span>
-                      <h2>{language === "zh" ? "安全与工作流测试进入发布路径" : "Security and workflow tests in the release path"}</h2>
-                      <p>{language === "zh" ? "SonarQube、Snyk、SAST 与 BDD / Cucumber 集成到 GitLab CI 和 Harness。" : "SonarQube, Snyk, SAST and BDD / Cucumber integrated with GitLab CI and Harness."}</p>
-                      <div><strong>90%+</strong><small>{language === "zh" ? "自动化测试覆盖率" : "automated test coverage"}</small></div>
-                    </article>
-                    <article>
-                      <span>{language === "zh" ? "02 / 发布" : "02 / Release"}</span>
-                      <h2>{language === "zh" ? "Kubernetes / OpenShift 发布保护" : "Kubernetes and OpenShift release safeguards"}</h2>
-                      <p>{language === "zh" ? "Readiness / Liveness Probe、部署验证和回滚准备支撑生产发布。" : "Readiness and liveness probes, deployment verification and rollback preparation supported production releases."}</p>
-                      <div><strong>{language === "zh" ? "健康检查" : "Health"}</strong><small>{language === "zh" ? "就绪、存活与发布验证" : "readiness, liveness and verification"}</small></div>
-                    </article>
-                    <article>
-                      <span>{language === "zh" ? "03 / 诊断" : "03 / Diagnose"}</span>
-                      <h2>{language === "zh" ? "请求级跨服务故障定位" : "Request-level diagnosis across services"}</h2>
-                      <p>{language === "zh" ? "结构化日志、Request ID 与 Actuator 健康信号支持在 Kibana 中区分代码、配置、授权和下游故障。" : "Structured logs, request IDs and Actuator health signals helped distinguish application, configuration, authorization and downstream failures in Kibana."}</p>
-                      <div><strong>{language === "zh" ? "可追踪" : "Traceable"}</strong><small>{language === "zh" ? "跨服务请求与故障边界" : "cross-service requests and failure boundaries"}</small></div>
-                    </article>
+                  <div className="production-stages">
+                    <section>
+                      <span className="production-step">01 / {language === "zh" ? "发布前" : "Before release"}</span>
+                      <h2>{language === "zh" ? "质量与安全检查" : "Quality & security"}</h2>
+                      <p>{language === "zh" ? "安全扫描与业务流程测试集成到 CI/CD。" : "Security scans and workflow tests in CI/CD."}</p>
+                      <p className="production-coverage"><strong>90%+</strong><span>{language === "zh" ? "团队服务测试覆盖率" : "test coverage across team services"}</span></p>
+                    </section>
+                    <section>
+                      <span className="production-step">02 / {language === "zh" ? "发布中" : "During release"}</span>
+                      <h2>{language === "zh" ? "部署与回滚准备" : "Deployment safeguards"}</h2>
+                      <p>{language === "zh" ? "健康检查、部署验证与回滚准备。" : "Health checks, deployment verification and rollback preparation."}</p>
+                    </section>
+                    <section>
+                      <span className="production-step">03 / {language === "zh" ? "上线后" : "In production"}</span>
+                      <h2>{language === "zh" ? "跨服务问题定位" : "Cross-service diagnosis"}</h2>
+                      <p>{language === "zh" ? "通过请求 ID 与结构化日志定位跨服务故障。" : "Trace failures across services with request IDs and structured logs."}</p>
+                    </section>
                   </div>
-                  <div className="nextgen-production-scale">
-                    <div>
-                      <span>{language === "zh" ? "遗留模型迁移" : "Legacy transition"}</span>
-                      <strong>{language === "zh" ? "分阶段" : "Phased"}</strong>
-                      <small>{language === "zh" ? "新旧权限模型并行" : "legacy and new models coexist"}</small>
-                    </div>
-                    <p>{language === "zh" ? "共同设计转换规则与分批验证方案，在受控发布阶段中逐步管理数据与运营风险。" : "Co-designed transformation rules and staged validation to manage data and operational risk through controlled rollout phases."}</p>
+                  <div className="production-transition">
+                    <h2>{language === "zh" ? "分阶段迁移" : "Phased migration"}</h2>
+                    <p>{language === "zh" ? "新旧权限模型并行，分批转换与验证。" : "Legacy and new models coexisted, with staged conversion and validation."}</p>
                   </div>
                 </section>
               )}
 
               {nextgenSection === "result" && (
-                <section className="nextgen-case-content nextgen-result-page">
-                  <header className="nextgen-ownership-heading nextgen-backend-heading">
-                    <div>
-                      <p>{language === "zh" ? "06 / 项目成果" : "06 / Result"}</p>
-                      <h1>{language === "zh" ? "生产中真正发生的改变" : "What changed in production"}</h1>
-                    </div>
+                <section className="citi-result-slide">
+                  <header className="ownership-intro">
+                    <p className="citi-overview-label">{language === "zh" ? "06 / 项目成果" : "06 / Result"}</p>
+                    <h1>{language === "zh" ? "上线后的业务成果" : "Outcomes in production"}</h1>
                   </header>
-
-                  <div className="nextgen-result-outcomes">
+                  <div className="citi-result-points">
                     <article>
-                      <strong>{language === "zh" ? "端到端" : "End-to-end"}</strong>
-                      <span>{language === "zh" ? "管理生命周期" : "Administration lifecycle"}</span>
-                      <h2>{language === "zh" ? "从用户请求到权限同步" : "From user request to entitlement sync"}</h2>
-                      <p>{language === "zh" ? "覆盖用户创建、修改与删除请求，Checker 审批与拒绝，以及同步的权限变更。" : "Covered user create, modify and delete requests, checker approvals and rejections, and synchronized entitlement changes."}</p>
+                      <p className="citi-result-label">{language === "zh" ? "01 / 用户管理" : "01 / User administration"}</p>
+                      <h2>{language === "zh" ? "完整的用户管理流程" : "Complete user lifecycle"}</h2>
+                      <p>{language === "zh" ? "贯通用户变更、审批与拒绝，以及下游权限同步。" : "Connected user changes, checker decisions and entitlement sync."}</p>
                     </article>
                     <article>
-                      <strong>{language === "zh" ? "事件驱动" : "Event-driven"}</strong>
-                      <span>{language === "zh" ? "客户接入" : "Client onboarding"}</span>
-                      <h2>{language === "zh" ? "CRM 事件自动触发开户" : "CRM events automated onboarding"}</h2>
-                      <p>{language === "zh" ? "触发 Legal Entity、用户与权限开通，替代原有部分人工设置流程。" : "Triggered Legal Entity, user and entitlement provisioning, replacing part of the manual setup flow."}</p>
+                      <p className="citi-result-label">{language === "zh" ? "02 / 客户接入" : "02 / Client onboarding"}</p>
+                      <h2>{language === "zh" ? "减少人工设置" : "Less manual setup"}</h2>
+                      <p>{language === "zh" ? "CRM 事件自动触发 Legal Entity、用户与权限开通。" : "CRM events triggered legal entity, user and entitlement provisioning."}</p>
                     </article>
                   </div>
-
-                  <div className="nextgen-result-close">
-                    <div><span>{language === "zh" ? "Citi 荣誉" : "Citi recognition"}</span><strong>Citi Gratitude <em>Golden</em> Award</strong><small>2024</small></div>
-                    <p>{language === "zh" ? "这个项目体现了我从平台设计、核心实现和跨团队交付一直参与到生产支持。" : "This project demonstrates ownership from platform design and core implementation through cross-team delivery and production support."}</p>
+                  <div className="citi-result-award">
+                    <span>{language === "zh" ? "个人荣誉 / 2024" : "Individual recognition / 2024"}</span>
+                    <p>Citi Gratitude <strong>Golden Award</strong></p>
                   </div>
                 </section>
               )}
@@ -707,7 +640,7 @@ function App() {
       return { title, body: body.charAt(0).toUpperCase() + body.slice(1) };
     };
     const caseNavigation = (
-      <nav className="fushi-case-nav" aria-label={language === "zh" ? "辅食搭子案例分页" : "Baby Food Buddy case study pages"}>
+      <nav className="fushi-case-nav" aria-label={language === "zh" ? "NutriFlow AI 案例分页" : "NutriFlow AI case study pages"}>
         <span>{language === "zh" ? `展示页 ${String(currentCaseIndex + 1).padStart(2, "0")} / 03` : `Presentation page ${String(currentCaseIndex + 1).padStart(2, "0")} / 03`}</span>
         <div>
           {fushiSections.map((section, index) => (

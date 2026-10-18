@@ -6,7 +6,7 @@ A bilingual, presentation-style engineering portfolio for interviews and everyda
 
 - English / Chinese language switching with browser-language detection
 - Keyboard and scroll-friendly presentation sections
-- Evidence-led case study for [Baby Food Buddy](https://github.com/Lsxj/fushi-dazi)
+- Evidence-led case study for [NutriFlow AI](https://github.com/Lsxj/fushi-dazi)
 - Enterprise engineering experience and technical journey
 - Responsive, accessible layout built with React, TypeScript and Vite
 - Legacy technical blog preserved at `/archive/`
