@@ -11,7 +11,7 @@ export const content = {
     about: [
       "Hi, I’m Xuejia, a full-stack engineer based in Shanghai. I studied Software Engineering and Economics at Xiamen University, which shaped how I look at both the engineering problem and the user or business need behind it.",
       "I joined Citi in 2017 and progressed from Software Engineer to AVP / Full-Stack Tech Lead. My work has grown from hands-on React engineering on Citi Velocity to end-to-end ownership of Java / Spring services, React applications, REST APIs, MongoDB models, and production delivery for CitiDirect Nextgen Entitlements.",
-      "Today I remain hands-on with architecture, code reviews, and core implementation—most recently the core User Service and schema-driven React permission workflows for CitiDirect Nextgen Entitlements. Alongside that work, I lead technical delivery across a 10+ person China–India team, directly manage six engineers, and collaborate with Product, UX, Operations, CRM, and five global engineering teams.",
+      "At Citi, I stayed hands-on with architecture, code reviews, and core implementation—most recently the core User Service and schema-driven React permission workflows for CitiDirect Nextgen Entitlements. Alongside that work, I led technical delivery across a 10+ person China–India team, directly managed six engineers, and collaborated with Product, UX, Operations, CRM, and five global engineering teams.",
       "More recently, I independently built NutriFlow AI from idea to a live product used by 300+ people. It combines a WeChat Mini Program, React operations console, TypeScript / Node.js APIs, a production single-agent DeepSeek workflow, and standards-based MCP tooling.",
       "I’m looking for full-stack infrastructure work where scalability, production reliability, thoughtful user experience, and practical AI tool use all matter.",
     ],
@@ -45,7 +45,7 @@ export const content = {
       {
         id: "nextgen",
         title: "CitiDirect Nextgen Entitlements",
-        role: "Tech Lead / Senior Software Engineer · 2023.01—Present",
+        role: "Tech Lead / Senior Software Engineer · 2023.01—2026.10.17",
         body: "Co-designed and delivered CitiDirect Nextgen Entitlements’s shared identity and access-control foundation, covering client onboarding, the full user lifecycle, dynamic permission assignment, and maker-checker approvals across Spring services and React applications.",
         result: "Released the complete Entitlements administration lifecycle to production, cleared 100+ security findings across team services, maintained 90%+ automated coverage, and supported secure biweekly releases. Recognised individually with the 2024 Citi Gratitude Golden Award.",
         outcomeStatement: "Put the complete user-administration journey into production",
@@ -54,7 +54,7 @@ export const content = {
           casePages: ["Leadership & architecture", "Production engineering"],
           challenge: "CitiDirect serves 90K+ organizations across 90+ markets. Entitlements is its shared identity and access-control foundation for client onboarding, ongoing client management, full user-lifecycle management, permission assignment, and dual-control approvals.",
           focus: "Co-designed the domain and full-stack architecture, then led production delivery.",
-          scope: "As Tech Lead, I manage six engineers in China, lead the broader 10+ person China–India team, and coordinate integration with five other engineering teams and CRM partners.",
+          scope: "As Tech Lead, I managed six engineers in China, led the broader 10+ person China–India team, and coordinated integration with five other engineering teams and CRM partners.",
           architectureTitle: "A shared full-stack user and entitlement foundation",
           architectureSummary: "The platform connects user-lifecycle workflows, metadata-driven permissions, consistent data changes, and default-deny API authorization across independently deployed services and applications.",
           architectureColumns: ["Operational concern", "NextGen approach"],
@@ -69,7 +69,7 @@ export const content = {
           securityTracks: [["Authorization Server", "Co-designed and implemented as a separate authorization platform capability."], ["Shared Spring Security JAR", "Enforces YAML-configured API permissions, JWT roles and actions, and a default-deny policy inside application services."]],
           securityTools: "SonarQube · Snyk · SAST · BDD / Cucumber · GitLab CI / Harness",
           deliveryPillars: [["Standardized API authorization", "Co-designed an OAuth 2.0 Authorization Server for short-lived JWTs and refresh-token renewal, and built a shared Spring Security JAR that enforces YAML-defined, default-deny rules."], ["Embedded security and quality gates", "Integrated SonarQube, Snyk, SAST and automated tests into GitLab CI / Harness, making remediation a release condition."], ["Made production behavior diagnosable", "Added structured logs, request IDs and Actuator health checks, and used Kibana to trace cross-service failures in Kubernetes / OpenShift production."]],
-          ownership: "As Tech Lead / Senior Software Engineer for Entitlements, I co-designed the domain model and Spring architecture, led production delivery of the end-to-end user-administration journey, and coordinated five other engineering teams and CRM partners. I manage six engineers in China and lead the broader 10+ person China–India team.",
+          ownership: "As Tech Lead / Senior Software Engineer for Entitlements, I co-designed the domain model and Spring architecture, led production delivery of the end-to-end user-administration journey, and coordinated five other engineering teams and CRM partners. I managed six engineers in China and led the broader 10+ person China–India team.",
           approach: ["Built the full administration lifecycle — implemented maker create, modify and delete requests, checker approval and rejection, and synchronized entitlement changes.", "Delivered automated Legal Entity onboarding — connected CRM events to downstream user and entitlement provisioning through an event-driven workflow.", "Co-designed a phased legacy-model transition — analysed production data and defined transformation rules for tens of millions of Access Profiles while the legacy and new models continue to coexist.", "Standardized authorization and production diagnostics — combined shared default-deny security controls with automated gates, request-level tracing, Actuator health checks and Kibana incident investigation."],
         },
         tags: ["Java / Spring Boot / Spring Cloud", "React Micro-frontends", "OAuth 2.0 / Spring Security / JWT", "Event-driven Microservices", "GitLab CI / Harness", "Kubernetes / OpenShift"],
@@ -125,8 +125,8 @@ export const content = {
     journeyTitle: "Engineering journey",
     journeyIntro: "My core experience comes from building and leading enterprise systems at Citi; more recently, I have extended that foundation by taking an AI agent product from idea to real-world use.",
     journey: [
-      { period: "2017—Present", title: "Citi · AVP / Senior Software Engineer", body: "Grew from an individual contributor into a Tech Lead and people manager, while staying hands-on with the systems my teams deliver.", stages: [
-        ["Today", "Building and leading across the stack", "Develop core backend and frontend features, guide a China–India team, and work with global partners to move a complex banking platform forward safely."],
+      { period: "2017—2026.10.17", title: "Citi · AVP / Senior Software Engineer", body: "Grew from an individual contributor into a Tech Lead and people manager, while staying hands-on with the systems my teams delivered.", stages: [
+        ["2023–2026", "Building and leading across the stack", "Developed core backend and frontend features, guided a China–India team, and worked with global partners to move a complex banking platform forward safely."],
         ["Earlier years", "Making front ends faster and easier to build", "Rebuilt a high-traffic search experience and helped create reusable React components for several business lines."],
       ] },
       { period: "2026—Now", title: "Extending my full-stack work into AI agents", body: "Designed and launched NutriFlow AI, combining a production single-agent DeepSeek workflow with deterministic guardrails and standards-based MCP tooling.", stages: [] },
@@ -149,7 +149,7 @@ export const content = {
     about: [
       "你好，我是史学佳，一名在上海工作的全栈工程师。我本科毕业于厦门大学，拥有软件工程和经济学双学位，这让我习惯同时理解工程问题，以及背后的用户和业务需求。",
       "2017 年加入花旗后，我从软件工程师成长为 AVP / Full-Stack Tech Lead。工作范围也从 Citi Velocity 的 React 一线开发，扩展到 CitiDirect Nextgen Entitlements 的 Java / Spring 服务、React 应用、REST API、MongoDB 数据模型和生产交付。",
-      "目前，我仍然直接参与架构、代码评审和核心功能实现，最近的重点包括 CitiDirect Nextgen Entitlements 核心 User Service 和 Schema 驱动的 React 权限流程。在一线开发之外，我负责 10 余人中印团队的技术交付，直接管理 6 名工程师，并与 Product、UX、Operations、CRM 及另外 5 个全球研发团队协作。",
+      "在花旗任职期间，我直接参与架构、代码评审和核心功能实现，后期重点包括 CitiDirect Nextgen Entitlements 核心 User Service 和 Schema 驱动的 React 权限流程。在一线开发之外，我负责 10 余人中印团队的技术交付，直接管理 6 名工程师，并与 Product、UX、Operations、CRM 及另外 5 个全球研发团队协作。",
       "最近，我把实际育儿需求做成了 NutriFlow AI，并独立完成从想法到上线的全过程。产品目前有 300+ 用户，由微信小程序、React 运营后台、TypeScript / Node.js API、线上单 Agent DeepSeek 工作流和符合标准的 MCP 工具能力组成。",
       "我希望继续从事同时重视扩展性、生产可靠性、用户体验和实际 AI 工具应用的全栈基础设施工作。",
     ],
@@ -183,7 +183,7 @@ export const content = {
       {
         id: "nextgen",
         title: "CitiDirect Nextgen Entitlements",
-        role: "Tech Lead / Senior Software Engineer · 2023.01—至今",
+        role: "Tech Lead / Senior Software Engineer · 2023.01—2026.10.17",
         body: "共同设计并交付 CitiDirect Nextgen Entitlements 的统一身份与访问控制基础能力，覆盖客户开户、完整用户生命周期、动态权限分配和 Maker-Checker 审批，横跨 Spring 服务与 React 应用。",
         result: "完整 Entitlements 管理生命周期已投入生产；清理团队服务中的 100+ 个安全问题，保持 90%+ 自动化测试覆盖，并支持安全的双周发布。个人获得 2024 年 Citi Gratitude Golden Award。",
         outcomeStatement: "将完整用户管理链路投入生产",
@@ -258,8 +258,8 @@ export const content = {
     journeyTitle: "成长路径",
     journeyIntro: "我的核心经验来自花旗企业级系统的开发与技术管理；最近，我也在这套工程基础上继续拓展 AI Agent 的产品实践。",
     journey: [
-      { period: "2017—至今", title: "花旗 · AVP / 高级软件工程师", body: "从一线开发逐步成长为 Tech Lead 和 People Manager，同时始终参与团队负责系统的核心开发。", stages: [
-        ["现在", "一边做核心开发，一边带领团队", "负责关键的前后端功能，带领中印团队，并与全球多个团队合作，稳步推进复杂银行平台的改造。"],
+      { period: "2017—2026.10.17", title: "花旗 · AVP / 高级软件工程师", body: "从一线开发逐步成长为 Tech Lead 和 People Manager，同时始终参与团队负责系统的核心开发。", stages: [
+        ["2023–2026", "一边做核心开发，一边带领团队", "负责关键的前后端功能，带领中印团队，并与全球多个团队合作，稳步推进复杂银行平台的改造。"],
         ["早期", "把前端做得更快、更好用", "重构高流量搜索体验，也参与建设供多条业务线复用的 React 组件库。"],
       ] },
       { period: "2026—至今", title: "将全栈经验拓展到 AI Agent", body: "独立设计并发布 NutriFlow AI，将线上单 Agent DeepSeek 工作流、确定性安全边界和符合标准的 MCP 工具能力结合起来。", stages: [] },

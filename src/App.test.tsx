@@ -25,7 +25,7 @@ describe("portfolio", () => {
     expect(screen.getByText(/可靠的生产平台、全栈应用/)).toBeInTheDocument();
     expect(screen.getByText(/软件工程和经济学双学位/)).toBeInTheDocument();
     expect(screen.getByText(/直接管理 6 名工程师/)).toBeInTheDocument();
-    expect(screen.getByText("2017—至今")).toBeInTheDocument();
+    expect(screen.getByText("2017—2026.10.17")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "花旗 · AVP / 高级软件工程师" })).toBeInTheDocument();
     expect(screen.getByText(/150 个国家近 10 万名机构投资者/)).toBeInTheDocument();
     expect(screen.getByText(/2018\.07—2019\.01/)).toBeInTheDocument();
