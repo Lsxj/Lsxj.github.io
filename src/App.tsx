@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { content, type Language } from "./content";
+import { VelocityPresentation, velocitySections, type VelocitySection } from "./VelocityPresentation";
+import { SelectedProjects } from "./SelectedProjects";
 
 type FushiSection = "overview" | "agent" | "fullstack";
 type NextgenSection = "overview" | "scope" | "backend" | "frontend" | "production" | "result";
@@ -17,12 +19,31 @@ const fushiSections: FushiSection[] = ["overview", "agent", "fullstack"];
 const nextgenSections: NextgenSection[] = ["overview", "scope", "backend", "frontend", "production", "result"];
 const galleryImages = ["/assets/fushi-overview.jpg", "/assets/fushi-pain-points.jpg", "/assets/fushi-home-guide.jpg", "/assets/fushi-support.jpg"];
 
+function isWebRole() {
+  const params = new URLSearchParams(window.location.search);
+  return isPresentationUrl() && (params.has("role") ? params.get("role") === "web" : params.get("company") === "standard-chartered");
+}
+
+function hasWhyRole() {
+  return isPresentationUrl();
+}
+
+function allowedPresentationProject(id: string | null) {
+  return isWebRole() ? ["nextgen", "velocity"].includes(id ?? "") : id === "nextgen";
+}
+
 function projectFromUrl() {
   if (!PROJECT_DETAILS_ENABLED && !isPresentationUrl()) return null;
   const id = new URLSearchParams(window.location.search).get("project");
-  if (isPresentationUrl() && id !== "nextgen") return null;
+  if (isPresentationUrl() && !allowedPresentationProject(id)) return null;
   const index = id ? projectIds.indexOf(id) : -1;
   return index >= 0 ? index : null;
+}
+
+function velocitySectionFromUrl(): VelocitySection {
+  const section = new URLSearchParams(window.location.search).get("section");
+  if (section === "delivery") return "results";
+  return velocitySections.includes(section as VelocitySection) ? section as VelocitySection : "overview";
 }
 
 function fushiSectionFromUrl(): FushiSection {
@@ -32,7 +53,8 @@ function fushiSectionFromUrl(): FushiSection {
 
 function nextgenSectionFromUrl(): NextgenSection {
   const section = new URLSearchParams(window.location.search).get("section");
-  return nextgenSections.includes(section as NextgenSection) ? section as NextgenSection : "overview";
+  const sections: NextgenSection[] = isWebRole() ? ["overview", "frontend"] : nextgenSections;
+  return sections.includes(section as NextgenSection) ? section as NextgenSection : sections[0];
 }
 
 function isPresentationUrl() {
@@ -42,6 +64,7 @@ function isPresentationUrl() {
 function routeUrl(params: Record<string, string>) {
   const search = new URLSearchParams();
   if (isPresentationUrl()) search.set("view", "present");
+  if (isWebRole()) search.set("role", "web");
   Object.entries(params).forEach(([key, value]) => search.set(key, value));
   return `${window.location.pathname}?${search.toString()}`;
 }
@@ -53,22 +76,34 @@ function Arrow() {
 function App() {
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [activeProject, setActiveProject] = useState<number | null>(projectFromUrl);
+  const [velocitySection, setVelocitySection] = useState<VelocitySection>(velocitySectionFromUrl);
   const [fushiSection, setFushiSection] = useState<FushiSection>(fushiSectionFromUrl);
   const [nextgenSection, setNextgenSection] = useState<NextgenSection>(nextgenSectionFromUrl);
-  const [whyRole, setWhyRole] = useState(() => new URLSearchParams(window.location.search).get("section") === "why-role");
+  const [whyRole, setWhyRole] = useState(() => hasWhyRole() && new URLSearchParams(window.location.search).get("section") === "why-role");
+  const [projectSummary, setProjectSummary] = useState(() => isPresentationUrl() && !isWebRole() && new URLSearchParams(window.location.search).get("section") === "projects");
   const t = content[language];
   const projects = [...t.projects].sort((a, b) => projectIds.indexOf(a.id) - projectIds.indexOf(b.id));
   const selectedProject = activeProject === null ? null : projects[activeProject];
   const presentationMode = isPresentationUrl();
+  const webRole = isWebRole();
+  const showWhyRole = hasWhyRole();
+  const presentationSections: NextgenSection[] = webRole ? ["overview", "frontend"] : nextgenSections;
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (presentationMode && params.get("role") === "aidp") {
+      params.delete("role");
+      // Preserve the old Apple link's meaning even if it also contains a legacy company.
+      params.delete("company");
+      window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}${window.location.hash}`);
+    }
     const id = new URLSearchParams(window.location.search).get("project");
-    if (presentationMode && id && id !== "nextgen") {
-      window.history.replaceState(null, "", `${window.location.pathname}?view=present`);
+    if (presentationMode && id && !allowedPresentationProject(id)) {
+      window.history.replaceState(null, "", routeUrl({}));
       return;
     }
     if (PROJECT_DETAILS_ENABLED || presentationMode || !id) return;
-    window.history.replaceState(null, "", presentationMode ? `${window.location.pathname}?view=present` : window.location.pathname);
+    window.history.replaceState(null, "", presentationMode ? routeUrl({}) : window.location.pathname);
   }, [presentationMode]);
 
   useEffect(() => {
@@ -96,9 +131,11 @@ function App() {
 
   useEffect(() => {
     const syncRoute = () => {
-      setWhyRole(new URLSearchParams(window.location.search).get("section") === "why-role");
+      setProjectSummary(isPresentationUrl() && !isWebRole() && new URLSearchParams(window.location.search).get("section") === "projects");
+      setWhyRole(hasWhyRole() && new URLSearchParams(window.location.search).get("section") === "why-role");
       setActiveProject(projectFromUrl());
       setFushiSection(fushiSectionFromUrl());
+      setVelocitySection(velocitySectionFromUrl());
       setNextgenSection(nextgenSectionFromUrl());
     };
     window.addEventListener("popstate", syncRoute);
@@ -108,7 +145,7 @@ function App() {
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-  }, [activeProject, fushiSection, nextgenSection]);
+  }, [activeProject, fushiSection, nextgenSection, velocitySection, whyRole, projectSummary]);
 
   useEffect(() => {
     if (!presentationMode) return;
@@ -120,11 +157,11 @@ function App() {
     };
     window.addEventListener("keydown", navigatePresentation);
     return () => window.removeEventListener("keydown", navigatePresentation);
-  }, [activeProject, fushiSection, nextgenSection, presentationMode, whyRole]);
+  }, [activeProject, fushiSection, nextgenSection, velocitySection, presentationMode, whyRole, projectSummary]);
 
   function showProject(index: number, replace = false) {
     if (!PROJECT_DETAILS_ENABLED && !presentationMode) return;
-    if (presentationMode && projectIds[index] !== "nextgen") return;
+    if (presentationMode && !allowedPresentationProject(projectIds[index])) return;
     const url = routeUrl({ project: projectIds[index] });
     if (replace) window.history.replaceState({ portfolioProject: true }, "", url);
     else window.history.pushState({ portfolioProject: true }, "", url);
@@ -149,7 +186,8 @@ function App() {
 
   function returnHome() {
     setWhyRole(false);
-    window.history.replaceState(null, "", presentationMode ? `${window.location.pathname}?view=present` : window.location.pathname);
+    setProjectSummary(false);
+    window.history.replaceState(null, "", presentationMode ? routeUrl({}) : window.location.pathname);
     setActiveProject(null);
     setFushiSection("overview");
     setNextgenSection("overview");
@@ -166,8 +204,18 @@ function App() {
     );
   }
 
-  function showPresentationPage(project: "intro" | "nextgen" | "fushi" | "why-role", section?: NextgenSection | FushiSection) {
+  function showPresentationPage(project: "intro" | "projects" | "nextgen" | "fushi" | "velocity" | "platform" | "why-role", section?: NextgenSection | FushiSection | VelocitySection) {
+    if (project === "why-role" && !showWhyRole) {
+      showPresentationPage("nextgen", "overview");
+      return;
+    }
     setWhyRole(project === "why-role");
+    setProjectSummary(project === "projects");
+    if (project === "projects") {
+      window.history.pushState(null, "", routeUrl({ section: "projects" }));
+      setActiveProject(null);
+      return;
+    }
     if (project === "why-role") {
       window.history.pushState(null, "", routeUrl({ section: "why-role" }));
       setActiveProject(null);
@@ -188,19 +236,21 @@ function App() {
     setActiveProject(projectIndex);
     if (project === "nextgen") setNextgenSection(targetSection as NextgenSection);
     if (project === "fushi") setFushiSection(targetSection as FushiSection);
+    if (project === "velocity") setVelocitySection(targetSection as VelocitySection);
   }
 
   function movePresentation(direction: -1 | 1) {
-    const sequence: Array<{ project: "intro" | "nextgen" | "fushi" | "why-role"; section?: NextgenSection | FushiSection }> = [
+    const sequence: Array<{ project: "intro" | "projects" | "nextgen" | "fushi" | "velocity" | "platform" | "why-role"; section?: NextgenSection | FushiSection | VelocitySection }> = [
       { project: "intro" },
-      { project: "why-role" },
-      ...nextgenSections.map((section) => ({ project: "nextgen" as const, section })),
+      ...(!webRole ? [{ project: "projects" as const }] : []),
+      ...(showWhyRole ? [{ project: "why-role" as const }] : []),
+      ...(webRole ? velocitySections.map(section => ({ project: "velocity" as const, section })) : []),
+      ...presentationSections.map((section) => ({ project: "nextgen" as const, section })),
     ];
-    const currentIndex = whyRole && activeProject === null ? 1 : activeProject === null
-      ? 0
-      : selectedProject?.id === "nextgen"
-        ? 2 + nextgenSections.indexOf(nextgenSection)
-        : -1;
+    const currentIndex = sequence.findIndex(page => {
+      if (activeProject === null) return page.project === (projectSummary ? "projects" : whyRole ? "why-role" : "intro");
+      return page.project === selectedProject?.id && (page.project !== "nextgen" || page.section === nextgenSection) && (page.project !== "velocity" || page.section === velocitySection);
+    });
     if (currentIndex < 0) return;
     const nextIndex = currentIndex + direction;
     if (nextIndex < 0) return;
@@ -220,26 +270,28 @@ function App() {
         <nav className="presentation-dock" aria-label={language === "zh" ? "演示页面快速导航" : "Presentation page shortcuts"}>
           <span className="presentation-dock-handle" aria-hidden="true" />
           <button
-            className={activeProject === null && !whyRole ? "active" : ""}
-            aria-current={activeProject === null && !whyRole ? "page" : undefined}
+            className={activeProject === null && !whyRole && !projectSummary ? "active" : ""}
+            aria-current={activeProject === null && !whyRole && !projectSummary ? "page" : undefined}
             onClick={() => showPresentationPage("intro")}
           >
             <strong>{language === "zh" ? "自我介绍" : "Introduction"}</strong>
           </button>
-          <button className={activeProject === null && whyRole ? "active" : ""} aria-current={activeProject === null && whyRole ? "page" : undefined} onClick={() => showPresentationPage("why-role")}><strong>{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</strong></button>
+          {!webRole && <button className={activeProject === null && projectSummary ? "active" : ""} aria-current={activeProject === null && projectSummary ? "page" : undefined} onClick={() => showPresentationPage("projects")}><strong>{language === "zh" ? "项目与成果" : "Selected projects"}</strong></button>}
+          {showWhyRole && <button className={activeProject === null && whyRole ? "active" : ""} aria-current={activeProject === null && whyRole ? "page" : undefined} onClick={() => showPresentationPage("why-role")}><strong>{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</strong></button>}
           <div className="presentation-dock-group">
+            {webRole && <button onClick={() => showPresentationPage("velocity")} aria-current={selectedProject?.id === "velocity" ? "page" : undefined}>Velocity</button>}
             <span>CitiDirect</span>
             <div>
-              {nextgenSections.map((section, index) => (
+              {presentationSections.map((section, pageIndex) => { const index = nextgenSections.indexOf(section); return (
                 <button
                   key={section}
                   className={selectedProject?.id === "nextgen" && nextgenSection === section ? "active" : ""}
                   aria-current={selectedProject?.id === "nextgen" && nextgenSection === section ? "page" : undefined}
-                  aria-label={`CitiDirect ${String(index + 1).padStart(2, "0")}: ${nextgenLabels[index]}`}
+                  aria-label={`CitiDirect ${String(pageIndex + 1).padStart(2, "0")}: ${nextgenLabels[index]}`}
                   title={nextgenLabels[index]}
                   onClick={() => showPresentationPage("nextgen", section)}
-                >{String(index + 1).padStart(2, "0")}</button>
-              ))}
+                >{String(pageIndex + 1).padStart(2, "0")}</button>
+              ); })}
             </div>
           </div>
         </nav>
@@ -247,24 +299,34 @@ function App() {
     );
   }
 
+  if (presentationMode && activeProject === null && projectSummary && !webRole) {
+    return <div className="presentation-shell"><SelectedProjects language={language} /><PresentationDock /></div>;
+  }
+
   if (presentationMode && activeProject === null && whyRole) {
     return <div className="presentation-shell">
-      <header className="presentation-header"><div><span>Apple Enterprise Systems</span></div><div className="presentation-controls"><LanguageSwitch /></div></header>
+      <header className="presentation-header"><div><span>{webRole ? "Web Engineering" : "Apple IS&T AI & Data Platforms"}</span></div><div className="presentation-controls"><LanguageSwitch /></div></header>
       <main className="presentation-main"><section className="why-role-slide" aria-labelledby="why-role-title">
-        <div className="why-role-heading"><h1 id="why-role-title">{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</h1></div>
+        <div className="why-role-heading"><h1 id="why-role-title">{webRole ? (language === "zh" ? "为什么选择这个岗位" : "Why this role") : language === "zh" ? "为什么选择 AiDP" : "Why this role at AiDP"}</h1></div>
         <div className="why-role-message">
-          <h2>{language === "zh" ? <>从界面到数据，<br />构建企业级应用。</> : <>Build enterprise applications<br />from UI to data.</>}</h2>
+          <h2>{webRole ? (language === "zh" ? <>为金融业务构建<br />高质量 React 界面。</> : <>Build React interfaces<br />for financial applications.</>) : language === "zh" ? <>将企业工程经验<br />用于 AI 产品开发</> : <>Bring enterprise experience<br />to AI product development</>}</h2>
         </div>
         <div className="role-motivations">
-          {(language === "zh" ? [
-            ["端到端全栈开发", "持续参与界面、服务与数据层，对完整功能的交付负责。"],
-            ["大规模企业系统", "延续 CitiDirect 经验，深入解决规模与可靠性问题。"]
+          {(!webRole ? (language === "zh" ? [
+            ["企业工程积累", "在花旗，我参与了贯穿用户流程、服务和数据的应用开发与生产支持。"],
+            ["继续深入 AI 产品开发", "NutriFlow AI 让我希望继续沿这个方向发展：构建实用的 AI 产品，并对其生产运行负责。"]
           ] : [
-            ["End-to-end full-stack development", "Stay hands-on across UI, services and data, owning complete features."],
-            ["Enterprise systems at scale", "Build on my CitiDirect experience and deepen my work on scale and reliability."]
-          ]).map(([title, description], index) => <section key={title}><span className="role-motivation-index">0{index + 1}</span><h3>{title}</h3><p>{description}</p></section>)}
+            ["Enterprise engineering experience", "At Citi, I built and supported applications across user workflows, services and data."],
+            ["Further work on AI products", "NutriFlow AI made me want to go further: build useful AI products and stay responsible for them in production."]
+          ]) : (language === "zh" ? [
+            ["金融业务中的前端工程", "延续 Citi Velocity 经验，参与金融应用的界面开发与交付。"],
+            ["性能与可复用架构", "发挥 React、微前端和组件库经验，持续改进用户体验与工程质量。"]
+          ] : [
+            ["Frontend engineering in financial services", "Build on my Citi Velocity experience to develop interfaces for financial applications."],
+            ["Performance and reusable architecture", "Apply my React, microfrontend and component-library experience to improve user experience and engineering quality."]
+          ])).map(([title, description], index) => <section key={title}><span className="role-motivation-index">0{index + 1}</span><h3>{title}</h3><p>{description}</p></section>)}
         </div>
-      <footer className="presentation-intro-footer why-role-pager"><button onClick={() => showPresentationPage("intro")} aria-label={language === "zh" ? "返回自我介绍" : "Back to Introduction"}><span aria-hidden="true">←</span>{language === "zh" ? "自我介绍" : "Introduction"}</button><button onClick={() => showProject(0)} aria-label="Open CitiDirect presentation">CitiDirect<span aria-hidden="true">→</span></button></footer></section></main><PresentationDock />
+      <footer className="presentation-intro-footer why-role-pager"><button onClick={() => showPresentationPage(webRole ? "intro" : "projects")} aria-label={webRole ? "Back to Introduction" : "Back to Selected projects"}><span aria-hidden="true">←</span>{webRole ? (language === "zh" ? "自我介绍" : "Introduction") : (language === "zh" ? "项目与成果" : "Selected projects")}</button><button onClick={() => webRole ? showPresentationPage("velocity") : showProject(0)} aria-label={webRole ? "Open Velocity presentation" : "Open CitiDirect presentation"}>{webRole ? "Citi Velocity" : "CitiDirect"}<span aria-hidden="true">→</span></button></footer></section></main><PresentationDock />
     </div>;
   }
 
@@ -286,17 +348,17 @@ function App() {
               <h1 id="presentation-name">{t.name}</h1>
               <p className="intro-cover-role">{language === "zh" ? "高级全栈工程师 · 九年花旗经历" : "Senior Full-Stack Engineer · Nine years at Citi"}</p>
               <h2>{language === "zh" ? <>构建贯穿<span className="intro-cover-emphasis">界面、服务与数据层</span>的企业应用。</> : <>Building enterprise applications across <span className="intro-cover-emphasis">UI, services and data.</span></>}</h2>
-              <p className="intro-cover-approach">{language === "zh" ? "从理解用户需求到生产交付，我始终亲自参与。" : "I stay hands-on, from understanding user needs to production delivery."}</p>
+              <p className="intro-cover-approach">{!webRole ? (language === "zh" ? "结合花旗企业系统交付经验与 NutriFlow AI 的产品实践。" : "I bring enterprise delivery experience and hands-on work on a live AI product.") : language === "zh" ? "从理解用户需求到生产交付，我始终亲自参与。" : "I stay hands-on, from understanding user needs to production delivery."}</p>
             </div>
-            <div className="intro-work"><p>{language === "zh" ? "项目经历" : "Selected work"}</p><ul aria-label={language === "zh" ? "项目经历" : "Selected work"}>
-              <li>Citi Velocity</li>
+            {webRole && <div className="intro-work"><p>{language === "zh" ? "项目经历" : "Selected work"}</p><ul aria-label={language === "zh" ? "项目经历" : "Selected work"}>
+              <li className="intro-work-featured">Citi Velocity</li>
               <li>{language === "zh" ? "企业 React 组件库" : "Enterprise React Library"}</li>
-              <li className="intro-work-featured">CitiDirect Entitlements</li>
+              <li>CitiDirect Entitlements</li>
               <li>NutriFlow AI</li>
-            </ul></div>
+            </ul></div>}
 
             <footer className="presentation-intro-footer">
-              <button onClick={() => showPresentationPage("why-role")} aria-label="Open Why this role">Why this role<span aria-hidden="true">→</span></button>
+              <button onClick={() => showPresentationPage(webRole ? "why-role" : "projects")} aria-label={webRole ? "Open Why this role" : "Open Selected projects"}>{webRole ? "Why this role" : language === "zh" ? "项目与成果" : "Selected projects"}<span aria-hidden="true">→</span></button>
             </footer>
           </section>
         </main>
@@ -313,26 +375,26 @@ function App() {
       const nextgenCaseLabels = language === "zh"
         ? ["项目概览", "职责与贡献", "后端与数据", "前端平台", "安全与生产工程", "项目成果"]
         : ["Overview", "My Ownership", "Backend & Data", "Frontend Platform", "Security & Production", "Result"];
-      const currentCaseIndex = nextgenSections.indexOf(nextgenSection);
+      const currentCaseIndex = presentationSections.indexOf(nextgenSection);
       const caseNavigation = (
         <nav className="fushi-case-nav nextgen-case-nav" aria-label={language === "zh" ? "CitiDirect 案例分页" : "CitiDirect case study pages"}>
-          <span>{language === "zh" ? `案例页 ${String(currentCaseIndex + 1).padStart(2, "0")} / ${String(nextgenSections.length).padStart(2, "0")}` : `Case page ${String(currentCaseIndex + 1).padStart(2, "0")} / ${String(nextgenSections.length).padStart(2, "0")}`}</span>
+          <span>{language === "zh" ? `案例页 ${String(currentCaseIndex + 1).padStart(2, "0")} / ${String(presentationSections.length).padStart(2, "0")}` : `Case page ${String(currentCaseIndex + 1).padStart(2, "0")} / ${String(presentationSections.length).padStart(2, "0")}`}</span>
           <div>
-            {nextgenSections.map((section, index) => (
+            {presentationSections.map((section, pageIndex) => { const index = nextgenSections.indexOf(section); return (
               <button key={section} className={nextgenSection === section ? "active" : ""} aria-current={nextgenSection === section ? "page" : undefined} onClick={() => showNextgenSection(section)}>
-                <span>0{index + 1}</span>{nextgenCaseLabels[index]}
+                <span>0{pageIndex + 1}</span>{nextgenCaseLabels[index]}
               </button>
-            ))}
+            ); })}
           </div>
         </nav>
       );
       const casePager = (
         <nav className="fushi-case-pager nextgen-case-pager" aria-label={language === "zh" ? "CitiDirect 案例页前后导航" : "CitiDirect case page navigation"}>
           {currentCaseIndex > 0
-            ? <button onClick={() => showNextgenSection(nextgenSections[currentCaseIndex - 1])}><span aria-hidden="true">←</span><small>{language === "zh" ? "上一页" : "Previous"}</small><strong>{nextgenCaseLabels[currentCaseIndex - 1]}</strong></button>
-            : <button onClick={() => showPresentationPage("why-role")}><span aria-hidden="true">←</span><strong>Why this role</strong></button>}
-          {currentCaseIndex < nextgenSections.length - 1
-            ? <button className="next" onClick={() => showNextgenSection(nextgenSections[currentCaseIndex + 1])}><small>{language === "zh" ? "下一页" : "Next"}</small><strong>{nextgenCaseLabels[currentCaseIndex + 1]}</strong><span aria-hidden="true">→</span></button>
+            ? <button onClick={() => showNextgenSection(presentationSections[currentCaseIndex - 1])}><span aria-hidden="true">←</span><small>{language === "zh" ? "上一页" : "Previous"}</small><strong>{nextgenCaseLabels[nextgenSections.indexOf(presentationSections[currentCaseIndex - 1])]}</strong></button>
+            : <button onClick={() => webRole ? showPresentationPage("velocity", "results") : returnHome()}><span aria-hidden="true">←</span><strong>{webRole ? "Citi Velocity" : language === "zh" ? "自我介绍" : "Introduction"}</strong></button>}
+          {currentCaseIndex < presentationSections.length - 1
+            ? <button className="next" onClick={() => showNextgenSection(presentationSections[currentCaseIndex + 1])}><small>{language === "zh" ? "下一页" : "Next"}</small><strong>{nextgenCaseLabels[nextgenSections.indexOf(presentationSections[currentCaseIndex + 1])]}</strong><span aria-hidden="true">→</span></button>
             : <button className="next" onClick={returnHome}><strong>{language === "zh" ? "返回自我介绍" : "Return to introduction"}</strong><span aria-hidden="true">↺</span></button>}
         </nav>
       );
@@ -345,7 +407,7 @@ function App() {
                 <LanguageSwitch />
                 <nav aria-label={language === "zh" ? "演示导航" : "Presentation navigation"}>
                   <button onClick={returnHome}>{language === "zh" ? "自我介绍" : "Introduction"}</button>
-                  <button onClick={() => showPresentationPage("why-role")}>{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</button>
+                  {showWhyRole && <button onClick={() => showPresentationPage("why-role")}>{language === "zh" ? "为什么选择这个岗位" : "Why this role"}</button>}
                 </nav>
               </div>
             </div>
@@ -362,7 +424,7 @@ function App() {
                   <header className="citi-overview-heading">
                     <p className="citi-overview-label">{language === "zh" ? "01 / 项目概览" : "01 / Project overview"}</p>
                     <h1>CitiDirect Nextgen Entitlements</h1>
-                    <p className="citi-overview-description">{language === "zh" ? "花旗企业数字银行中的权限管理模块，管理企业客户及其用户的访问权限。" : "Access management for corporate clients and their users within Citi’s digital banking platform."}</p>
+                    <p className="citi-overview-description">{webRole ? (language === "zh" ? "CitiDirect 是花旗面向企业客户的数字银行平台。我负责 Entitlements：管理员创建用户、分配银行服务和账户访问权限，并交由另一位审核人审批。" : "CitiDirect is Citi’s digital banking platform for corporate clients. My area was Entitlements: administrators create users, assign banking and account access, and submit changes to a second person for approval.") : language === "zh" ? "花旗企业数字银行中的权限管理模块，管理企业客户及其用户的访问权限。" : "Access management for corporate clients and their users within Citi’s digital banking platform."}</p>
                     <p className="citi-overview-role">{selectedProject.role}</p>
                   </header>
                   <aside className="citi-overview-scale" aria-label={language === "zh" ? "CitiDirect 平台规模" : "CitiDirect platform scale"}>
@@ -372,9 +434,16 @@ function App() {
                   </aside>
                   </div>
                   <div className="citi-overview-changes">
-                    <div className="citi-overview-table-head"><span>{language === "zh" ? "原有业务问题" : "Business challenge"}</span><span>{language === "zh" ? "Nextgen 的改进" : "What changed in Nextgen"}</span></div>
-                    <article><h2>{language === "zh" ? "权限配置复杂" : "Complex access setup"}</h2><div><h3>{language === "zh" ? "可复用的权限组合（Persona）" : "Reusable permission sets (personas)"}</h3><p>{language === "zh" ? "将权限组织为可复用组合，用于用户权限分配。" : "Group permissions into reusable sets for user access assignment."}</p></div></article>
-                    <article><h2>{language === "zh" ? "企业实体接入依赖人工" : "Manual legal-entity onboarding"}</h2><div><h3>{language === "zh" ? "事件驱动的接入流程" : "Event-driven onboarding"}</h3><p>{language === "zh" ? "通过系统事件触发接入，以独立控制流程创建初始用户。" : "Trigger initial user creation through system events and a separate control path."}</p></div></article>
+                    <div className="citi-overview-table-head"><span>{webRole ? (language === "zh" ? "前端工程挑战" : "Frontend engineering challenge") : language === "zh" ? "原有业务问题" : "Business challenge"}</span><span>{webRole ? (language === "zh" ? "设计方案" : "Design approach") : language === "zh" ? "Nextgen 的改进" : "What changed in Nextgen"}</span></div>
+                    {webRole ? <>
+                      <article><h2>{language === "zh" ? "不同 Persona 的界面差异" : "Different UI requirements across personas"}</h2><div><h3>{language === "zh" ? "Schema Lens：共享渲染引擎" : "Schema Lens: a shared rendering engine"}</h3><p>{language === "zh" ? "字段、布局、校验和客户选项随 Persona 变化。将元数据映射为可复用组件与状态，减少重复页面实现。" : "Fields, layouts, validation and client-specific options vary by persona. Map metadata to reusable components and state to reduce duplicate page implementations."}</p></div></article>
+                      <article><h2>{language === "zh" ? "支持多团队独立交付" : "Independent delivery across teams"}</h2><div><h3>{language === "zh" ? "Module Federation：Host 与四个 Remote" : "Module Federation: one Host and four Remotes"}</h3><p>{language === "zh" ? "支持各团队独立开发和发布，同时协调共享依赖与接口契约。" : "Support independent development and releases while coordinating shared dependencies and API contracts."}</p></div></article>
+                    </> : <>
+                      <article><h2>{language === "zh" ? "权限配置复杂" : "Complex access setup"}</h2><div><h3>{language === "zh" ? "可复用的权限组合（Persona）" : "Reusable permission sets (personas)"}</h3><p>{language === "zh" ? "将权限组织为可复用组合，用于用户权限分配。" : "Group permissions into reusable sets for user access assignment."}</p></div></article>
+                      <article><h2>{language === "zh" ? "企业实体接入依赖人工" : "Manual legal-entity onboarding"}</h2><div><h3>{language === "zh" ? "事件驱动的接入流程" : "Event-driven onboarding"}</h3><p>{language === "zh" ? "通过系统事件触发接入，以独立控制流程创建初始用户。" : "Trigger initial user creation through system events and a separate control path."}</p></div></article>
+                    </>}
+
+
                   </div>
 
                 </section>
@@ -426,7 +495,7 @@ function App() {
               {nextgenSection === "frontend" && (
                 <section className="citi-frontend-slide">
                   <header className="ownership-intro">
-                    <p className="citi-overview-label">{language === "zh" ? "04 / 前端平台" : "04 / Frontend platform"}</p>
+                    <p className="citi-overview-label">{webRole ? "02" : "04"} / {language === "zh" ? "前端平台" : "Frontend platform"}</p>
                     <h1>{language === "zh" ? "Schema 驱动界面，模块化交付" : "Schema-driven UI and modular delivery"}</h1>
                   </header>
                   <div className="citi-frontend-summary">
@@ -448,7 +517,7 @@ function App() {
               {nextgenSection === "production" && (
                 <section className="citi-production-slide">
                   <header className="ownership-intro">
-                    <p className="citi-overview-label">{language === "zh" ? "05 / 安全与生产工程" : "05 / Security & production"}</p>
+                    <p className="citi-overview-label">{webRole ? "03" : "05"} / {language === "zh" ? "安全与生产工程" : "Security & production"}</p>
                     <h1>{language === "zh" ? "从发布前验证到生产支持" : "From release checks to production support"}</h1>
                   </header>
                   <div className="production-stages">
@@ -509,6 +578,14 @@ function App() {
       );
     }
 
+    if (webRole && selectedProject.id === "velocity") {
+      return <div className="nextgen-deck nextgen-deck--presentation web-velocity-deck">
+        <main className="nextgen-deck-main">
+          <VelocityPresentation language={language} section={velocitySection} />
+        </main><PresentationDock />
+      </div>;
+    }
+
     if (selectedProject.id === "velocity") {
       const velocityMetrics = language === "zh"
         ? [["≈60%", "首屏等待与白屏时间降幅"], ["端到端", "Typeahead 至完整搜索结果页"], ["Golden + Silver", "2019 / 2021 Citi Gratitude Awards"], ["技术分享", "公司级工程大会演讲"]] as const
@@ -523,8 +600,8 @@ function App() {
                 <LanguageSwitch />
                 <nav aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
                   <span>{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-                  <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
-                  <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
+                  <button onClick={() => webRole ? movePresentation(-1) : showProject(previousIndex, true)} aria-label={webRole ? "Previous presentation page" : `${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
+                  <button onClick={() => webRole ? movePresentation(1) : showProject(nextIndex, true)} aria-label={webRole ? "Next presentation page" : `${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
                 </nav>
               </div>
             </div>
@@ -583,8 +660,8 @@ function App() {
                 <LanguageSwitch />
                 <nav aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
                   <span>{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-                  <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
-                  <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
+                  <button onClick={() => webRole ? movePresentation(-1) : showProject(previousIndex, true)} aria-label={webRole ? "Previous presentation page" : `${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
+                  <button onClick={() => webRole ? movePresentation(1) : showProject(nextIndex, true)} aria-label={webRole ? "Next presentation page" : `${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
                 </nav>
               </div>
             </div>
@@ -654,7 +731,7 @@ function App() {
       <nav className="fushi-case-pager" aria-label={language === "zh" ? "案例页前后导航" : "Case page navigation"}>
         {currentCaseIndex > 0
           ? <button onClick={() => showFushiSection(fushiSections[currentCaseIndex - 1])}><span aria-hidden="true">←</span><small>{language === "zh" ? "上一页" : "Previous"}</small><strong>{fushiCaseLabels[currentCaseIndex - 1]}</strong></button>
-          : <button onClick={() => showProject(previousIndex, true)}><span aria-hidden="true">←</span><small>{language === "zh" ? "上一项目" : "Previous project"}</small><strong>CitiDirect Nextgen Entitlements</strong></button>}
+          : <button onClick={() => webRole ? movePresentation(-1) : showProject(previousIndex, true)}><span aria-hidden="true">←</span><small>{language === "zh" ? "上一项目" : "Previous project"}</small><strong>CitiDirect Nextgen Entitlements</strong></button>}
         {currentCaseIndex < fushiSections.length - 1
           ? <button className="next" onClick={() => showFushiSection(fushiSections[currentCaseIndex + 1])}><small>{language === "zh" ? "下一页" : "Next"}</small><strong>{fushiCaseLabels[currentCaseIndex + 1]}</strong><span aria-hidden="true">→</span></button>
           : <button className="next" onClick={returnHome}><small>{language === "zh" ? "返回" : "Return to"}</small><strong>{language === "zh" ? "自我介绍" : "Introduction"}</strong><span aria-hidden="true">↺</span></button>}
@@ -669,8 +746,8 @@ function App() {
               <LanguageSwitch />
               <nav aria-label={language === "zh" ? "项目切换" : "Project navigation"}>
                 <span>{language === "zh" ? "项目 " : "Project "}{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-                <button onClick={() => showProject(previousIndex, true)} aria-label={`${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
-                <button onClick={() => showProject(nextIndex, true)} aria-label={`${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
+                <button onClick={() => webRole ? movePresentation(-1) : showProject(previousIndex, true)} aria-label={webRole ? "Previous presentation page" : `${t.previousProject}: ${projects[previousIndex].title}`} title={t.previousProject}>←</button>
+                <button onClick={() => webRole ? movePresentation(1) : showProject(nextIndex, true)} aria-label={webRole ? "Next presentation page" : `${t.nextProject}: ${projects[nextIndex].title}`} title={t.nextProject}>→</button>
               </nav>
             </div>
           </div>

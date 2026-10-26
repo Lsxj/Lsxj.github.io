@@ -37,15 +37,12 @@ describe("portfolio", () => {
     render(<App />);
 
     expect(screen.getByRole("heading", { level: 2, name: /Building enterprise applications|构建贯穿界面/ })).toBeInTheDocument();
-    expect(screen.getByText("CitiDirect Entitlements")).toBeInTheDocument();
-    expect(screen.getByText("NutriFlow AI")).toBeInTheDocument();
+    expect(screen.queryByRole("list", { name: "Selected work" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Exit" })).not.toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Presentation page shortcuts" })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Open Why this role" }));
-    const presentationButton = screen.getByRole("button", { name: /Open CitiDirect presentation|进入 CitiDirect 项目展示/ });
-    expect(presentationButton).toBeEnabled();
-    fireEvent.click(presentationButton);
+    expect(screen.queryByRole("button", { name: "Open Why this role" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "CitiDirect 01: Overview" }));
     expect(screen.getByRole("heading", { level: 1, name: "CitiDirect Nextgen Entitlements" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Back to introduction/ })).not.toBeInTheDocument();
     expect(window.location.search).toContain("view=present");
@@ -65,15 +62,20 @@ describe("portfolio", () => {
     expect(window.location.search).toContain("section=frontend");
   });
 
-  it("moves through intro, why, and CitiDirect in order", () => {
+  it("moves through projects and Why before CitiDirect in the default Apple presentation", () => {
     window.history.replaceState(null, "", "/?view=present");
     render(<App />);
     fireEvent.keyDown(window, { key: "ArrowRight" });
-    expect(screen.getByRole("heading", { level: 1, name: "Why this role" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    expect(screen.getByRole("heading", { name: "Why this role at AiDP" })).toBeInTheDocument();
+    expect(window.location.search).toBe("?view=present&section=why-role");
     fireEvent.keyDown(window, { key: "ArrowRight" });
     expect(screen.getByRole("heading", { level: 1, name: "CitiDirect Nextgen Entitlements" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowLeft" });
-    expect(screen.getByRole("heading", { level: 1, name: "Why this role" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Why this role at AiDP" })).toBeInTheDocument();
+    fireEvent.keyDown(window, { key: "ArrowLeft" });
+    expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowLeft" });
     expect(screen.getByRole("heading", { level: 2, name: "Building enterprise applications across UI, services and data." })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "CitiDirect 06: Result" }));
@@ -127,4 +129,87 @@ describe("portfolio", () => {
     expect(screen.getByRole("heading", { name: /Selected projects|精选项目/ })).toBeInTheDocument();
     expect(screen.queryByRole("navigation", { name: /case study pages|案例分页/ })).not.toBeInTheDocument();
   });
+});
+
+it("normalizes legacy AiDP links and retains the selected page", () => {
+  window.localStorage.setItem("portfolio-language", "en");
+  window.history.replaceState(null, "", "/?view=present&role=aidp&section=projects");
+  render(<App />);
+  expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
+  expect(window.location.search).toBe("?view=present&section=projects");
+  expect(screen.getAllByRole("article")).toHaveLength(3);
+  expect(screen.getByText("Cumulative users · Oct 2026")).toBeInTheDocument();
+  fireEvent.keyDown(window, { key: "ArrowRight" });
+  expect(screen.getByRole("heading", { name: "Why this role at AiDP" })).toBeInTheDocument();
+  expect(window.location.search).toBe("?view=present&section=why-role");
+  fireEvent.keyDown(window, { key: "ArrowLeft" });
+  expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
+});
+
+describe("Web role presentation", () => {
+  beforeEach(() => {
+    window.localStorage.setItem("portfolio-language", "en");
+    window.history.replaceState(null, "", "/?view=present&company=standard-chartered");
+  });
+
+  it("keeps role context through the complete frontend presentation sequence", () => {
+    render(<App />);
+    expect(screen.getByText("Citi Velocity")).toHaveClass("intro-work-featured");
+    expect(screen.getByText("CitiDirect Entitlements")).not.toHaveClass("intro-work-featured");
+    fireEvent.click(screen.getByRole("button", { name: "Open Why this role" }));
+    expect(screen.getByText("Web Engineering")).toBeInTheDocument();
+    expect(screen.getByRole("button", {name: "CitiDirect 02: Frontend"})).toBeInTheDocument();
+    expect(screen.queryByRole("button", {name: "CitiDirect 03: Production"})).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", {name: "CitiDirect 04: Frontend"})).not.toBeInTheDocument();
+    expect(screen.queryByText("Apple Enterprise Systems")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Open Velocity presentation" }));
+    expect(window.location.search).toContain("project=velocity");
+    for (const section of ["architecture", "performance", "results", "overview", "frontend"]) {
+      fireEvent.keyDown(window, { key: "ArrowRight" });
+      expect(window.location.search).toContain(`section=${section}`);
+      if (section === "overview") expect(screen.getByText(/administrators create users, assign banking and account access/)).toBeInTheDocument();
+      expect(window.location.search).toContain("role=web");
+    }
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    expect(window.location.search).not.toContain("project=");
+    expect(window.location.search).toContain("role=web");
+  });
+
+  it("opens shared project details directly and preserves company on return", () => {
+    window.history.replaceState(null, "", "/?view=present&company=standard-chartered&project=nextgen&section=frontend");
+    render(<App />);
+    expect(screen.getByRole("heading", { name: "Schema-driven UI and modular delivery" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "React Library" })).not.toBeInTheDocument();
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    expect(window.location.search).not.toContain("project=");
+    expect(window.location.search).toContain("role=web");
+  });
+});
+
+
+it("uses role=web for direct Velocity pages and gives explicit roles precedence over legacy companies", () => {
+  window.localStorage.setItem("portfolio-language", "en");
+  window.history.replaceState(null, "", "/?view=present&role=web&project=velocity&section=performance");
+  const {unmount} = render(<App />);
+  expect(screen.getByRole("heading", {name:"Less to load. Less blank-screen waiting."})).toBeInTheDocument();
+  fireEvent.keyDown(window, {key:"ArrowLeft"});
+  expect(window.location.search).toContain("section=architecture");
+  unmount();
+  window.history.replaceState(null, "", "/?view=present&role=fullstack&company=standard-chartered&section=why-role");
+  render(<App />);
+  expect(screen.getByRole("heading", { name: "Why this role at AiDP" })).toBeInTheDocument();
+  expect(screen.queryByText("Web Engineering")).not.toBeInTheDocument();
+});
+
+
+it("excludes Security and Production from direct Web links while retaining the Apple page", () => {
+  window.localStorage.setItem("portfolio-language", "en");
+  window.history.replaceState(null, "", "/?view=present&role=web&project=nextgen&section=production");
+  const { unmount } = render(<App />);
+  expect(screen.queryByRole("heading", { name: "From release checks to production support" })).not.toBeInTheDocument();
+  expect(screen.getByText(/administrators create users, assign banking and account access/)).toBeInTheDocument();
+  unmount();
+  window.history.replaceState(null, "", "/?view=present&project=nextgen&section=production");
+  render(<App />);
+  expect(screen.getByRole("heading", { name: "From release checks to production support" })).toBeInTheDocument();
 });

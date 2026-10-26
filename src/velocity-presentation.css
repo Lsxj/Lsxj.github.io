@@ -1,0 +1,191 @@
+/* Scoped to the Web-role Velocity detail. Apple uses its existing layout. */
+.nextgen-deck--presentation.web-velocity-deck { width: 100%; background: #fafafa; }
+.web-velocity-deck .nextgen-deck-main { width: min(1440px, 88vw); margin: auto; }
+.web-velocity-slide { display: grid; gap: clamp(16px, 2.6vh, 30px); padding: 28px 0; }
+.web-velocity-slide header p { color: #0072aa; font-size: 13px; margin: 0 0 12px; }
+.web-velocity-slide h1 { font-size: clamp(30px, 3.4vw, 50px); line-height: 1.12; letter-spacing: -.035em; margin: 0 0 12px; }
+.web-velocity-slide h2 { font-size: clamp(18px, 1.8vw, 26px); font-weight: 500; margin: 0; color: #51616e; }
+.web-velocity-rows { display: grid; gap: 18px; }
+.web-velocity-rows article { display: grid; grid-template-columns: 230px 1fr; gap: 30px; padding-top: 16px; border-top: 1px solid #dce2e5; }
+.web-velocity-rows h3 { margin: 0; font-size: 20px; }
+.web-velocity-rows p { margin: 0; font-size: 19px; line-height: 1.5; max-width: 900px; }
+.web-velocity-outcome { margin: 0; font-size: 19px; line-height: 1.5; color: #006d91; }
+@media (max-width: 700px) { .web-velocity-rows article { grid-template-columns: 1fr; gap: 8px; } .web-velocity-rows p { font-size: 17px; } }
+
+/* Overview has its own composition; other slides retain their existing layout. */
+.web-velocity-overview { width: 100%; gap: 40px; padding: 24px 0 32px; }
+.web-velocity-overview-top { display: grid; grid-template-columns: minmax(0, 1fr) 265px; gap: 64px; align-items: center; }
+.web-velocity-overview header > p { font-size: 16px; color: #526273; margin-bottom: 20px; }
+.web-velocity-overview h1 { font-size: clamp(34px, 3.5vw, 56px); font-weight: 600; line-height: 1.15; margin-bottom: 20px; }
+.web-velocity-overview h2 { font-size: clamp(19px, 1.65vw, 27px); line-height: 1.45; }
+.web-velocity-context { max-width: 740px; margin-top: 18px; font-size: 17px; line-height: 1.6; color: #526273; }
+.web-velocity-scale { border-left: 1px solid #dce2e5; padding-left: 32px; }
+.web-velocity-scale h3 { margin: 0 0 20px; font-size: 14px; font-weight: 500; color: #526273; }
+.web-velocity-scale dl { display: grid; gap: 20px; margin: 0; }
+.web-velocity-scale dt { font-size: clamp(30px, 3vw, 44px); line-height: 1.1; letter-spacing: -.035em; font-weight: 600; color: #0072aa; }
+.web-velocity-scale dd { margin: 5px 0 0; font-size: 15px; line-height: 1.4; color: #526273; }
+.web-velocity-overview-details { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; }
+.web-velocity-overview-details article { border-top: 1px solid #dce2e5; padding-top: 20px; }
+.web-velocity-overview-details h3 { margin: 0 0 12px; font-size: 20px; font-weight: 600; }
+.web-velocity-overview-details p { margin: 0; font-size: 17px; line-height: 1.5; color: #526273; }
+.web-velocity-overview-details p + p { margin-top: 10px; }
+@media (max-width: 800px) {
+  .web-velocity-overview-top { grid-template-columns: 1fr; gap: 28px; }
+  .web-velocity-scale { padding-left: 22px; }
+  .web-velocity-overview-details { grid-template-columns: 1fr; gap: 24px; }
+  .web-velocity-overview { gap: 30px; }
+}
+
+.web-velocity-architecture { width: 100%; gap: 48px; align-content: start; }
+.web-velocity-architecture header > p { font-size: 16px; color: #526273; margin-bottom: 20px; }
+.web-velocity-architecture h1 { font-size: clamp(30px, 3.2vw, 50px); font-weight: 600; }
+.web-velocity-architecture h2 { font-size: clamp(18px, 1.65vw, 25px); line-height: 1.5; }
+.web-velocity-architecture-lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.web-velocity-architecture-lanes article { border-top: 1px solid #dce2e5; padding-top: 22px; }
+.web-velocity-lane-heading { display: flex; gap: 14px; align-items: baseline; }
+.web-velocity-lane-heading span { color: #0072aa; font-size: 15px; }
+.web-velocity-lane-heading h3 { font-size: 21px; margin: 0; line-height: 1.35; }
+.web-velocity-lane-why { font-size: 17px; line-height: 1.5; color: #526273; min-height: 52px; margin: 14px 0 24px; }
+/* Two schematic flows: many content types converge; shared context fans out. */
+.web-velocity-diagram { min-height: 228px; padding: 22px 18px; background: #f1f5f7; border-radius: 12px; }
+.web-velocity-diagram-chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.web-velocity-diagram-chips span { padding: 10px 3px; text-align: center; background: #fff; border: 1px solid #dce2e5; border-radius: 5px; font-size: 13px; white-space: nowrap; }
+.web-velocity-connector { height: 36px; margin: 0 4px; }
+.web-velocity-connector svg { width: 100%; height: 100%; overflow: visible; }
+.web-velocity-connector path { fill: none; stroke: #80aaba; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.web-velocity-diagram-core { background: #006d91; color: white; border-radius: 7px; padding: 14px 10px; text-align: center; }
+.web-velocity-diagram-core strong { display: block; font-size: 18px; font-weight: 600; }
+.web-velocity-diagram-core small { display: block; font-size: 13px; margin-top: 5px; color: #dceef5; }
+.web-velocity-diagram-arrow { height: 30px; text-align: center; line-height: 30px; color: #6593a4; font-size: 23px; }
+.web-velocity-diagram-output, .web-velocity-diagram-input { background: white; border: 1px solid #dce2e5; border-radius: 5px; padding: 10px; text-align: center; font-size: 16px; }
+.web-velocity-diagram-output span { margin-right: 10px; color: #0072aa; }
+.web-velocity-diagram-portlets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.web-velocity-diagram-portlets span { background: white; border: 1px solid #dce2e5; border-radius: 5px; overflow: hidden; padding-bottom: 8px; font-size: 14px; text-align: center; }
+.web-velocity-diagram-portlets i { display: block; height: 7px; margin-bottom: 6px; background: #dce8ee; border-bottom: 1px solid #cedde4; }
+.web-velocity-lane-detail { font-size: 15px; line-height: 1.5; color: #526273; margin: 20px 0 0; }
+.web-velocity-lane-outcome { font-size: 16px; line-height: 1.5; color: #006d91; margin: 14px 0 0; }
+@media (max-width: 800px) { .web-velocity-architecture-lanes { grid-template-columns: 1fr; gap: 32px; } .web-velocity-lane-why { min-height: 0; } }
+
+.web-velocity-performance { gap: 32px; }
+.web-velocity-performance header > p { font-size: 16px; color: #526273; margin-bottom: 20px; }
+.web-velocity-performance h1 { font-size: clamp(30px, 3.2vw, 50px); font-weight: 600; }
+.web-velocity-performance h2 { font-size: clamp(18px, 1.65vw, 25px); line-height: 1.5; }
+.web-velocity-performance-main { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+.web-velocity-loading-story { display: grid; gap: 16px; }
+.web-velocity-loading-before, .web-velocity-loading-after { padding: 18px 22px; border-radius: 10px; background: #f1f5f7; }
+.web-velocity-loading-story h3 { margin: 0 0 14px; font-size: 18px; font-weight: 600; }
+.web-velocity-loading-story p { font-size: 14px; line-height: 1.5; margin: 12px 0 0; color: #526273; }
+.web-velocity-resource-batch { display: flex; gap: 7px; }
+.web-velocity-resource-batch span { flex: 1; padding: 10px 5px; background: #fff; border: 1px solid #d3dce2; text-align: center; font-size: 14px; border-radius: 4px; }
+.web-velocity-resource-batch span:last-child { flex: .4; }
+.web-velocity-loading-stages { display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center; gap: 10px; }
+.web-velocity-loading-stages > div { padding: 12px 14px; border: 1px dashed #b3c9d2; border-radius: 5px; }
+.web-velocity-loading-stages > div:first-child { background: #006d91; color: white; border: 1px solid #006d91; }
+.web-velocity-loading-stages small { display: block; font-size: 10px; letter-spacing: .08em; margin-bottom: 6px; }
+.web-velocity-loading-stages strong { font-size: 16px; font-weight: 500; }
+.web-velocity-loading-stages > span { color: #6593a4; font-size: 22px; }
+.web-velocity-loading-caption { font-size: 12px; color: #647681; }
+.web-velocity-performance-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.web-velocity-performance-actions article { border-top: 1px solid #dce2e5; padding-top: 18px; }
+.web-velocity-performance-actions h3 { font-size: 18px; margin: 0 0 10px; }
+.web-velocity-performance-actions p { font-size: 15px; line-height: 1.5; color: #526273; margin: 0; }
+@media (max-width: 800px) { .web-velocity-performance-main, .web-velocity-performance-actions { grid-template-columns: 1fr; gap: 24px; } }
+
+
+
+.web-velocity-performance { width: 100%; }
+.web-velocity-results { width: 100%; gap: 48px; align-content: center; }
+.web-velocity-results header > p { font-size: 16px; color: #526273; margin-bottom: 20px; }
+.web-velocity-results h1 { font-size: clamp(32px, 3.5vw, 54px); font-weight: 600; }
+.web-velocity-results-hero { display: grid; grid-template-columns: .95fr 1.05fr; align-items: center; gap: 52px; padding: 24px 0 36px; }
+.web-velocity-results-hero > strong { font-size: clamp(84px, 12vw, 170px); line-height: 1; letter-spacing: -.065em; font-weight: 600; color: #0072aa; }
+.web-velocity-results-hero h2 { font-size: clamp(25px, 2.7vw, 38px); line-height: 1.3; color: #253340; font-weight: 500; max-width: 480px; }
+.web-velocity-results-hero p { margin: 22px 0 0; font-size: 15px; line-height: 1.5; color: #526273; max-width: 370px; }
+.web-velocity-results-recognition { border-top: 1px solid #dce2e5; padding-top: 26px; display: grid; grid-template-columns: .95fr 1fr 1fr; align-items: center; gap: 30px; }
+.web-velocity-results-recognition > h2 { margin: 0; font-size: 20px; font-weight: 500; line-height: 1.4; color: #526273; }
+.web-velocity-results-award { display: flex; flex-direction: column; gap: 8px; }
+.web-velocity-results-award span { font-size: 15px; color: #526273; }
+.web-velocity-results-award h3 { margin: 0; font-size: clamp(22px, 2.1vw, 30px); font-weight: 500; letter-spacing: -.02em; }
+@media (max-width: 800px) { .web-velocity-results-hero { grid-template-columns: 1fr; gap: 24px; padding: 0; } .web-velocity-results-recognition { grid-template-columns: 1fr 1fr; } .web-velocity-results-recognition > h2 { grid-column: 1 / -1; } }
+
+.web-velocity-category-label { font-size: 11px; letter-spacing: .06em; color: #526273; margin-bottom: 12px; }
+.web-velocity-category-paths { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.web-velocity-category-paths .web-velocity-diagram-core strong { font-size: 16px; }
+.web-velocity-category-paths .web-velocity-diagram-output { font-size: 15px; }
+
+.web-velocity-category-examples { display: grid; grid-template-columns: 1fr 1fr 36px; gap: 8px; }
+.web-velocity-category-examples span { padding: 10px 4px; font-size: 15px; text-align: center; background: white; border: 1px solid #dce2e5; border-radius: 5px; }
+.web-velocity-portlet-page { padding: 12px; background: white; border: 1px solid #dce2e5; border-radius: 5px; }
+.web-velocity-portlet-page > small { display: block; font-size: 10px; color: #526273; margin-bottom: 10px; }
+.web-velocity-portlet-page > div { display: grid; grid-template-columns: repeat(3, 1fr) 28px; gap: 8px; }
+.web-velocity-portlet-page span { background: #f1f5f7; border-top: 4px solid #dce8ee; padding: 8px 2px; text-align: center; font-size: 13px; }
+
+.web-velocity-render-config { display: block; margin-top: 7px; font-size: 13px; line-height: 1.4; color: #526273; }
+
+/* Match the two architecture flows without adding explanatory panels. */
+.web-velocity-architecture .web-velocity-diagram { display: grid; grid-template-rows: auto 30px auto 36px minmax(64px, auto); align-content: start; }
+.web-velocity-architecture .web-velocity-diagram-output { display: flex; flex-direction: column; justify-content: center; }
+.web-velocity-architecture .web-velocity-diagram-portlets { align-items: stretch; }
+.web-velocity-architecture .web-velocity-diagram-portlets span { display: flex; flex-direction: column; justify-content: center; position: relative; padding: 8px 0; }
+.web-velocity-architecture .web-velocity-diagram-portlets i { position: absolute; top: 0; left: 0; right: 0; margin: 0; }
+
+/* Performance: the loading decision is the visual focus. */
+.web-velocity-performance { align-content: center; gap: 44px; }
+.web-velocity-performance .web-velocity-loading-story { grid-template-columns: .8fr 1.4fr; gap: 20px 32px; align-items: stretch; }
+.web-velocity-performance .web-velocity-loading-before { background: transparent; padding: 26px 0; border-top: 1px solid #dce2e5; border-radius: 0; }
+.web-velocity-performance .web-velocity-loading-after { background: #edf4f7; padding: 26px 28px; border-radius: 10px; }
+.web-velocity-performance .web-velocity-loading-story h3 { font-size: 17px; margin-bottom: 24px; }
+.web-velocity-performance .web-velocity-loading-before h3 { color: #657580; font-weight: 500; }
+.web-velocity-performance .web-velocity-resource-batch { flex-wrap: wrap; gap: 6px; }
+.web-velocity-performance .web-velocity-resource-batch span { flex: 1 1 26%; font-size: 12px; color: #647681; padding: 9px 3px; }
+.web-velocity-performance .web-velocity-resource-batch span:last-child { flex: 1 1 26%; }
+.web-velocity-performance .web-velocity-loading-story p { max-width: 270px; margin-top: 18px; }
+.web-velocity-performance .web-velocity-loading-stages { grid-template-columns: 1.2fr 20px 1fr; gap: 12px; }
+.web-velocity-performance .web-velocity-loading-stages > div { min-height: 116px; display: flex; flex-direction: column; justify-content: center; padding: 18px; }
+.web-velocity-performance .web-velocity-loading-stages > div:first-child { box-shadow: 0 8px 18px #006d9114; }
+.web-velocity-performance .web-velocity-loading-stages strong { font-size: 23px; line-height: 1.2; }
+.web-velocity-performance .web-velocity-loading-stages > div:last-child strong { font-size: 17px; color: #526273; }
+.web-velocity-performance .web-velocity-loading-stages small { margin-bottom: 12px; }
+.web-velocity-performance .web-velocity-loading-caption { grid-column: 1 / -1; font-size: 11px; }
+.web-velocity-performance .web-velocity-performance-actions { border-top: 1px solid #dce2e5; padding-top: 24px; gap: 36px; }
+.web-velocity-performance .web-velocity-performance-actions article { border: 0; padding: 0; }
+.web-velocity-performance .web-velocity-performance-actions h3 { font-size: 16px; font-weight: 600; }
+.web-velocity-performance .web-velocity-performance-actions p { font-size: 14px; }
+@media (max-width: 800px) {
+ .web-velocity-performance { gap: 28px; }
+ .web-velocity-performance .web-velocity-loading-story { grid-template-columns: 1fr; }
+ .web-velocity-performance .web-velocity-loading-before { padding: 18px 0; }
+ .web-velocity-performance .web-velocity-loading-after { padding: 22px 18px; }
+ .web-velocity-performance .web-velocity-loading-stages strong { font-size: 20px; }
+}
+
+/* Distinguish loading work from perceived waiting. */
+.web-velocity-performance-strategy { gap: 44px; }
+.velocity-strategy-columns { display: grid; grid-template-columns: 1.15fr 1fr; gap: 52px; }
+.velocity-strategy-columns > article { border-top: 1px solid #dce2e5; padding-top: 22px; }
+.velocity-strategy-columns > article > h2 { display: flex; align-items: baseline; gap: 12px; font-size: 22px; color: #253340; font-weight: 600; }
+.velocity-strategy-columns h2 > span { font-size: 14px; color: #0072aa; font-weight: 500; }
+.velocity-strategy-step { margin-top: 26px; }
+.velocity-strategy-step h3 { font-size: 18px; margin: 0 0 8px; }
+.velocity-strategy-step p { font-size: 15px; color: #526273; line-height: 1.5; margin: 0 0 18px; }
+.velocity-split-diagram, .velocity-timing-diagram { display: grid; grid-template-columns: 1fr 24px 1.3fr; align-items: center; gap: 12px; }
+.velocity-split-diagram > div:first-child { border: 1px solid #d3dce2; background: #f1f5f7; padding: 18px 10px; text-align: center; font-size: 14px; }
+.velocity-split-diagram > span, .velocity-timing-diagram > span, .velocity-skeleton-demo > span { text-align: center; color: #6593a4; font-size: 23px; }
+.velocity-code-chunks { display: flex; gap: 6px; }
+.velocity-code-chunks b { flex: 1; text-align: center; padding: 18px 6px; background: #e8f1f5; color: #006d91; font-size: 13px; font-weight: 500; border: 1px solid #c7dce5; }
+.velocity-timing-diagram > div { padding: 15px; border: 1px dashed #b3c9d2; }
+.velocity-timing-diagram > div:first-child { background: #006d91; color: white; border: 1px solid #006d91; }
+.velocity-timing-diagram small { display: block; font-size: 10px; margin-bottom: 8px; letter-spacing: .06em; }
+.velocity-timing-diagram strong { font-size: 16px; font-weight: 500; }
+.velocity-skeleton-demo { display: grid; grid-template-columns: 1fr 20px 1.2fr; gap: 12px; align-items: center; margin-top: 28px; padding: 22px 18px; background: #f1f5f7; border-radius: 8px; }
+.velocity-skeleton-demo small { display: block; font-size: 10px; letter-spacing: .03em; color: #526273; margin-bottom: 12px; }
+.velocity-mini-window { height: 170px; border: 1px solid #d3dce2; border-top: 10px solid #dce5e9; border-radius: 4px; background: white; padding: 16px 12px; }
+.velocity-mini-skeleton i { display: block; background: #dce8ee; height: 7px; margin-bottom: 9px; border-radius: 2px; }
+.velocity-mini-skeleton i:first-child { width: 60%; height: 12px; }
+.velocity-mini-skeleton i:last-child { width: 70%; }
+.velocity-mini-skeleton > div { display: flex; gap: 8px; margin: 14px 0; }
+.velocity-mini-skeleton b { flex: 1; height: 35px; background: #e8eff3; border-radius: 2px; }
+.velocity-strategy-step .velocity-feedback-note { font-size: 13px; margin: 14px 0 0; }
+@media (max-width: 800px) { .velocity-strategy-columns { grid-template-columns: 1fr; gap: 32px; } .web-velocity-performance-strategy { gap: 28px; } }
+
+.web-velocity-role { font-size: 16px; line-height: 1.5; color: #526273; margin: -4px 0 20px; }
