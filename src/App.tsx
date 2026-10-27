@@ -309,15 +309,15 @@ function App() {
       <main className="presentation-main"><section className="why-role-slide" aria-labelledby="why-role-title">
         <div className="why-role-heading"><h1 id="why-role-title">{webRole ? (language === "zh" ? "为什么选择这个岗位" : "Why this role") : language === "zh" ? "为什么选择 Enterprise Systems" : "Why this role in Enterprise Systems"}</h1></div>
         <div className="why-role-message">
-          <h2>{webRole ? (language === "zh" ? <>为金融业务构建<br />高质量 React 界面。</> : <>Build React interfaces<br />for financial applications.</>) : language === "zh" ? <>将复杂业务需求<br />变成完整、可靠的应用</> : <>Turn complex business needs<br />into reliable applications</>}</h2>
+          <h2>{webRole ? (language === "zh" ? <>为金融业务构建<br />高质量 React 界面。</> : <>Build React interfaces<br />for financial applications.</>) : language === "zh" ? <>从界面到数据，<br />构建企业级应用。</> : <>Build enterprise applications<br />from UI to data.</>}</h2>
         </div>
         <div className="role-motivations">
           {(!webRole ? (language === "zh" ? [
-            ["理解并实现完整流程", "发挥全栈经验，从业务需求出发，亲自实现关键功能。"],
-            ["推动系统交付上线", "运用企业系统经验，处理服务依赖与生产问题，让完整流程真正运行。"]
+            ["端到端全栈开发", "持续参与界面、服务与数据层，对完整功能的交付负责。"],
+            ["大规模企业系统", "延续花旗经验，深入解决规模与可靠性问题。"]
           ] : [
-            ["Understand and build the whole flow", "Use my full-stack experience to turn business needs into working features."],
-            ["Take it through to production", "Apply my enterprise experience to service dependencies and production issues."]
+            ["End-to-end full-stack development", "Stay hands-on across UI, services and data, owning complete features."],
+            ["Enterprise systems at scale", "Build on my Citi experience and deepen my work on scale and reliability."]
           ]) : (language === "zh" ? [
             ["金融业务中的前端工程", "延续 Citi Velocity 经验，参与金融应用的界面开发与交付。"],
             ["性能与可复用架构", "发挥 React、微前端和组件库经验，持续改进用户体验与工程质量。"]
