@@ -524,7 +524,7 @@ function App() {
                     <section>
                       <span className="production-step">01 / {language === "zh" ? "发布前" : "Before release"}</span>
                       <h2>{language === "zh" ? "质量与安全检查" : "Quality & security"}</h2>
-                      <p>{language === "zh" ? "安全扫描与业务流程测试集成到 CI/CD。" : "Security scans and workflow tests in CI/CD."}</p>
+                      <p>{language === "zh" ? "在 CI/CD 中运行安全扫描，验证提交、批准和拒绝后的权限状态。" : "Security scans in CI/CD and access-state tests for submission, approval and rejection."}</p>
                       <p className="production-coverage"><strong>90%+</strong><span>{language === "zh" ? "团队服务测试覆盖率" : "test coverage across team services"}</span></p>
                     </section>
                     <section>
@@ -535,12 +535,8 @@ function App() {
                     <section>
                       <span className="production-step">03 / {language === "zh" ? "上线后" : "In production"}</span>
                       <h2>{language === "zh" ? "跨服务问题定位" : "Cross-service diagnosis"}</h2>
-                      <p>{language === "zh" ? "通过请求 ID 与结构化日志定位跨服务故障。" : "Trace failures across services with request IDs and structured logs."}</p>
+                      <p>{language === "zh" ? "从 Provisioning 状态定位失败步骤，再用请求 ID 与 Kibana 日志追踪原因。" : "Locate failed provisioning steps, then trace the cause with request IDs and Kibana logs."}</p>
                     </section>
-                  </div>
-                  <div className="production-transition">
-                    <h2>{language === "zh" ? "分阶段迁移" : "Phased migration"}</h2>
-                    <p>{language === "zh" ? "新旧权限模型并行，分批转换与验证。" : "Legacy and new models coexisted, with staged conversion and validation."}</p>
                   </div>
                 </section>
               )}
