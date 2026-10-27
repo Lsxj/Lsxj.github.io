@@ -68,12 +68,12 @@ describe("portfolio", () => {
     fireEvent.keyDown(window, { key: "ArrowRight" });
     expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowRight" });
-    expect(screen.getByRole("heading", { name: "Why this role at AiDP" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Why this role in Enterprise Systems" })).toBeInTheDocument();
     expect(window.location.search).toBe("?view=present&section=why-role");
     fireEvent.keyDown(window, { key: "ArrowRight" });
     expect(screen.getByRole("heading", { level: 1, name: "CitiDirect Nextgen Entitlements" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowLeft" });
-    expect(screen.getByRole("heading", { name: "Why this role at AiDP" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Why this role in Enterprise Systems" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowLeft" });
     expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowLeft" });
@@ -140,7 +140,7 @@ it("normalizes legacy AiDP links and retains the selected page", () => {
   expect(screen.getAllByRole("article")).toHaveLength(3);
   expect(screen.getByText("Cumulative users · Oct 2026")).toBeInTheDocument();
   fireEvent.keyDown(window, { key: "ArrowRight" });
-  expect(screen.getByRole("heading", { name: "Why this role at AiDP" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Why this role in Enterprise Systems" })).toBeInTheDocument();
   expect(window.location.search).toBe("?view=present&section=why-role");
   fireEvent.keyDown(window, { key: "ArrowLeft" });
   expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
@@ -197,7 +197,7 @@ it("uses role=web for direct Velocity pages and gives explicit roles precedence 
   unmount();
   window.history.replaceState(null, "", "/?view=present&role=fullstack&company=standard-chartered&section=why-role");
   render(<App />);
-  expect(screen.getByRole("heading", { name: "Why this role at AiDP" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Why this role in Enterprise Systems" })).toBeInTheDocument();
   expect(screen.queryByText("Web Engineering")).not.toBeInTheDocument();
 });
 

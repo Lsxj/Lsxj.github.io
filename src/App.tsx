@@ -305,19 +305,19 @@ function App() {
 
   if (presentationMode && activeProject === null && whyRole) {
     return <div className="presentation-shell">
-      <header className="presentation-header"><div><span>{webRole ? "Web Engineering" : "Apple IS&T AI & Data Platforms"}</span></div><div className="presentation-controls"><LanguageSwitch /></div></header>
+      <header className="presentation-header"><div><span>{webRole ? "Web Engineering" : "Apple IS&T Enterprise Systems"}</span></div><div className="presentation-controls"><LanguageSwitch /></div></header>
       <main className="presentation-main"><section className="why-role-slide" aria-labelledby="why-role-title">
-        <div className="why-role-heading"><h1 id="why-role-title">{webRole ? (language === "zh" ? "为什么选择这个岗位" : "Why this role") : language === "zh" ? "为什么选择 AiDP" : "Why this role at AiDP"}</h1></div>
+        <div className="why-role-heading"><h1 id="why-role-title">{webRole ? (language === "zh" ? "为什么选择这个岗位" : "Why this role") : language === "zh" ? "为什么选择 Enterprise Systems" : "Why this role in Enterprise Systems"}</h1></div>
         <div className="why-role-message">
-          <h2>{webRole ? (language === "zh" ? <>为金融业务构建<br />高质量 React 界面。</> : <>Build React interfaces<br />for financial applications.</>) : language === "zh" ? <>将企业工程经验<br />用于 AI 产品开发</> : <>Bring enterprise experience<br />to AI product development</>}</h2>
+          <h2>{webRole ? (language === "zh" ? <>为金融业务构建<br />高质量 React 界面。</> : <>Build React interfaces<br />for financial applications.</>) : language === "zh" ? <>将复杂业务需求<br />变成完整、可靠的应用</> : <>Turn complex business needs<br />into reliable applications</>}</h2>
         </div>
         <div className="role-motivations">
           {(!webRole ? (language === "zh" ? [
-            ["企业工程积累", "在花旗，我参与了贯穿用户流程、服务和数据的应用开发与生产支持。"],
-            ["继续深入 AI 产品开发", "NutriFlow AI 让我希望继续沿这个方向发展：构建实用的 AI 产品，并对其生产运行负责。"]
+            ["理解并实现完整流程", "发挥全栈经验，从业务需求出发，亲自实现关键功能。"],
+            ["推动系统交付上线", "运用企业系统经验，处理服务依赖与生产问题，让完整流程真正运行。"]
           ] : [
-            ["Enterprise engineering experience", "At Citi, I built and supported applications across user workflows, services and data."],
-            ["Further work on AI products", "NutriFlow AI made me want to go further: build useful AI products and stay responsible for them in production."]
+            ["Understand and build the whole flow", "Use my full-stack experience to turn business needs into working features."],
+            ["Take it through to production", "Apply my enterprise experience to service dependencies and production issues."]
           ]) : (language === "zh" ? [
             ["金融业务中的前端工程", "延续 Citi Velocity 经验，参与金融应用的界面开发与交付。"],
             ["性能与可复用架构", "发挥 React、微前端和组件库经验，持续改进用户体验与工程质量。"]
