@@ -62,14 +62,18 @@ describe("portfolio", () => {
     expect(window.location.search).toContain("section=frontend");
   });
 
-  it("moves directly from projects to CitiDirect without the role slide", () => {
+  it("moves through projects and Why before CitiDirect in the default Apple presentation", () => {
     window.history.replaceState(null, "", "/?view=present");
     render(<App />);
     fireEvent.keyDown(window, { key: "ArrowRight" });
     expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowRight" });
-    expect(screen.queryByRole("button", { name: "Why this role" })).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Why this role in Enterprise Systems" })).toBeInTheDocument();
+    expect(window.location.search).toBe("?view=present&section=why-role");
+    fireEvent.keyDown(window, { key: "ArrowRight" });
     expect(screen.getByRole("heading", { level: 1, name: "CitiDirect Nextgen Entitlements" })).toBeInTheDocument();
+    fireEvent.keyDown(window, { key: "ArrowLeft" });
+    expect(screen.getByRole("heading", { name: "Why this role in Enterprise Systems" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowLeft" });
     expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "ArrowLeft" });
@@ -136,8 +140,8 @@ it("normalizes legacy AiDP links and retains the selected page", () => {
   expect(screen.getAllByRole("article")).toHaveLength(3);
   expect(screen.getByText("Cumulative users · Oct 2026")).toBeInTheDocument();
   fireEvent.keyDown(window, { key: "ArrowRight" });
-  expect(screen.getByRole("heading", { level: 1, name: "CitiDirect Nextgen Entitlements" })).toBeInTheDocument();
-  expect(window.location.search).toBe("?view=present&project=nextgen&section=overview");
+  expect(screen.getByRole("heading", { name: "Why this role in Enterprise Systems" })).toBeInTheDocument();
+  expect(window.location.search).toBe("?view=present&section=why-role");
   fireEvent.keyDown(window, { key: "ArrowLeft" });
   expect(screen.getByRole("heading", { level: 1, name: "Selected work & impact" })).toBeInTheDocument();
 });
@@ -193,9 +197,7 @@ it("uses role=web for direct Velocity pages and gives explicit roles precedence 
   unmount();
   window.history.replaceState(null, "", "/?view=present&role=fullstack&company=standard-chartered&section=why-role");
   render(<App />);
-  expect(screen.queryByRole("heading", { name: "Why this role in Enterprise Systems" })).not.toBeInTheDocument();
-  expect(window.location.search).toBe("?view=present");
-  expect(screen.getByRole("heading", { level: 2, name: "Building enterprise applications across UI, services and data." })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Why this role in Enterprise Systems" })).toBeInTheDocument();
   expect(screen.queryByText("Web Engineering")).not.toBeInTheDocument();
 });
 
