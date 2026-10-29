@@ -25,7 +25,8 @@ function isWebRole() {
 }
 
 function hasWhyRole() {
-  return isPresentationUrl();
+  // Keep the default deck neutral for interviews; retain the role slide for Web.
+  return isWebRole();
 }
 
 function allowedPresentationProject(id: string | null) {
@@ -96,6 +97,9 @@ function App() {
       // Preserve the old Apple link's meaning even if it also contains a legacy company.
       params.delete("company");
       window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}${window.location.hash}`);
+    }
+    if (presentationMode && params.get("section") === "why-role" && !hasWhyRole()) {
+      window.history.replaceState(null, "", routeUrl({}));
     }
     const id = new URLSearchParams(window.location.search).get("project");
     if (presentationMode && id && !allowedPresentationProject(id)) {
